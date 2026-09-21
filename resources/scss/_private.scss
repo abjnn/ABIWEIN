@@ -34,9 +34,12 @@ body.private-site {
 // 2. Barre latérale sombre inspirée des outils professionnels
 // -----------------------------------------------------------------------------
 .private-sidebar {
+    // MODIFICATION : cette variable impose le fond vert au composant Offcanvas de Bootstrap.
+    --bs-offcanvas-bg: #{$abiwein-olive};
     width: 17.5rem !important;
     color: rgba($abiwein-white, 0.74);
-    background: $abiwein-ink;
+    // Cette ligne contrôle la couleur visible de toute la navigation latérale.
+    background: $abiwein-olive;
     border-right: 1px solid rgba($abiwein-white, 0.08);
 }
 
