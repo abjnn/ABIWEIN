@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
          * Pour autoriser un jeu de démonstration dans un autre environnement,
          * modifiez uniquement la liste passée à environment().
          */
-        if ($this->command?->getLaravel()->environment('production')) {
+        if ($this->command?->getLaravel()->environment('production') && ! config('abiwein.deployment_demo_enabled')) {
             $this->command?->warn('Les données de démonstration ABIWEIN ne sont jamais créées en production.');
 
             return;

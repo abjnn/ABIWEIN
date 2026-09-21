@@ -15,7 +15,7 @@ class DemoUserSeeder extends Seeder
     public function run(): void
     {
         // Cette garde reste ici afin qu’un appel direct au seeder soit également sûr.
-        if (app()->environment('production')) {
+        if (app()->environment('production') && ! config('abiwein.deployment_demo_enabled')) {
             throw new LogicException('Les comptes de démonstration sont interdits en production.');
         }
 
@@ -23,22 +23,22 @@ class DemoUserSeeder extends Seeder
         $users = [
             [
                 'name' => 'Nadège Nkomo',
-                'email' => env('ABIWEIN_DEMO_ADMIN_EMAIL', 'nadege.nkomo@abiwein.local'),
-                'password' => env('ABIWEIN_DEMO_ADMIN_PASSWORD', 'Nadege#Abiwein26!'),
+                'email' => config('abiwein.demo_users.administrator.email'),
+                'password' => config('abiwein.demo_users.administrator.password'),
                 'legacy_email' => 'admin@abiwein.local',
                 'role' => UserRole::Administrator,
             ],
             [
                 'name' => 'Alain Tchoumi',
-                'email' => env('ABIWEIN_DEMO_MANAGER_EMAIL', 'alain.tchoumi@abiwein.local'),
-                'password' => env('ABIWEIN_DEMO_MANAGER_PASSWORD', 'Ferme#Tchoumi26!'),
+                'email' => config('abiwein.demo_users.farm_manager.email'),
+                'password' => config('abiwein.demo_users.farm_manager.password'),
                 'legacy_email' => 'responsable@abiwein.local',
                 'role' => UserRole::FarmManager,
             ],
             [
                 'name' => 'Dre Mireille Ngono',
-                'email' => env('ABIWEIN_DEMO_VET_EMAIL', 'mireille.ngono@abiwein.local'),
-                'password' => env('ABIWEIN_DEMO_VET_PASSWORD', 'Sante#Ngono2026!'),
+                'email' => config('abiwein.demo_users.veterinarian.email'),
+                'password' => config('abiwein.demo_users.veterinarian.password'),
                 'legacy_email' => 'veterinaire@abiwein.local',
                 'role' => UserRole::Veterinarian,
             ],
@@ -46,6 +46,11 @@ class DemoUserSeeder extends Seeder
 
         $emails = array_column($users, 'email');
         $passwords = array_column($users, 'password');
+
+        // En production, l'absence d'un secret bloque volontairement l'installation du compte concerné.
+        if (in_array(null, $emails, true) || in_array(null, $passwords, true)) {
+            throw new LogicException('Les six secrets ABIWEIN_DEMO_* doivent être configurés sur l’hébergeur.');
+        }
 
         // Une erreur de configuration est signalée avant toute écriture partielle en base.
         if (count(array_unique($emails)) !== count($emails) || count(array_unique($passwords)) !== count($passwords)) {

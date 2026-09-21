@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Render termine HTTPS devant Apache ; ces en-têtes permettent à Laravel de reconnaître l'URL sécurisée.
+        $middleware->trustProxies(at: '*');
+
         // Cette protection ajoute les en-têtes de sécurité à toutes les réponses web.
         $middleware->web(append: [AddSecurityHeaders::class]);
 

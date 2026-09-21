@@ -78,6 +78,48 @@ class DemonstrationAnalysisTest extends TestCase
         Http::assertNothingSent();
     }
 
+    /** Une salutation déclenche une conversation naturelle sans bilan métier ni appel externe. */
+    public function test_greeting_receives_a_social_answer_before_any_farm_analysis(): void
+    {
+        config()->set('services.gemini.key', null);
+        Http::fake();
+        $manager = User::factory()->create(['role' => UserRole::FarmManager]);
+
+        $this->actingAs($manager)
+            ->post(route('intelligence.messages.store'), ['message' => 'Salut'])
+            ->assertRedirect(route('intelligence.demo'));
+
+        $this->assertDatabaseHas('ai_messages', [
+            'user_id' => $manager->id,
+            'role' => 'assistant',
+            'content' => 'Bonjour ! Comment allez-vous ? Je suis heureux de vous retrouver.',
+            'provider' => 'local',
+        ]);
+        $this->assertDatabaseMissing('ai_messages', [
+            'user_id' => $manager->id,
+            'role' => 'assistant',
+            'content' => 'La ferme compte actuellement',
+        ]);
+        Http::assertNothingSent();
+    }
+
+    /** Une question de courtoisie reçoit une réponse de courtoisie, comme dans un véritable chat. */
+    public function test_wellbeing_question_receives_a_natural_answer(): void
+    {
+        config()->set('services.gemini.key', null);
+        $administrator = User::factory()->administrator()->create();
+
+        $this->actingAs($administrator)
+            ->post(route('intelligence.messages.store'), ['message' => 'Bonjour, comment tu vas ?'])
+            ->assertRedirect(route('intelligence.demo'));
+
+        $this->assertDatabaseHas('ai_messages', [
+            'user_id' => $administrator->id,
+            'role' => 'assistant',
+            'content' => 'Je vais bien, merci. Et vous, comment allez-vous ?',
+        ]);
+    }
+
     /** Avec une clé, la requête Gemini n'emporte que des agrégats contrôlés. */
     public function test_configured_gemini_provider_is_called_without_personal_data(): void
     {

@@ -6,6 +6,7 @@ use App\Models\AiMessage;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use RuntimeException;
 use Throwable;
 
@@ -28,6 +29,14 @@ final class FarmAssistantService
      */
     public function answer(User $user, string $question, iterable $history): array
     {
+        // Les salutations restent locales : elles sont plus naturelles et ne consomment aucun appel API.
+        $socialAnswer = $this->socialAnswer($question);
+
+        if ($socialAnswer !== null) {
+            return ['content' => $socialAnswer, 'provider' => 'local'];
+        }
+
+        // Les indicateurs de la ferme ne sont chargés que lorsqu'une question métier est réellement posée.
         $snapshot = $this->contextService->snapshot();
 
         if ($this->providerIsConfigured()) {
@@ -63,6 +72,8 @@ final class FarmAssistantService
         $systemInstruction = implode("\n", [
             'Tu es l’assistant de pilotage de la ferme avicole ABIWEIN.',
             'Réponds en français avec des phrases courtes, précises et professionnelles.',
+            'Si l’utilisateur salue, remercie ou discute normalement, réponds naturellement et chaleureusement.',
+            'N’introduis les données de la ferme que lorsque la demande concerne explicitement l’exploitation.',
             'Base-toi uniquement sur les indicateurs agrégés fournis et signale toute donnée manquante.',
             'Ne révèle aucune donnée personnelle et n’invente jamais une vente, visite ou diagnostic.',
             'Tu proposes des contrôles, mais tu ne déclenches aucune action dans l’application.',
@@ -129,5 +140,43 @@ final class FarmAssistantService
         }
 
         return "La ferme compte actuellement {$snapshot['bandes_actives']} bande(s) active(s) et {$snapshot['effectif_actuel']} sujet(s). Posez une question sur la mortalité, les intrants, les visites sanitaires, les ventes, les créances ou les rapports pour obtenir une réponse ciblée.";
+    }
+
+    /** Répond aux échanges courants sans lancer prématurément une analyse de l'exploitation. */
+    private function socialAnswer(string $question): ?string
+    {
+        // Cette normalisation accepte les accents et la ponctuation sans multiplier les variantes à maintenir.
+        $message = Str::of($question)
+            ->lower()
+            ->ascii()
+            ->replaceMatches('/[^a-z0-9\s]/', ' ')
+            ->squish()
+            ->toString();
+
+        // Une question qui mentionne un sujet métier doit conserver le traitement analytique habituel.
+        $businessTerms = ['ferme', 'bande', 'poulet', 'stock', 'aliment', 'vitamine', 'mort', 'sante', 'veter', 'vente', 'creance', 'finance', 'rapport'];
+
+        if (Str::contains($message, $businessTerms)) {
+            return null;
+        }
+
+        // Les formules de politesse les plus courantes reçoivent une réponse adaptée au lieu d'un bilan automatique.
+        if (Str::startsWith($message, ['merci'])) {
+            return 'Avec plaisir. Je reste disponible si vous souhaitez discuter ou poser une question sur ABIWEIN.';
+        }
+
+        if (Str::contains($message, ['au revoir', 'a bientot', 'bonne journee', 'bonne soiree'])) {
+            return 'À bientôt. Je vous souhaite une excellente journée.';
+        }
+
+        if (Str::contains($message, ['comment vas tu', 'comment tu vas', 'comment allez vous', 'comment ca va', 'ca va', 'tu vas bien', 'vous allez bien'])) {
+            return 'Je vais bien, merci. Et vous, comment allez-vous ?';
+        }
+
+        if (in_array($message, ['salut', 'bonjour', 'bonsoir', 'coucou', 'hello', 'bjr'], true)) {
+            return 'Bonjour ! Comment allez-vous ? Je suis heureux de vous retrouver.';
+        }
+
+        return null;
     }
 }

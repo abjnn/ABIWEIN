@@ -29,6 +29,7 @@ final class ChatController extends Controller
             'messages' => $messages,
             'providerConfigured' => $assistant->providerIsConfigured(),
             'suggestions' => [
+                'Bonjour, comment vas-tu ?',
                 'Quel est l’état général de la ferme aujourd’hui ?',
                 'Quels intrants ont atteint leur seuil d’alerte ?',
                 'Analyse la mortalité des sept derniers jours.',
