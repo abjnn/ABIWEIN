@@ -12,7 +12,7 @@
             <p>Lecture technique, commerciale et financière construite à partir des opérations enregistrées.</p>
         </div>
         {{-- Ce bouton utilise la fonction d’impression du navigateur, sans transmettre de donnée. --}}
-        <button class="btn btn-private-secondary no-print" type="button" onclick="window.print()">Imprimer le rapport</button>
+        <button class="btn btn-private-secondary no-print" type="button" data-print-page>Imprimer le rapport</button>
     </section>
 
     {{-- FILTRE : modifier les deux champs change uniquement la période analysée. --}}

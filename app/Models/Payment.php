@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['sale_id', 'amount', 'paid_at', 'payment_method', 'reference', 'recorded_by'])]
 class Payment extends Model
 {
+    use Auditable;
+
     /** Le montant et la date utilisent des types adaptés aux calculs. */
     protected function casts(): array
     {

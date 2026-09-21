@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['product_id', 'type', 'quantity', 'occurred_at', 'reason', 'recorded_by'])]
 class StockMovement extends Model
 {
+    use Auditable;
+
     /** Types nécessaires aux calculs et à l’affichage. */
     protected function casts(): array
     {

@@ -55,12 +55,13 @@
                 {{-- Les deux champs suivants doivent correspondre avant tout enregistrement. --}}
                 <div class="col-md-6">
                     <label class="form-label" for="password">Mot de passe temporaire</label>
-                    <input class="form-control @error('password') is-invalid @enderror" id="password" name="password" type="password" minlength="10" autocomplete="new-password" required>
+                    <input class="form-control @error('password') is-invalid @enderror" id="password" name="password" type="password" minlength="12" autocomplete="new-password" aria-describedby="password-help" required>
+                    <div class="form-text" id="password-help">12 caractères minimum avec majuscule, minuscule, chiffre et symbole.</div>
                     @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-6">
                     <label class="form-label" for="password_confirmation">Confirmer le mot de passe</label>
-                    <input class="form-control" id="password_confirmation" name="password_confirmation" type="password" minlength="10" autocomplete="new-password" required>
+                    <input class="form-control" id="password_confirmation" name="password_confirmation" type="password" minlength="12" autocomplete="new-password" required>
                 </div>
 
                 {{-- Une case cochée permet au nouveau compte de se connecter immédiatement. --}}

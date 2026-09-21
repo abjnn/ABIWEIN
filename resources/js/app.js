@@ -7,6 +7,16 @@ import * as bootstrap from 'bootstrap';
 // Charge les graphiques uniquement lorsqu’une vue privée fournit une configuration.
 import './private-charts';
 
+// Charge le comportement du formulaire de vente sans script intégré dans la page HTML.
+import './sale-form';
+
+/** Relie les boutons d’impression sans autoriser de JavaScript intégré dans le HTML. */
+const initializePrintControls = () => {
+    document.querySelectorAll('[data-print-page]').forEach((button) => {
+        button.addEventListener('click', () => window.print());
+    });
+};
+
 /**
  * Referme le menu mobile après la sélection d'un lien.
  * MODIFICATION : changez le sélecteur uniquement si l'identifiant du menu
@@ -34,6 +44,8 @@ const closeMobileNavigation = () => {
 // Attend que le HTML existe avant de rechercher le menu.
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', closeMobileNavigation, { once: true });
+    document.addEventListener('DOMContentLoaded', initializePrintControls, { once: true });
 } else {
     closeMobileNavigation();
+    initializePrintControls();
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['reference', 'category', 'description', 'amount', 'spent_on', 'recorded_by'])]
 class Expense extends Model
 {
+    use Auditable;
+
     /** Préserve la précision monétaire et convertit la date. */
     protected function casts(): array
     {

@@ -19,7 +19,7 @@ class SaveExpenseRequest extends FormRequest
         return [
             'category' => ['required', 'string', 'max:80'],
             'description' => ['required', 'string', 'max:255'],
-            'amount' => ['required', 'numeric', 'gt:0'],
+            'amount' => ['required', 'numeric', 'decimal:0,2', 'gt:0', 'max:9999999999.99'],
             'spent_on' => ['required', 'date', 'before_or_equal:today'],
         ];
     }

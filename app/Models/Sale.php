@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['reference', 'client_id', 'sale_date', 'sale_type', 'payment_method', 'total_amount', 'paid_amount', 'balance_due', 'status', 'created_by'])]
 class Sale extends Model
 {
+    use Auditable;
+
     /** Les montants restent décimaux et la date devient un objet Carbon. */
     protected function casts(): array
     {

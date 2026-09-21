@@ -33,7 +33,7 @@
 
             {{-- Les anciennes valeurs sont réaffichées lorsque la validation refuse le formulaire. --}}
             @php($oldItems = old('items', [['product_id' => '', 'quantity' => 1, 'unit_price' => '']]))
-            <div class="vstack gap-3" id="sale-lines">
+            <div class="vstack gap-3" id="sale-lines" data-next-index="{{ count($oldItems) }}">
                 @foreach ($oldItems as $index => $oldItem)
                     <div class="border rounded-3 p-3" data-sale-line>
                         <div class="row g-3 align-items-end">
@@ -76,76 +76,4 @@
         </div>
     </template>
 
-    <script>
-        // SCRIPT DU FORMULAIRE : il ajoute les lignes et calcule uniquement l'aperçu, sans remplacer les contrôles PHP.
-        document.addEventListener('DOMContentLoaded', () => {
-            // Ces constantes ciblent les zones identifiées plus haut ; changez leurs id seulement aux deux endroits.
-            const linesContainer = document.getElementById('sale-lines');
-            const template = document.getElementById('sale-line-template');
-            const addButton = document.getElementById('add-sale-line');
-            const typeField = document.getElementById('sale_type');
-            const clientField = document.getElementById('client_id');
-            const paymentGroup = document.getElementById('initial-payment-group');
-            const paymentField = document.getElementById('initial_payment');
-            const grandTotal = document.getElementById('sale-grand-total');
-            let nextIndex = {{ count($oldItems) }};
-
-            // Ce formatage affiche les montants comme des francs CFA lisibles.
-            const formatMoney = (value) => `${new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 }).format(value)} FCFA`;
-
-            // Cette fonction additionne les aperçus de toutes les lignes visibles.
-            const updateGrandTotal = () => {
-                const total = [...linesContainer.querySelectorAll('[data-sale-line]')].reduce((sum, line) => {
-                    const quantity = Number(line.querySelector('[data-quantity]').value) || 0;
-                    const price = Number(line.querySelector('[data-price]').value) || 0;
-                    line.querySelector('[data-line-total]').textContent = formatMoney(quantity * price);
-                    return sum + (quantity * price);
-                }, 0);
-                grandTotal.textContent = formatMoney(total);
-            };
-
-            // Cette fonction connecte les calculs, l'indication du stock et le bouton Retirer d'une ligne.
-            const bindLine = (line) => {
-                const productField = line.querySelector('[data-product]');
-                const stockLabel = line.querySelector('[data-stock-label]');
-                const removeButton = line.querySelector('[data-remove-line]');
-
-                [line.querySelector('[data-quantity]'), line.querySelector('[data-price]')].forEach((field) => field.addEventListener('input', updateGrandTotal));
-                productField.addEventListener('change', () => {
-                    const option = productField.selectedOptions[0];
-                    stockLabel.textContent = option?.dataset.stock ? `Stock : ${option.dataset.stock} ${option.dataset.unit}` : 'Choisissez un produit pour voir le stock.';
-                });
-                productField.dispatchEvent(new Event('change'));
-                removeButton.addEventListener('click', () => {
-                    if (linesContainer.querySelectorAll('[data-sale-line]').length > 1) {
-                        line.remove();
-                        updateGrandTotal();
-                    }
-                });
-            };
-
-            // Le bouton ajoute une copie propre du modèle avec un index de formulaire unique.
-            addButton.addEventListener('click', () => {
-                const wrapper = document.createElement('div');
-                wrapper.innerHTML = template.innerHTML.replaceAll('__INDEX__', String(nextIndex++));
-                const newLine = wrapper.firstElementChild;
-                linesContainer.appendChild(newLine);
-                bindLine(newLine);
-                updateGrandTotal();
-            });
-
-            // Ce réglage rend le client obligatoire et le premier versement actif uniquement à crédit.
-            const updateSaleType = () => {
-                const isCredit = typeField.value === 'credit';
-                clientField.required = isCredit;
-                paymentField.disabled = !isCredit;
-                paymentGroup.classList.toggle('opacity-50', !isCredit);
-            };
-
-            linesContainer.querySelectorAll('[data-sale-line]').forEach(bindLine);
-            typeField.addEventListener('change', updateSaleType);
-            updateSaleType();
-            updateGrandTotal();
-        });
-    </script>
 @endsection

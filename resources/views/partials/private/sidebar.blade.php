@@ -24,6 +24,10 @@
                 <span class="private-nav__marker" aria-hidden="true"></span>
                 Vue d’ensemble
             </a>
+            <a class="private-nav__link {{ request()->routeIs('intelligence.*') ? 'active' : '' }}" href="{{ route('intelligence.demo') }}" @if(request()->routeIs('intelligence.*')) aria-current="page" @endif>
+                <span class="private-nav__marker" aria-hidden="true"></span>
+                Analyse intelligente
+            </a>
 
             {{-- Les rapports financiers restent limités aux rôles qui pilotent la ferme. --}}
             @if (auth()->user()->canManageOperations())
@@ -65,6 +69,10 @@
                 <a class="private-nav__link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}" @if(request()->routeIs('admin.users.*')) aria-current="page" @endif>
                     <span class="private-nav__marker" aria-hidden="true"></span>
                     Utilisateurs
+                </a>
+                <a class="private-nav__link {{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}" href="{{ route('admin.audit-logs.index') }}" @if(request()->routeIs('admin.audit-logs.*')) aria-current="page" @endif>
+                    <span class="private-nav__marker" aria-hidden="true"></span>
+                    Journal d’audit
                 </a>
             @endif
         </nav>

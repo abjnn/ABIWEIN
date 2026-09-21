@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 /** Valide la création d’un compte par un administrateur. */
 class StoreUserRequest extends FormRequest
@@ -22,7 +23,8 @@ class StoreUserRequest extends FormRequest
             'name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email:rfc', 'max:150', 'unique:users,email'],
             'role' => ['required', Rule::enum(UserRole::class)],
-            'password' => ['required', 'string', 'min:10', 'confirmed'],
+            // Cette règle exige un secret robuste sans l’envoyer vers un service extérieur.
+            'password' => ['required', 'string', Password::min(12)->mixedCase()->letters()->numbers()->symbols(), 'confirmed'],
             'is_active' => ['nullable', 'boolean'],
         ];
     }
@@ -38,7 +40,7 @@ class StoreUserRequest extends FormRequest
             'role.required' => 'Veuillez sélectionner un rôle.',
             'role.enum' => 'Le rôle sélectionné n’est pas autorisé.',
             'password.required' => 'Le mot de passe est obligatoire.',
-            'password.min' => 'Le mot de passe doit contenir au moins 10 caractères.',
+            'password.min' => 'Le mot de passe doit contenir au moins 12 caractères.',
             'password.confirmed' => 'La confirmation du mot de passe ne correspond pas.',
         ];
     }

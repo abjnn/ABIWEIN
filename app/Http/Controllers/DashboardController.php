@@ -75,12 +75,21 @@ class DashboardController extends Controller
             ? (float) Expense::query()->where('spent_on', '>=', $monthStart->toDateString())->sum('amount')
             : 0;
 
+        // Le vétérinaire reçoit seulement les alertes techniques, jamais celles provenant des stocks.
+        $openAlertsQuery = Alert::query()
+            ->where('status', 'open')
+            ->when(! $canViewFinancials, fn ($query) => $query
+                ->where(fn ($sourceQuery) => $sourceQuery
+                    ->whereNull('source_type')
+                    ->orWhere('source_type', '!=', Product::class))
+                ->where('type', 'not like', 'stock%'));
+
         return view('dashboard.index', [
             'activeFlocks' => $activeFlocks,
             'canViewFinancials' => $canViewFinancials,
             'totalBirds' => $activeFlocks->sum('current_quantity'),
-            'openAlertsCount' => Alert::query()->where('status', 'open')->count(),
-            'lowStockCount' => Product::query()->whereColumn('current_stock', '<=', 'alert_threshold')->count(),
+            'openAlertsCount' => (clone $openAlertsQuery)->count(),
+            'lowStockCount' => $canViewFinancials ? Product::query()->whereColumn('current_stock', '<=', 'alert_threshold')->count() : 0,
             'receivables' => $receivables,
             'cashThisMonth' => $cashThisMonth,
             'expensesThisMonth' => $expensesThisMonth,
@@ -88,7 +97,7 @@ class DashboardController extends Controller
             'financialTrend' => $financialTrend,
             'upcomingVisitsCount' => VeterinaryVisit::query()->whereDate('next_visit_date', '>=', today())->count(),
             'recentRecords' => DailyRecord::query()->with('flock')->latest('record_date')->limit(6)->get(),
-            'openAlerts' => Alert::query()->where('status', 'open')->latest()->limit(4)->get(),
+            'openAlerts' => $openAlertsQuery->latest()->limit(4)->get(),
         ]);
     }
 }

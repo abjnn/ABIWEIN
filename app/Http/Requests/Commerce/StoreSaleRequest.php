@@ -29,7 +29,7 @@ class StoreSaleRequest extends FormRequest
             ],
             'sale_date' => ['required', 'date', 'before_or_equal:today'],
             'sale_type' => ['required', Rule::in(['cash', 'credit'])],
-            'initial_payment' => ['nullable', 'numeric', 'min:0'],
+            'initial_payment' => ['nullable', 'numeric', 'decimal:0,2', 'min:0', 'max:9999999999.99'],
             'items' => ['required', 'array', 'min:1', 'max:50'],
             'items.*.product_id' => [
                 'required',
@@ -37,8 +37,8 @@ class StoreSaleRequest extends FormRequest
                 'distinct',
                 Rule::exists('products', 'id')->where(fn ($query) => $query->where('is_active', true)),
             ],
-            'items.*.quantity' => ['required', 'numeric', 'gt:0'],
-            'items.*.unit_price' => ['required', 'numeric', 'min:0'],
+            'items.*.quantity' => ['required', 'numeric', 'decimal:0,2', 'gt:0', 'max:9999999999.99'],
+            'items.*.unit_price' => ['required', 'numeric', 'decimal:0,2', 'min:0', 'max:9999999999.99'],
         ];
     }
 
@@ -55,6 +55,11 @@ class StoreSaleRequest extends FormRequest
             $total = collect($this->input('items', []))->sum(
                 fn (array $item): float => round((float) ($item['quantity'] ?? 0) * (float) ($item['unit_price'] ?? 0), 2)
             );
+
+            // La limite correspond à la colonne DECIMAL(12,2) utilisée par la base.
+            if ($total > 9999999999.99) {
+                $validator->errors()->add('items', 'Le montant total dépasse la limite autorisée.');
+            }
 
             // Cette erreur cible le champ visible du premier versement.
             if ((float) $this->input('initial_payment', 0) > $total) {

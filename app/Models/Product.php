@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['code', 'name', 'category', 'unit', 'current_stock', 'alert_threshold', 'expires_at', 'is_active'])]
 class Product extends Model
 {
-    use HasFactory;
+    use Auditable, HasFactory;
 
     /** Convertit les quantités, dates et états dans les bons types. */
     protected function casts(): array

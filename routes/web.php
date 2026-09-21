@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PublicSiteController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\AuditLogController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -51,11 +52,14 @@ Route::middleware(['auth', 'active'])->group(function (): void {
         Route::get('/utilisateurs/creer', [AdminUserController::class, 'create'])->name('users.create');
         Route::post('/utilisateurs', [AdminUserController::class, 'store'])->name('users.store');
         Route::patch('/utilisateurs/{user}/statut', [AdminUserController::class, 'toggleStatus'])->name('users.toggle-status');
+        // Le journal est consultatif et strictement réservé à l’administrateur.
+        Route::get('/journal-audit', [AuditLogController::class, 'index'])->name('audit-logs.index');
     });
 });
 
 /* Les modules métier conservent leurs routes dans des fichiers séparés. */
 require __DIR__.'/commerce.php';
 require __DIR__.'/health.php';
+require __DIR__.'/intelligence.php';
 require __DIR__.'/reports.php';
 require __DIR__.'/stocks.php';

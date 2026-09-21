@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AddSecurityHeaders;
 use App\Http\Middleware\EnsureAccountIsActive;
 use App\Http\Middleware\EnsureUserHasRole;
 use Illuminate\Foundation\Application;
@@ -13,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Cette protection ajoute les en-têtes de sécurité à toutes les réponses web.
+        $middleware->web(append: [AddSecurityHeaders::class]);
+
         // Les alias gardent les routes lisibles tout en centralisant les contrôles d’accès.
         $middleware->alias([
             'active' => EnsureAccountIsActive::class,
