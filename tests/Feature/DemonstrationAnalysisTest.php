@@ -3,36 +3,17 @@
 namespace Tests\Feature;
 
 use App\Enums\UserRole;
-use App\Models\DailyRecord;
-use App\Models\Flock;
+use App\Models\AiMessage;
 use App\Models\Product;
-use App\Models\Sale;
 use App\Models\User;
-use App\Models\VeterinaryVisit;
-use App\Services\Intelligence\FarmDemonstrationAnalysisService;
-use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
-/** Vérifie le mode d'analyse local, ses règles et sa confidentialité. */
+/** Vérifie la conversation IA, son repli local et ses autorisations. */
 class DemonstrationAnalysisTest extends TestCase
 {
     use RefreshDatabase;
-
-    /** Charge la route isolée tant que son intégration à web.php reste volontairement manuelle. */
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        if (! Route::has('intelligence.demo')) {
-            Route::middleware('web')->group(base_path('routes/intelligence.php'));
-            Route::getRoutes()->refreshNameLookups();
-            Route::getRoutes()->refreshActionLookups();
-        }
-    }
 
     /** Un visiteur doit d'abord ouvrir une session valide. */
     public function test_guest_is_redirected_to_login(): void
@@ -40,166 +21,128 @@ class DemonstrationAnalysisTest extends TestCase
         $this->get(route('intelligence.demo'))->assertRedirect(route('login'));
     }
 
-    /** Les trois rôles actifs disposent de la page d'aide à la décision. */
-    public function test_every_active_role_can_view_the_local_analysis(): void
+    /** L'administrateur et le responsable voient le chat, jamais le vétérinaire. */
+    public function test_only_administrator_and_manager_can_use_the_assistant(): void
     {
-        foreach (UserRole::cases() as $role) {
+        foreach ([UserRole::Administrator, UserRole::FarmManager] as $role) {
             $user = User::factory()->create(['role' => $role, 'is_active' => true]);
 
-            $response = $this->actingAs($user)
+            $this->actingAs($user)
                 ->get(route('intelligence.demo'))
                 ->assertOk()
-                ->assertSeeText('Démonstration locale')
-                ->assertSeeText('Validation humaine obligatoire');
-
-            // Les deux rôles de pilotage voient le domaine financier, jamais le vétérinaire.
-            if ($role === UserRole::Veterinarian) {
-                $response->assertDontSeeText('Créances clients');
-            } else {
-                $response->assertSeeText('Créances clients');
-            }
+                ->assertSeeText('Discutez avec les données de l’exploitation')
+                ->assertSeeText('Exemples de demandes');
         }
-    }
 
-    /** Le middleware commun conserve le refus des comptes désactivés. */
-    public function test_inactive_account_cannot_view_the_analysis(): void
-    {
-        $inactiveUser = User::factory()->inactive()->create();
-
-        $this->actingAs($inactiveUser)
-            ->get(route('intelligence.demo'))
-            ->assertRedirect(route('login'));
-    }
-
-    /** Les règles produisent deux fois le même résultat à partir des mêmes données. */
-    public function test_service_uses_real_farm_data_with_deterministic_rules(): void
-    {
-        $this->travelTo(CarbonImmutable::parse('2026-09-21 10:00:00'));
-
-        $administrator = User::factory()->administrator()->create();
         $veterinarian = User::factory()->veterinarian()->create();
 
+        $this->actingAs($veterinarian)
+            ->get(route('intelligence.demo'))
+            ->assertForbidden();
+        $this->actingAs($veterinarian)
+            ->post(route('intelligence.messages.store'), ['message' => 'Analyse la ferme'])
+            ->assertForbidden();
+    }
+
+    /** Sans clé, une réponse locale factuelle est enregistrée sans aucun réseau. */
+    public function test_local_fallback_answers_and_persists_a_private_conversation(): void
+    {
+        config()->set('services.gemini.key', null);
+        Http::fake();
+        $manager = User::factory()->create(['role' => UserRole::FarmManager]);
         Product::query()->create([
-            'code' => 'TEST-EXPIRE',
-            'name' => 'Produit expiré',
-            'category' => 'health',
-            'unit' => 'unit',
-            'current_stock' => 0,
-            'alert_threshold' => 5,
-            'expires_at' => today()->subDay(),
-            'is_active' => true,
-        ]);
-        Product::query()->create([
-            'code' => 'TEST-STABLE',
-            'name' => 'Aliment disponible',
+            'code' => 'ALIM-TEST',
+            'name' => 'Aliment démarrage',
             'category' => 'feed',
             'unit' => 'kg',
-            'current_stock' => 50,
+            'current_stock' => 5,
             'alert_threshold' => 10,
-            'expires_at' => today()->addMonths(3),
             'is_active' => true,
         ]);
 
-        $flock = Flock::factory()->create([
-            'code' => 'BND-TEST-IA',
-            'initial_quantity' => 100,
-            'current_quantity' => 96,
-            'status' => 'active',
-        ]);
-        DailyRecord::factory()->create([
-            'flock_id' => $flock->id,
-            'record_date' => today(),
-            'mortality' => 4,
-            'health_status' => 'watch',
-            'recorded_by' => $administrator->id,
-        ]);
-        VeterinaryVisit::factory()->create([
-            'flock_id' => $flock->id,
-            'veterinarian_id' => $veterinarian->id,
-            'visit_date' => today()->subDays(5),
-            'next_visit_date' => today()->subDay(),
-        ]);
-        Sale::query()->create([
-            'reference' => 'VTE-IA-001',
-            'client_id' => null,
-            'sale_date' => today()->subDays(40),
-            'sale_type' => 'credit',
-            'payment_method' => 'cash',
-            'total_amount' => 1200000,
-            'paid_amount' => 200000,
-            'balance_due' => 1000000,
-            'status' => 'partial',
-            'created_by' => $administrator->id,
-        ]);
+        $this->actingAs($manager)
+            ->post(route('intelligence.messages.store'), ['message' => 'Quel est le stock d’aliment ?'])
+            ->assertRedirect(route('intelligence.demo'));
 
-        $service = app(FarmDemonstrationAnalysisService::class);
-        $firstResult = $service->analyzeFor($administrator);
-        $secondResult = $service->analyzeFor($administrator);
-
-        $this->assertEquals($firstResult, $secondResult);
-        $analyses = collect($firstResult['analyses'])->keyBy('domain');
-        $this->assertSame('critical', $analyses['stocks']['level']);
-        $this->assertSame('1', $analyses['stocks']['evidence']['Produits expirés']);
-        $this->assertSame('critical', $analyses['mortality_monitoring']['level']);
-        $this->assertSame('4,00 %', $analyses['mortality_monitoring']['evidence']['Taux sur effectif initial']);
-        $this->assertSame('critical', $analyses['sanitary']['level']);
-        $this->assertSame('1 000 000 FCFA', $analyses['receivables']['evidence']['Solde à recouvrer']);
-
-        // Le faux client HTTP rend tout appel réseau visible et prouve que la page reste locale.
-        Http::fake();
-        $this->actingAs($administrator)
+        $this->assertDatabaseHas('ai_messages', [
+            'user_id' => $manager->id,
+            'role' => 'assistant',
+            'provider' => 'local',
+        ]);
+        $this->actingAs($manager)
             ->get(route('intelligence.demo'))
             ->assertOk()
-            ->assertSeeText('produit(s) expiré(s)')
-            ->assertSeeText('Créances clients');
+            ->assertSeeText('Quel est le stock d’aliment ?')
+            ->assertSeeText('1 intrant(s) actif(s)')
+            ->assertSeeText('Réponse locale');
         Http::assertNothingSent();
     }
 
-    /**
-     * Le vétérinaire ne reçoit aucune créance et le service ne consulte même
-     * pas la table des ventes pour construire sa réponse.
-     */
-    public function test_veterinarian_never_receives_or_queries_financial_data(): void
+    /** Avec une clé, la requête Gemini n'emporte que des agrégats contrôlés. */
+    public function test_configured_gemini_provider_is_called_without_personal_data(): void
     {
-        $veterinarian = User::factory()->veterinarian()->create();
-        $manager = User::factory()->create(['role' => UserRole::FarmManager]);
-
-        Sale::query()->create([
-            'reference' => 'VTE-PRIVEE-001',
-            'client_id' => null,
-            'sale_date' => today()->subDays(45),
-            'sale_type' => 'credit',
-            'payment_method' => 'cash',
-            'total_amount' => 987654,
-            'paid_amount' => 0,
-            'balance_due' => 987654,
-            'status' => 'unpaid',
-            'created_by' => $manager->id,
+        config()->set('services.gemini.key', 'test-secret-key');
+        config()->set('services.gemini.model', 'gemini-test');
+        $administrator = User::factory()->administrator()->create([
+            'name' => 'Nom Confidentiel',
+            'email' => 'secret@example.com',
         ]);
 
-        $executedQueries = [];
-        DB::listen(function ($query) use (&$executedQueries): void {
-            $executedQueries[] = strtolower($query->sql);
+        Http::fake([
+            '*' => Http::response([
+                'candidates' => [[
+                    'content' => ['parts' => [['text' => 'Voici la synthèse demandée.']]],
+                ]],
+            ]),
+        ]);
+
+        $this->actingAs($administrator)
+            ->post(route('intelligence.messages.store'), ['message' => 'Donne la synthèse générale.'])
+            ->assertRedirect(route('intelligence.demo'));
+
+        $this->assertDatabaseHas('ai_messages', [
+            'user_id' => $administrator->id,
+            'role' => 'assistant',
+            'provider' => 'gemini',
+            'content' => 'Voici la synthèse demandée.',
+        ]);
+        Http::assertSent(function ($request): bool {
+            $body = $request->body();
+
+            return str_contains($request->url(), '/models/gemini-test:generateContent')
+                && $request->hasHeader('x-goog-api-key', 'test-secret-key')
+                && str_contains($body, 'bandes_actives')
+                && ! str_contains($body, 'Nom Confidentiel')
+                && ! str_contains($body, 'secret@example.com');
         });
+    }
 
-        $response = $this->actingAs($veterinarian)->get(route('intelligence.demo'));
-        $serviceResult = app(FarmDemonstrationAnalysisService::class)->analyzeFor($veterinarian);
+    /** Chaque compte voit et efface uniquement son propre historique. */
+    public function test_conversations_are_isolated_and_clear_is_scoped_to_current_user(): void
+    {
+        $administrator = User::factory()->administrator()->create();
+        $manager = User::factory()->create(['role' => UserRole::FarmManager]);
+        AiMessage::query()->create([
+            'user_id' => $administrator->id,
+            'role' => 'user',
+            'content' => 'Question privée administrateur',
+        ]);
+        AiMessage::query()->create([
+            'user_id' => $manager->id,
+            'role' => 'user',
+            'content' => 'Question privée responsable',
+        ]);
 
-        $response->assertOk()
-            ->assertDontSeeText('Créances clients')
-            ->assertDontSee('987 654')
-            ->assertDontSee('FCFA')
-            ->assertSeeText('Domaines analysés')
-            ->assertSeeText('2');
-        $this->assertFalse($serviceResult['includes_financial_data']);
-        $this->assertNotContains('receivables', collect($serviceResult['analyses'])->pluck('domain')->all());
-        $this->assertFalse(
-            collect($executedQueries)->contains(fn (string $sql): bool => str_contains($sql, 'sales')),
-            'La table sales ne doit pas être interrogée pour un vétérinaire.'
-        );
-        $this->assertFalse(
-            collect($executedQueries)->contains(fn (string $sql): bool => str_contains($sql, 'products')),
-            'La table products ne doit pas être interrogée pour un vétérinaire.'
-        );
+        $this->actingAs($administrator)
+            ->get(route('intelligence.demo'))
+            ->assertSeeText('Question privée administrateur')
+            ->assertDontSeeText('Question privée responsable');
+
+        $this->actingAs($administrator)
+            ->delete(route('intelligence.conversation.destroy'))
+            ->assertRedirect(route('intelligence.demo'));
+
+        $this->assertDatabaseMissing('ai_messages', ['user_id' => $administrator->id]);
+        $this->assertDatabaseHas('ai_messages', ['user_id' => $manager->id]);
     }
 }

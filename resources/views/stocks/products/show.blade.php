@@ -20,9 +20,11 @@
         </div>
         <div class="d-flex flex-wrap gap-2">
             <a class="btn btn-private-secondary" href="{{ route('stocks.index') }}">Retour aux stocks</a>
-            <a class="btn btn-private-secondary" href="{{ route('stocks.edit', $product) }}">Modifier</a>
-            @if ($product->is_active)
-                <a class="btn btn-private-primary" href="{{ route('stocks.movements.create', ['product' => $product->id]) }}">Nouveau mouvement</a>
+            @if (auth()->user()->isFarmManager())
+                <a class="btn btn-private-secondary" href="{{ route('stocks.edit', $product) }}">Modifier</a>
+                @if ($product->is_active)
+                    <a class="btn btn-private-primary" href="{{ route('stocks.movements.create', ['product' => $product->id]) }}">Nouveau mouvement</a>
+                @endif
             @endif
         </div>
     </section>
@@ -35,22 +37,24 @@
     @endif
 
     {{-- INDICATEURS : résument le niveau disponible et les limites définies. --}}
-    <section class="private-stats" aria-label="Indicateurs du produit">
-        <x-private.stat-card label="Stock disponible" :value="number_format((float) $product->current_stock, 2, ',', ' ').' '.$product->unit" detail="Quantité théorique actuelle" :tone="$isLow ? 'alert' : 'default'" />
-        <x-private.stat-card label="Seuil d’alerte" :value="number_format((float) $product->alert_threshold, 2, ',', ' ').' '.$product->unit" detail="Alerte sous cette limite" />
-        <x-private.stat-card label="Date d’expiration" :value="$product->expires_at?->format('d/m/Y') ?? 'Non applicable'" detail="Échéance déclarée" :tone="$isExpired ? 'alert' : 'default'" />
-        <x-private.stat-card label="État" :value="$product->is_active ? 'Actif' : 'Inactif'" detail="Disponibilité dans les formulaires" />
-    </section>
+    <dl class="private-summary-strip" aria-label="Indicateurs de l'intrant">
+        <div><dt>Disponible</dt><dd>{{ number_format((float) $product->current_stock, 2, ',', ' ') }} {{ $product->unit }}</dd></div>
+        <div><dt>Seuil</dt><dd>{{ number_format((float) $product->alert_threshold, 2, ',', ' ') }} {{ $product->unit }}</dd></div>
+        <div><dt>Expiration</dt><dd>{{ $product->expires_at?->format('d/m/Y') ?? 'Non applicable' }}</dd></div>
+        <div><dt>État</dt><dd>{{ $product->is_active ? 'Actif' : 'Inactif' }}</dd></div>
+    </dl>
 
     {{-- INFORMATIONS : l’activation est réversible et n’efface jamais les mouvements existants. --}}
     <section class="private-panel mb-3" aria-labelledby="product-information-title">
         <div class="private-panel__header">
             <div><p class="private-kicker">Paramètres</p><h2 id="product-information-title">Informations du produit</h2></div>
-            <form method="POST" action="{{ route('stocks.toggle-status', $product) }}">
-                @csrf
-                @method('PATCH')
-                <button class="btn btn-sm btn-private-secondary" type="submit">{{ $product->is_active ? 'Désactiver' : 'Réactiver' }}</button>
-            </form>
+            @if (auth()->user()->isFarmManager())
+                <form method="POST" action="{{ route('stocks.toggle-status', $product) }}">
+                    @csrf
+                    @method('PATCH')
+                    <button class="btn btn-sm btn-private-secondary" type="submit">{{ $product->is_active ? 'Désactiver' : 'Réactiver' }}</button>
+                </form>
+            @endif
         </div>
         <div class="p-4">
             <dl class="row mb-0">

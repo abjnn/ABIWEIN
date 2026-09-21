@@ -21,7 +21,7 @@ class DashboardController extends Controller
     public function __invoke(Request $request): View
     {
         // Le vétérinaire conserve une vue technique sans charger les données financières sensibles.
-        $canViewFinancials = $request->user()->canManageOperations();
+        $canViewFinancials = $request->user()->canViewOperations();
 
         // Les bandes actives alimentent les deux premiers indicateurs.
         $activeFlocks = Flock::query()

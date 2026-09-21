@@ -2,16 +2,17 @@
 
 namespace App\Http\Requests\Commerce;
 
+use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /** Valide les informations d'un client lors de la création ou de la modification. */
 class SaveClientRequest extends FormRequest
 {
-    /** Les routes du module appliquent déjà les rôles autorisés. */
+    /** Seul le responsable d'exploitation modifie le répertoire commercial. */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->hasRole(UserRole::FarmManager) ?? false;
     }
 
     /**

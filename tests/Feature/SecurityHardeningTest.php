@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\User;
 use Database\Seeders\DemoUserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use LogicException;
 use Tests\TestCase;
 
@@ -55,6 +56,24 @@ class SecurityHardeningTest extends TestCase
             ->assertSessionHasErrors('password');
     }
 
+    /** Deux personnes ne peuvent pas recevoir le même mot de passe, même si son empreinte est salée. */
+    public function test_existing_user_password_cannot_be_reused_for_new_account(): void
+    {
+        $administrator = User::factory()->administrator()->create();
+        User::factory()->create(['password' => Hash::make('Secret#Partage2026!')]);
+
+        $this->actingAs($administrator)
+            ->post(route('admin.users.store'), [
+                'name' => 'Nouveau responsable',
+                'email' => 'nouveau.responsable.abiwein@gmail.com',
+                'role' => 'farm_manager',
+                'password' => 'Secret#Partage2026!',
+                'password_confirmation' => 'Secret#Partage2026!',
+                'is_active' => true,
+            ])
+            ->assertSessionHasErrors('password');
+    }
+
     /** Les comptes connus de démonstration restent impossibles à créer en production. */
     public function test_demo_user_seeder_refuses_production(): void
     {
@@ -62,6 +81,20 @@ class SecurityHardeningTest extends TestCase
 
         $this->expectException(LogicException::class);
         (new DemoUserSeeder)->run();
+    }
+
+    /** Le jeu de démonstration utilise trois identités et trois secrets réellement distincts. */
+    public function test_demo_user_seeder_creates_distinct_local_credentials(): void
+    {
+        (new DemoUserSeeder)->run();
+
+        $accounts = User::query()->orderBy('email')->get();
+
+        $this->assertCount(3, $accounts);
+        $this->assertSame(3, $accounts->pluck('email')->unique()->count());
+        $this->assertTrue(Hash::check('Nadege#Abiwein26!', $accounts->firstWhere('email', 'nadege.nkomo@abiwein.local')->password));
+        $this->assertTrue(Hash::check('Ferme#Tchoumi26!', $accounts->firstWhere('email', 'alain.tchoumi@abiwein.local')->password));
+        $this->assertTrue(Hash::check('Sante#Ngono2026!', $accounts->firstWhere('email', 'mireille.ngono@abiwein.local')->password));
     }
 
     /** Le tableau vétérinaire ne doit révéler ni titre ni quantité provenant des stocks. */

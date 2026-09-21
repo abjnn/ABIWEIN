@@ -11,19 +11,21 @@
             <h2 id="commerce-title">Ventes et trésorerie</h2>
             <p>Suivez les ventes, les encaissements en espèces, les créances clients et les dépenses de la ferme.</p>
         </div>
-        {{-- MODIFICATION : ce bouton conduit au formulaire qui crée une nouvelle vente. --}}
-        <a class="btn btn-private-primary" href="{{ route('sales.create') }}">Enregistrer une vente</a>
+        {{-- Seul le responsable voit l'action d'écriture ; l'administrateur reste en supervision. --}}
+        @if (auth()->user()->isFarmManager())
+            <a class="btn btn-private-primary" href="{{ route('sales.create') }}">Enregistrer une vente</a>
+        @endif
     </section>
 
     @include('commerce._navigation')
 
-    {{-- INDICATEURS : chaque montant provient directement des enregistrements financiers. --}}
-    <section class="private-stats" aria-label="Indicateurs commerciaux">
-        <article class="private-stat"><p>Chiffre d'affaires</p><strong>{{ number_format($salesTotal, 0, ',', ' ') }} FCFA</strong><small>Total des ventes enregistrées</small></article>
-        <article class="private-stat"><p>Espèces encaissées</p><strong>{{ number_format($cashCollected, 0, ',', ' ') }} FCFA</strong><small>Paiements reçus</small></article>
-        <article class="private-stat private-stat--alert"><p>Créances clients</p><strong>{{ number_format($receivables, 0, ',', ' ') }} FCFA</strong><small>Montant encore attendu</small></article>
-        <article class="private-stat"><p>Solde de trésorerie</p><strong>{{ number_format($netCash, 0, ',', ' ') }} FCFA</strong><small>Encaissements moins {{ number_format($expensesTotal, 0, ',', ' ') }} FCFA de dépenses</small></article>
-    </section>
+    {{-- INDICATEURS : la ligne compacte évite quatre grandes cartes sans perdre d'information. --}}
+    <dl class="private-summary-strip" aria-label="Indicateurs commerciaux">
+        <div><dt>Chiffre d'affaires</dt><dd>{{ number_format($salesTotal, 0, ',', ' ') }} FCFA</dd></div>
+        <div><dt>Espèces encaissées</dt><dd>{{ number_format($cashCollected, 0, ',', ' ') }} FCFA</dd></div>
+        <div><dt>Créances</dt><dd>{{ number_format($receivables, 0, ',', ' ') }} FCFA</dd></div>
+        <div><dt>Solde de trésorerie</dt><dd>{{ number_format($netCash, 0, ',', ' ') }} FCFA</dd></div>
+    </dl>
 
     {{-- TABLEAU : donne un accès direct aux dernières opérations commerciales. --}}
     <section class="private-panel" aria-labelledby="recent-sales-title">

@@ -12,8 +12,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-// MODIFICATION : ajoutez ici uniquement les champs qu’un formulaire peut remplir.
-#[Fillable(['name', 'email', 'password', 'role', 'is_active', 'last_login_at'])]
+// Seules les données d'identité ordinaires sont assignables en masse.
+// Le rôle, l'état et la dernière connexion sont toujours affectés explicitement.
+#[Fillable(['name', 'email', 'password'])]
 // Les informations sensibles ne doivent jamais apparaître dans une réponse sérialisée.
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
@@ -51,11 +52,35 @@ class User extends Authenticatable
         return $this->hasRole(UserRole::Administrator);
     }
 
-    /** Indique si le compte peut gérer les stocks, ventes, finances et rapports. */
+    /** Indique si le compte réalise les opérations quotidiennes de la ferme. */
     public function canManageOperations(): bool
     {
-        // MODIFICATION : ajoutez ici un rôle seulement s’il doit accéder aux données commerciales.
-        return in_array($this->role, [UserRole::Administrator, UserRole::FarmManager], true);
+        // L'administrateur supervise les données mais ne les modifie jamais.
+        return $this->isFarmManager();
+    }
+
+    /** Raccourci utilisé pour les boutons et routes du responsable d'exploitation. */
+    public function isFarmManager(): bool
+    {
+        return $this->hasRole(UserRole::FarmManager);
+    }
+
+    /** Raccourci utilisé pour les écrans sanitaires réservés au vétérinaire. */
+    public function isVeterinarian(): bool
+    {
+        return $this->hasRole(UserRole::Veterinarian);
+    }
+
+    /** L'administrateur et le responsable peuvent consulter les données opérationnelles. */
+    public function canViewOperations(): bool
+    {
+        return $this->isAdministrator() || $this->isFarmManager();
+    }
+
+    /** L'assistant décisionnel est volontairement exclu de l'espace vétérinaire. */
+    public function canUseIntelligence(): bool
+    {
+        return $this->isAdministrator() || $this->isFarmManager();
     }
 
     /** Retourne les relevés quotidiens créés par cet utilisateur. */

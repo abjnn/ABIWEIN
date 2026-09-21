@@ -7,7 +7,9 @@
     {{-- EN-TÊTE : ouvre le formulaire d'une vente au comptant ou à crédit. --}}
     <section class="private-intro private-intro--compact" aria-labelledby="sales-title">
         <div><p class="private-kicker">Gestion commerciale</p><h2 id="sales-title">Journal des ventes</h2><p>Consultez chaque vente, son mode, les espèces encaissées et son solde restant.</p></div>
-        <a class="btn btn-private-primary" href="{{ route('sales.create') }}">Nouvelle vente</a>
+        @if (auth()->user()->isFarmManager())
+            <a class="btn btn-private-primary" href="{{ route('sales.create') }}">Nouvelle vente</a>
+        @endif
     </section>
 
     @include('commerce._navigation')

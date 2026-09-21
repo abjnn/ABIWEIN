@@ -1,111 +1,93 @@
 @extends('layouts.private')
 
 @section('title', 'Rapports')
-@section('page_title', 'Tableaux de bord et rapports')
+@section('page_title', 'Rapports administratifs')
 
 @section('content')
-    {{-- EN-TÊTE : présente la période et offre une impression propre du rapport courant. --}}
+    {{-- L'en-tête explique l'archive ; seul le responsable voit l'action de génération. --}}
     <section class="private-intro private-intro--compact" aria-labelledby="reports-title">
         <div>
-            <p class="private-kicker">Analyse consolidée</p>
-            <h2 id="reports-title">Rapport de l’exploitation</h2>
-            <p>Lecture technique, commerciale et financière construite à partir des opérations enregistrées.</p>
+            <p class="private-kicker">Registre officiel</p>
+            <h2 id="reports-title">Rapports de l’exploitation</h2>
+            <p>Chaque document conserve les données telles qu’elles existaient au moment de sa génération.</p>
         </div>
-        {{-- Ce bouton utilise la fonction d’impression du navigateur, sans transmettre de donnée. --}}
-        <button class="btn btn-private-secondary no-print" type="button" data-print-page>Imprimer le rapport</button>
+        @if ($canGenerate)
+            <a class="btn btn-private-primary" href="{{ route('reports.create') }}">Générer un rapport</a>
+        @endif
     </section>
 
-    {{-- FILTRE : modifier les deux champs change uniquement la période analysée. --}}
-    <form class="private-filter no-print" method="GET" action="{{ route('reports.index') }}">
+    {{-- Les filtres portent sur la date officielle et le type du document archivé. --}}
+    <form class="private-filter" method="GET" action="{{ route('reports.index') }}">
         <div>
-            <label class="form-label" for="date-from">Du</label>
-            <input class="form-control" id="date-from" name="date_from" type="date" value="{{ old('date_from', $dateFrom->toDateString()) }}">
+            <label class="form-label" for="report-date-from">Du</label>
+            <input class="form-control" id="report-date-from" name="date_from" type="date" value="{{ $filters['date_from'] ?? '' }}">
         </div>
         <div>
-            <label class="form-label" for="date-to">Au</label>
-            <input class="form-control" id="date-to" name="date_to" type="date" value="{{ old('date_to', $dateTo->toDateString()) }}">
+            <label class="form-label" for="report-date-to">Au</label>
+            <input class="form-control" id="report-date-to" name="date_to" type="date" value="{{ $filters['date_to'] ?? '' }}">
         </div>
-        <button class="btn btn-private-primary" type="submit">Actualiser</button>
+        <div>
+            <label class="form-label" for="report-type">Type</label>
+            <select class="form-select" id="report-type" name="type">
+                <option value="">Tous les rapports</option>
+                @foreach ($types as $value => $label)
+                    <option value="{{ $value }}" @selected(($filters['type'] ?? '') === $value)>{{ $label }}</option>
+                @endforeach
+            </select>
+        </div>
+        <button class="btn btn-private-primary" type="submit">Filtrer</button>
+        <a class="btn btn-private-secondary" href="{{ route('reports.index') }}">Réinitialiser</a>
     </form>
 
-    {{-- INDICATEURS : chaque montant provient du ReportController et non d’un texte statique. --}}
-    <section class="private-stats private-stats--six" aria-label="Synthèse financière">
-        <x-private.stat-card label="Chiffre d’affaires" :value="number_format($totalSales, 0, ',', ' ').' FCFA'" detail="Ventes non annulées" />
-        <x-private.stat-card label="Espèces encaissées" :value="number_format($cashCollected, 0, ',', ' ').' FCFA'" detail="Paiements de la période" />
-        <x-private.stat-card label="Dépenses" :value="number_format($totalExpenses, 0, ',', ' ').' FCFA'" detail="Sorties enregistrées" />
-        <x-private.stat-card label="Solde de trésorerie" :value="number_format($netCash, 0, ',', ' ').' FCFA'" detail="Encaissements moins dépenses" :tone="$netCash < 0 ? 'alert' : 'default'" />
-        <x-private.stat-card label="Créances" :value="number_format($receivables, 0, ',', ' ').' FCFA'" detail="Reste à recouvrer" :tone="$receivables > 0 ? 'alert' : 'default'" />
-        <x-private.stat-card label="Mortalité relevée" :value="number_format($totalMortality, 0, ',', ' ')" :detail="number_format($totalFeed, 0, ',', ' ').' kg d’aliment suivis'" />
-    </section>
-
-    {{-- GRAPHIQUES : les canevas restent accompagnés de titres et tableaux accessibles. --}}
-    <div class="private-grid private-grid--charts">
-        <section class="private-panel private-chart-panel" aria-labelledby="financial-chart-title">
-            <div class="private-panel__header">
-                <div><p class="private-kicker">Évolution</p><h2 id="financial-chart-title">Ventes et dépenses</h2></div>
-            </div>
-            <div class="private-chart"><canvas id="reportFinancialChart" aria-label="Graphique des ventes et dépenses"></canvas></div>
-        </section>
-
-        <section class="private-panel private-chart-panel" aria-labelledby="sales-type-title">
-            <div class="private-panel__header">
-                <div><p class="private-kicker">Répartition</p><h2 id="sales-type-title">Comptant et crédit</h2></div>
-            </div>
-            <div class="private-chart"><canvas id="reportSalesTypeChart" aria-label="Répartition des ventes au comptant et à crédit"></canvas></div>
-        </section>
-    </div>
-
-    {{-- TABLEAU : cette partie constitue le détail imprimable des dernières ventes de la période. --}}
-    <section class="private-panel" aria-labelledby="report-sales-title">
+    {{-- Une seule table compacte remplace les cartes et graphiques qui gaspillaient l'espace. --}}
+    <section class="private-panel" aria-labelledby="reports-list-title">
         <div class="private-panel__header">
-            <div><p class="private-kicker">Détail</p><h2 id="report-sales-title">Ventes de la période</h2></div>
-            <span>{{ $sales->count() }} opération(s)</span>
+            <div>
+                <p class="private-kicker">Classement chronologique</p>
+                <h2 id="reports-list-title">Documents disponibles</h2>
+            </div>
+            <span>{{ $reports->total() }} rapport(s)</span>
         </div>
+
         <div class="table-responsive">
             <table class="table private-table align-middle">
-                <thead><tr><th>Date</th><th>Référence</th><th>Client</th><th>Type</th><th class="text-end">Total</th><th class="text-end">Reste</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Référence</th>
+                        <th>Type et objet</th>
+                        <th>Période couverte</th>
+                        <th>Établi par</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
                 <tbody>
-                    @forelse ($sales as $sale)
+                    @forelse ($reports as $report)
                         <tr>
-                            <td>{{ $sale->sale_date->format('d/m/Y') }}</td>
-                            <td><strong>{{ $sale->reference }}</strong></td>
-                            <td>{{ $sale->client?->name ?? 'Client de passage' }}</td>
-                            <td>{{ $sale->sale_type === 'credit' ? 'Crédit' : 'Comptant' }}</td>
-                            <td class="text-end">{{ number_format((float) $sale->total_amount, 0, ',', ' ') }} FCFA</td>
-                            <td class="text-end">{{ number_format((float) $sale->balance_due, 0, ',', ' ') }} FCFA</td>
+                            <td>{{ $report->report_date->format('d/m/Y') }}</td>
+                            <td><strong>{{ $report->reference }}</strong></td>
+                            <td>
+                                <span class="d-block">{{ $report->typeLabel() }}</span>
+                                <small>{{ $report->title }}</small>
+                            </td>
+                            <td>{{ $report->period_start->format('d/m/Y') }} au {{ $report->period_end->format('d/m/Y') }}</td>
+                            <td>{{ $report->generator?->name ?? 'Compte supprimé' }}</td>
+                            <td class="text-end text-nowrap">
+                                <a class="btn btn-sm btn-private-secondary" href="{{ route('reports.show', $report) }}">Consulter</a>
+                                <a class="btn btn-sm btn-private-primary" href="{{ route('reports.pdf', $report) }}">PDF</a>
+                            </td>
                         </tr>
                     @empty
-                        <tr><td class="private-empty" colspan="6">Aucune vente sur cette période.</td></tr>
+                        <tr>
+                            <td class="private-empty" colspan="6">Aucun rapport ne correspond aux critères choisis.</td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
+
+        @if ($reports->hasPages())
+            <div class="mt-3">{{ $reports->links() }}</div>
+        @endif
     </section>
-
-    {{-- CONFIGURATION : ce JSON relie les montants du contrôleur au premier graphique. --}}
-    <script type="application/json" data-chart-config data-target="reportFinancialChart">
-        {!! Illuminate\Support\Js::encode([
-            'type' => 'bar',
-            'currency' => true,
-            'data' => [
-                'labels' => $financialChart['labels'],
-                'datasets' => [
-                    ['label' => 'Ventes', 'data' => $financialChart['sales'], 'backgroundColor' => '#31380F', 'borderRadius' => 5],
-                    ['label' => 'Dépenses', 'data' => $financialChart['expenses'], 'backgroundColor' => '#C7AF97', 'borderRadius' => 5],
-                ],
-            ],
-        ]) !!}
-    </script>
-
-    {{-- CONFIGURATION : ce second JSON crée le graphique circulaire comptant/crédit. --}}
-    <script type="application/json" data-chart-config data-target="reportSalesTypeChart">
-        {!! Illuminate\Support\Js::encode([
-            'type' => 'doughnut',
-            'currency' => true,
-            'data' => [
-                'labels' => $salesTypeChart['labels'],
-                'datasets' => [['label' => 'Montant', 'data' => $salesTypeChart['values'], 'backgroundColor' => ['#31380F', '#798057'], 'borderWidth' => 0]],
-            ],
-        ]) !!}
-    </script>
 @endsection

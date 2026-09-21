@@ -2,16 +2,17 @@
 
 namespace App\Http\Requests\Commerce;
 
+use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /** Valide un encaissement complémentaire effectué exclusivement en espèces. */
 class StorePaymentRequest extends FormRequest
 {
-    /** La route protégée détermine quels rôles peuvent encaisser. */
+    /** Seul le responsable d'exploitation enregistre un encaissement. */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->hasRole(UserRole::FarmManager) ?? false;
     }
 
     /** Le mode de paiement n'est pas accepté en entrée : le contrôleur impose toujours "cash". */

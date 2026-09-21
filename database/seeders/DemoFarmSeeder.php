@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserRole;
 use App\Models\Alert;
 use App\Models\Building;
 use App\Models\Client;
@@ -27,8 +28,9 @@ class DemoFarmSeeder extends Seeder
     {
         DB::transaction(function (): void {
             // Les comptes existent grâce à DemoUserSeeder exécuté juste avant.
-            $manager = User::query()->where('email', 'responsable@abiwein.local')->firstOrFail();
-            $veterinarian = User::query()->where('email', 'veterinaire@abiwein.local')->firstOrFail();
+            // La recherche par rôle reste valable lorsque les adresses de démonstration changent.
+            $manager = User::query()->where('role', UserRole::FarmManager->value)->firstOrFail();
+            $veterinarian = User::query()->where('role', UserRole::Veterinarian->value)->firstOrFail();
 
             // Fournisseur d’origine des bandes de démonstration.
             $supplier = Supplier::query()->updateOrCreate(
@@ -61,10 +63,14 @@ class DemoFarmSeeder extends Seeder
                 );
             }
 
-            // Produits suivis avec un cas volontairement proche du seuil d’alerte.
+            // Les quatre phases alimentaires sont des intrants distincts et faciles à contrôler.
+            Product::query()->updateOrCreate(['code' => 'ALIM-PREDEM'], ['name' => 'Aliment prédémarrage', 'category' => 'feed', 'unit' => 'kg', 'current_stock' => 180, 'alert_threshold' => 100, 'is_active' => true]);
+            Product::query()->updateOrCreate(['code' => 'ALIM-DEM'], ['name' => 'Aliment démarrage', 'category' => 'feed', 'unit' => 'kg', 'current_stock' => 340, 'alert_threshold' => 180, 'is_active' => true]);
             $feed = Product::query()->updateOrCreate(['code' => 'ALIM-CROISS'], ['name' => 'Aliment croissance', 'category' => 'feed', 'unit' => 'kg', 'current_stock' => 620, 'alert_threshold' => 500, 'is_active' => true]);
+            Product::query()->updateOrCreate(['code' => 'ALIM-FIN'], ['name' => 'Aliment finition', 'category' => 'feed', 'unit' => 'kg', 'current_stock' => 290, 'alert_threshold' => 160, 'is_active' => true]);
             $vitamins = Product::query()->updateOrCreate(['code' => 'SANT-VIT'], ['name' => 'Complexe vitaminé', 'category' => 'health', 'unit' => 'flacon', 'current_stock' => 8, 'alert_threshold' => 10, 'expires_at' => now()->addMonths(5)->toDateString(), 'is_active' => true]);
-            $preparedChicken = Product::query()->updateOrCreate(['code' => 'VENT-POUL'], ['name' => 'Poulet entier préparé', 'category' => 'processed_chicken', 'unit' => 'pièce', 'current_stock' => 84, 'alert_threshold' => 20, 'is_active' => true]);
+            // Cette ancienne référence de vente est désactivée : le magasin contient uniquement des intrants.
+            Product::query()->where('code', 'VENT-POUL')->update(['is_active' => false, 'current_stock' => 0]);
 
             // Les mouvements expliquent l’origine des quantités présentes en stock.
             StockMovement::query()->firstOrCreate(['product_id' => $feed->id, 'reason' => 'Réception initiale de démonstration'], ['type' => 'entry', 'quantity' => 1000, 'occurred_at' => now()->subDays(8), 'recorded_by' => $manager->id]);
@@ -75,8 +81,8 @@ class DemoFarmSeeder extends Seeder
             $sale = Sale::query()->updateOrCreate(['reference' => 'VTE-DEMO-001'], ['client_id' => $client->id, 'sale_date' => now()->subDay()->toDateString(), 'sale_type' => 'credit', 'payment_method' => 'cash', 'total_amount' => 180000, 'paid_amount' => 100000, 'balance_due' => 80000, 'status' => 'partial', 'created_by' => $manager->id]);
             // Cette ligne rend le détail de la vente de démonstration immédiatement consultable.
             SaleItem::query()->updateOrCreate(
-                ['sale_id' => $sale->id, 'product_id' => $preparedChicken->id],
-                ['description' => $preparedChicken->name, 'quantity' => 60, 'unit_price' => 3000, 'line_total' => 180000]
+                ['sale_id' => $sale->id],
+                ['product_id' => null, 'description' => 'Poulet de chair préparé', 'quantity' => 60, 'unit_price' => 3000, 'line_total' => 180000]
             );
             Payment::query()->firstOrCreate(['sale_id' => $sale->id, 'reference' => 'REG-DEMO-001'], ['amount' => 100000, 'paid_at' => now()->subDay(), 'payment_method' => 'cash', 'recorded_by' => $manager->id]);
             Expense::query()->updateOrCreate(['reference' => 'DEP-DEMO-001'], ['category' => 'Alimentation', 'description' => 'Achat complémentaire d’aliment', 'amount' => 95000, 'spent_on' => now()->subDays(3)->toDateString(), 'recorded_by' => $manager->id]);

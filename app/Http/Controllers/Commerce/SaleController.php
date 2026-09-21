@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Commerce;
 
+use App\Enums\SaleItemType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Commerce\StoreSaleRequest;
 use App\Models\Client;
-use App\Models\Product;
 use App\Models\Sale;
 use App\Services\Commerce\SaleService;
 use Illuminate\Contracts\View\View;
@@ -39,12 +39,12 @@ class SaleController extends Controller
         return view('commerce.sales.index', compact('sales', 'search', 'type', 'status'));
     }
 
-    /** Fournit au formulaire les clients actifs et les produits vendables. */
+    /** Fournit au formulaire les clients actifs et les types de poulets vendus. */
     public function create(): View
     {
         return view('commerce.sales.create', [
             'clients' => Client::query()->where('is_active', true)->orderBy('name')->get(),
-            'products' => Product::query()->where('is_active', true)->where('current_stock', '>', 0)->orderBy('name')->get(),
+            'itemTypes' => SaleItemType::cases(),
         ]);
     }
 
@@ -53,13 +53,13 @@ class SaleController extends Controller
     {
         $sale = $saleService->create($request->validated(), $request->user());
 
-        return to_route('sales.show', $sale)->with('status', 'La vente a été enregistrée et le stock a été mis à jour.');
+        return to_route('sales.show', $sale)->with('status', 'La vente a été enregistrée. Les stocks d’intrants restent inchangés.');
     }
 
     /** Affiche le détail, les lignes et tous les versements d'une vente. */
     public function show(Sale $sale): View
     {
-        $sale->load(['client', 'items.product', 'payments.recordedBy', 'creator']);
+        $sale->load(['client', 'items', 'payments.recordedBy', 'creator']);
 
         return view('commerce.sales.show', compact('sale'));
     }

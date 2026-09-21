@@ -155,10 +155,10 @@ class StockManagementTest extends TestCase
     /** Modifier la fiche ne contourne jamais l’historique pour changer la quantité. */
     public function test_product_update_keeps_current_stock_unchanged(): void
     {
-        $administrator = User::factory()->administrator()->create();
+        $manager = User::factory()->create(['role' => UserRole::FarmManager]);
         $product = $this->createProduct(['current_stock' => 18]);
 
-        $this->actingAs($administrator)->put(route('stocks.update', $product), [
+        $this->actingAs($manager)->put(route('stocks.update', $product), [
             'code' => $product->code,
             'name' => 'Aliment croissance supérieur',
             'category' => ProductCategory::Feed->value,
@@ -172,6 +172,18 @@ class StockManagementTest extends TestCase
         $product->refresh();
         $this->assertSame('18.00', $product->current_stock);
         $this->assertSame('Aliment croissance supérieur', $product->name);
+    }
+
+    /** L'administrateur consulte les stocks mais ne peut jamais les modifier. */
+    public function test_administrator_has_read_only_stock_access(): void
+    {
+        $administrator = User::factory()->administrator()->create();
+        $product = $this->createProduct();
+
+        $this->actingAs($administrator)->get(route('stocks.index'))->assertOk();
+        $this->actingAs($administrator)->get(route('stocks.show', $product))->assertOk();
+        $this->actingAs($administrator)->post(route('stocks.store'), [])->assertForbidden();
+        $this->actingAs($administrator)->post(route('stocks.movements.store'), [])->assertForbidden();
     }
 
     /** Un réapprovisionnement suffisant clôt automatiquement l’alerte de seuil. */

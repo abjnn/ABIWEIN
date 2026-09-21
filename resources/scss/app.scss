@@ -9,3 +9,6 @@
 
 // L’espace authentifié possède sa propre mise en page sans modifier la palette officielle.
 @import "private";
+
+// La conversation IA reste isolée afin de ne pas alourdir les autres écrans privés.
+@import "intelligence";

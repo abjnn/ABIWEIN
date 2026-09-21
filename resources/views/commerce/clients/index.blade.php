@@ -7,7 +7,9 @@
     {{-- EN-TÊTE : regroupe le titre du répertoire et le bouton de création. --}}
     <section class="private-intro private-intro--compact" aria-labelledby="clients-title">
         <div><p class="private-kicker">Gestion commerciale</p><h2 id="clients-title">Répertoire des clients</h2><p>Conservez les coordonnées des acheteurs et retrouvez leurs ventes et créances.</p></div>
-        <a class="btn btn-private-primary" href="{{ route('clients.create') }}">Ajouter un client</a>
+        @if (auth()->user()->isFarmManager())
+            <a class="btn btn-private-primary" href="{{ route('clients.create') }}">Ajouter un client</a>
+        @endif
     </section>
 
     @include('commerce._navigation')
@@ -35,11 +37,15 @@
                             <td>{{ number_format((float) ($client->sales_sum_balance_due ?? 0), 0, ',', ' ') }} FCFA</td>
                             <td><span class="private-status private-status--{{ $client->is_active ? 'good' : 'blocked' }}">{{ $client->is_active ? 'Actif' : 'Inactif' }}</span></td>
                             <td class="text-end">
+                                @if (auth()->user()->isFarmManager())
                                 <div class="d-inline-flex gap-2">
                                     <a class="btn btn-sm btn-private-secondary" href="{{ route('clients.edit', $client) }}">Modifier</a>
                                     {{-- Cette action conserve le client et tout son historique ; seul son usage futur change. --}}
                                     <form method="POST" action="{{ route('clients.toggle-status', $client) }}">@csrf @method('PATCH')<button class="btn btn-sm btn-private-secondary" type="submit">{{ $client->is_active ? 'Désactiver' : 'Activer' }}</button></form>
                                 </div>
+                                @else
+                                    <span class="text-muted small">Consultation</span>
+                                @endif
                             </td>
                         </tr>
                     @empty

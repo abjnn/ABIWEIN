@@ -75,7 +75,7 @@ class VeterinaryVisitController extends Controller
                 ->where('status', '!=', 'archived')
                 ->orderByDesc('arrival_date')
                 ->get(['id', 'code', 'breed', 'status']),
-            // L’administrateur choisit le vétérinaire ; un vétérinaire est assigné automatiquement.
+            // Le vétérinaire connecté sera assigné automatiquement par le FormRequest.
             'veterinarians' => $this->activeVeterinarians(),
         ]);
     }
@@ -90,6 +90,27 @@ class VeterinaryVisitController extends Controller
             ->with('status', 'La visite vétérinaire a été enregistrée.');
     }
 
+    /** Marque la recommandation comme exécutée par le responsable d'exploitation. */
+    public function markRecommendationApplied(Request $request, VeterinaryVisit $veterinaryVisit): RedirectResponse
+    {
+        abort_unless($request->user()?->isFarmManager(), 403);
+        abort_if(blank($veterinaryVisit->recommendations), 422, 'Cette visite ne contient aucune recommandation à appliquer.');
+
+        // Une seconde validation ne remplace jamais la première preuve d'exécution.
+        if ($veterinaryVisit->recommendation_status === 'applied') {
+            return back()->with('status', 'Cette recommandation est déjà marquée comme appliquée.');
+        }
+
+        // L'horodatage et l'auteur rendent la validation opérationnelle vérifiable.
+        $veterinaryVisit->update([
+            'recommendation_status' => 'applied',
+            'recommendation_applied_at' => now(),
+            'recommendation_applied_by' => $request->user()->getKey(),
+        ]);
+
+        return back()->with('status', 'La recommandation a été marquée comme appliquée.');
+    }
+
     /** Présente le diagnostic complet, les recommandations et le prochain contrôle. */
     public function show(Request $request, VeterinaryVisit $veterinaryVisit): View
     {
@@ -97,7 +118,7 @@ class VeterinaryVisitController extends Controller
         abort_unless($this->canRead($request->user()), 403);
 
         // Le chargement explicite prépare toutes les données affichées dans la fiche.
-        $veterinaryVisit->load(['flock.currentBuilding', 'veterinarian']);
+        $veterinaryVisit->load(['flock.currentBuilding', 'veterinarian', 'recommendationAppliedBy']);
 
         return view('health.veterinary_visits.show', ['visit' => $veterinaryVisit]);
     }
@@ -125,8 +146,6 @@ class VeterinaryVisitController extends Controller
     /** Centralise la permission de création afin de garder la règle facile à modifier. */
     private function canCreate(?User $user): bool
     {
-        return $user !== null
-            && $user->is_active
-            && ($user->hasRole(UserRole::Administrator) || $user->hasRole(UserRole::Veterinarian));
+        return $user !== null && $user->is_active && $user->hasRole(UserRole::Veterinarian);
     }
 }

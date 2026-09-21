@@ -10,24 +10,24 @@
     @include('commerce._navigation')
 
     {{-- RÉSUMÉ : ces montants sont recalculés après chaque versement. --}}
-    <section class="private-stats" aria-label="Montants de la vente">
-        <article class="private-stat"><p>Montant total</p><strong>{{ number_format((float) $sale->total_amount, 0, ',', ' ') }} FCFA</strong><small>{{ $sale->items->count() }} ligne(s)</small></article>
-        <article class="private-stat"><p>Espèces encaissées</p><strong>{{ number_format((float) $sale->paid_amount, 0, ',', ' ') }} FCFA</strong><small>{{ $sale->payments->count() }} versement(s)</small></article>
-        <article class="private-stat private-stat--alert"><p>Solde restant</p><strong>{{ number_format((float) $sale->balance_due, 0, ',', ' ') }} FCFA</strong><small>Créance actuelle</small></article>
-        <article class="private-stat"><p>Statut</p><strong>{{ ['paid' => 'Payée', 'partial' => 'Partielle', 'unpaid' => 'Impayée'][$sale->status] }}</strong><small>Paiement en espèces</small></article>
-    </section>
+    <dl class="private-summary-strip" aria-label="Montants de la vente">
+        <div><dt>Total</dt><dd>{{ number_format((float) $sale->total_amount, 0, ',', ' ') }} FCFA</dd></div>
+        <div><dt>Encaissé</dt><dd>{{ number_format((float) $sale->paid_amount, 0, ',', ' ') }} FCFA</dd></div>
+        <div><dt>Solde</dt><dd>{{ number_format((float) $sale->balance_due, 0, ',', ' ') }} FCFA</dd></div>
+        <div><dt>Statut</dt><dd>{{ ['paid' => 'Payée', 'partial' => 'Partielle', 'unpaid' => 'Impayée'][$sale->status] }}</dd></div>
+    </dl>
 
     <div class="private-grid private-grid--main">
         {{-- LIGNES : conserve le libellé, la quantité et le prix appliqués lors de la vente. --}}
         <section class="private-panel" aria-labelledby="sale-items-title">
-            <div class="private-panel__header"><div><p class="private-kicker">Produits</p><h2 id="sale-items-title">Détail vendu</h2></div><span>{{ $sale->reference }}</span></div>
-            <div class="table-responsive"><table class="table private-table align-middle"><thead><tr><th>Produit</th><th>Quantité</th><th>Prix unitaire</th><th>Total</th></tr></thead><tbody>@foreach ($sale->items as $item)<tr><td><strong>{{ $item->description }}</strong><small>{{ $item->product?->code ?? 'Produit archivé' }}</small></td><td>{{ number_format((float) $item->quantity, 2, ',', ' ') }}</td><td>{{ number_format((float) $item->unit_price, 0, ',', ' ') }} FCFA</td><td>{{ number_format((float) $item->line_total, 0, ',', ' ') }} FCFA</td></tr>@endforeach</tbody></table></div>
+            <div class="private-panel__header"><div><p class="private-kicker">Poulets</p><h2 id="sale-items-title">Détail vendu</h2></div><span>{{ $sale->reference }}</span></div>
+            <div class="table-responsive"><table class="table private-table align-middle"><thead><tr><th>Désignation</th><th>Quantité</th><th>Prix unitaire</th><th>Total</th></tr></thead><tbody>@foreach ($sale->items as $item)<tr><td><strong>{{ $item->description }}</strong></td><td>{{ number_format((float) $item->quantity, 2, ',', ' ') }}</td><td>{{ number_format((float) $item->unit_price, 0, ',', ' ') }} FCFA</td><td>{{ number_format((float) $item->line_total, 0, ',', ' ') }} FCFA</td></tr>@endforeach</tbody></table></div>
         </section>
 
         {{-- PAIEMENT : le formulaire disparaît lorsque le solde atteint zéro. --}}
         <section class="private-form-card" aria-labelledby="payment-title">
             <p class="private-kicker">Caisse</p><h2 class="h5" id="payment-title">{{ (float) $sale->balance_due > 0 ? 'Ajouter un versement' : 'Vente soldée' }}</h2>
-            @if ((float) $sale->balance_due > 0)
+            @if ((float) $sale->balance_due > 0 && auth()->user()->isFarmManager())
                 <p class="text-muted">Seules les espèces sont acceptées. Maximum : {{ number_format((float) $sale->balance_due, 0, ',', ' ') }} FCFA.</p>
                 {{-- Le jeton CSRF protège l'encaissement contre les requêtes externes. --}}
                 <form class="vstack gap-3" method="POST" action="{{ route('sales.payments.store', $sale) }}">
@@ -40,8 +40,10 @@
                     <div><label class="form-label" for="reference">Référence du reçu</label><input class="form-control @error('reference') is-invalid @enderror" id="reference" name="reference" type="text" value="{{ old('reference') }}" maxlength="80" placeholder="Facultatif">@error('reference')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
                     <button class="btn btn-private-primary" type="submit">Confirmer l'encaissement</button>
                 </form>
-            @else
+            @elseif ((float) $sale->balance_due <= 0)
                 <p class="mb-0 text-muted">Aucun autre versement n'est attendu pour cette vente.</p>
+            @else
+                <p class="mb-0 text-muted">Le responsable d'exploitation enregistrera le prochain versement. Votre accès est consultatif.</p>
             @endif
         </section>
     </div>

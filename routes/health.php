@@ -20,8 +20,8 @@ Route::middleware(['auth', 'active', 'role:administrator,farm_manager,veterinari
         Route::get('/visites', [VeterinaryVisitController::class, 'index'])->name('visits.index');
     });
 
-// Seuls l’administrateur et le vétérinaire peuvent créer un diagnostic sanitaire.
-Route::middleware(['auth', 'active', 'role:administrator,veterinarian'])
+// Seul le vétérinaire signe et crée un diagnostic sanitaire.
+Route::middleware(['auth', 'active', 'role:veterinarian'])
     ->prefix('sante')
     ->name('health.')
     ->group(function (): void {
@@ -29,6 +29,16 @@ Route::middleware(['auth', 'active', 'role:administrator,veterinarian'])
         Route::get('/visites/nouvelle', [VeterinaryVisitController::class, 'create'])->name('visits.create');
         // Cette URL valide puis enregistre définitivement la visite.
         Route::post('/visites', [VeterinaryVisitController::class, 'store'])->name('visits.store');
+    });
+
+// Le responsable confirme l'exécution des recommandations sans modifier le diagnostic.
+Route::middleware(['auth', 'active', 'role:farm_manager'])
+    ->prefix('sante')
+    ->name('health.')
+    ->group(function (): void {
+        Route::patch('/visites/{veterinaryVisit}/recommandation-appliquee', [VeterinaryVisitController::class, 'markRecommendationApplied'])
+            ->whereNumber('veterinaryVisit')
+            ->name('visits.mark-applied');
     });
 
 // La route détaillée est placée après « nouvelle » pour éviter toute ambiguïté d’URL.

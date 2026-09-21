@@ -7,7 +7,9 @@
     {{-- EN-TÊTE : met en avant le total du registre et le bouton de saisie. --}}
     <section class="private-intro private-intro--compact" aria-labelledby="expenses-title">
         <div><p class="private-kicker">Gestion financière</p><h2 id="expenses-title">Registre des dépenses</h2><p>{{ number_format((float) $totalExpenses, 0, ',', ' ') }} FCFA de sorties de caisse enregistrées depuis l'ouverture du registre.</p></div>
-        <a class="btn btn-private-primary" href="{{ route('expenses.create') }}">Ajouter une dépense</a>
+        @if (auth()->user()->isFarmManager())
+            <a class="btn btn-private-primary" href="{{ route('expenses.create') }}">Ajouter une dépense</a>
+        @endif
     </section>
 
     @include('commerce._navigation')
@@ -35,7 +37,7 @@
                             <td>{{ $expense->spent_on->format('d/m/Y') }}</td>
                             <td>{{ $expense->recordedBy?->name ?? 'Utilisateur supprimé' }}</td>
                             <td><strong>{{ number_format((float) $expense->amount, 0, ',', ' ') }} FCFA</strong></td>
-                            <td class="text-end"><a class="btn btn-sm btn-private-secondary" href="{{ route('expenses.edit', $expense) }}">Modifier</a></td>
+                            <td class="text-end">@if (auth()->user()->isFarmManager())<a class="btn btn-sm btn-private-secondary" href="{{ route('expenses.edit', $expense) }}">Modifier</a>@else<span class="text-muted small">Consultation</span>@endif</td>
                         </tr>
                     @empty
                         <tr><td class="private-empty" colspan="7">Aucune dépense ne correspond à cette recherche.</td></tr>

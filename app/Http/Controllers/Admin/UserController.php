@@ -32,11 +32,16 @@ class UserController extends Controller
     {
         $validated = $request->validated();
 
-        // boolean() convertit correctement la case à cocher HTML en vrai booléen.
-        $validated['is_active'] = $request->boolean('is_active');
-
-        // Le modèle User chiffre automatiquement le mot de passe grâce à son cast.
-        User::query()->create($validated);
+        // forceFill reste volontairement local à ce contrôleur protégé : aucun autre formulaire
+        // ne peut attribuer lui-même un rôle ou activer un compte.
+        $user = new User;
+        $user->forceFill([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+            'role' => $validated['role'],
+            'is_active' => $request->boolean('is_active'),
+        ])->save();
 
         return to_route('admin.users.index')->with('status', 'Le compte utilisateur a été créé.');
     }
@@ -48,7 +53,8 @@ class UserController extends Controller
             return back()->withErrors(['account' => 'Vous ne pouvez pas bloquer votre propre compte.']);
         }
 
-        $user->update(['is_active' => ! $user->is_active]);
+        // L'état protégé est modifié explicitement après le contrôle anti-auto-blocage.
+        $user->forceFill(['is_active' => ! $user->is_active])->save();
 
         $message = $user->is_active ? 'Le compte a été activé.' : 'Le compte a été bloqué.';
 

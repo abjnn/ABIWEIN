@@ -29,6 +29,8 @@ class ProductController extends Controller
     public function index(ProductIndexRequest $request): View
     {
         $filters = $request->validated();
+        // Sans filtre explicite, la page montre seulement les intrants réellement utilisés.
+        $selectedStatus = $filters['status'] ?? 'active';
         $today = today()->toDateString();
         $expirationLimit = today()->addDays(30)->toDateString();
 
@@ -40,11 +42,11 @@ class ProductController extends Controller
                 });
             })
             ->when($filters['category'] ?? null, fn (Builder $query, string $category): Builder => $query->where('category', $category))
-            ->when(($filters['status'] ?? 'all') === 'active', fn (Builder $query): Builder => $query->where('is_active', true))
-            ->when(($filters['status'] ?? 'all') === 'inactive', fn (Builder $query): Builder => $query->where('is_active', false))
-            ->when(($filters['status'] ?? 'all') === 'low', fn (Builder $query): Builder => $query->where('is_active', true)->whereColumn('current_stock', '<=', 'alert_threshold'))
-            ->when(($filters['status'] ?? 'all') === 'expired', fn (Builder $query): Builder => $query->where('is_active', true)->whereDate('expires_at', '<', $today))
-            ->when(($filters['status'] ?? 'all') === 'expiring', fn (Builder $query): Builder => $query->where('is_active', true)->whereBetween('expires_at', [$today, $expirationLimit]))
+            ->when($selectedStatus === 'active', fn (Builder $query): Builder => $query->where('is_active', true))
+            ->when($selectedStatus === 'inactive', fn (Builder $query): Builder => $query->where('is_active', false))
+            ->when($selectedStatus === 'low', fn (Builder $query): Builder => $query->where('is_active', true)->whereColumn('current_stock', '<=', 'alert_threshold'))
+            ->when($selectedStatus === 'expired', fn (Builder $query): Builder => $query->where('is_active', true)->whereDate('expires_at', '<', $today))
+            ->when($selectedStatus === 'expiring', fn (Builder $query): Builder => $query->where('is_active', true)->whereBetween('expires_at', [$today, $expirationLimit]))
             ->orderByDesc('is_active')
             ->orderBy('name')
             ->paginate(20)
@@ -61,7 +63,7 @@ class ProductController extends Controller
         return view('stocks.products.index', [
             'products' => $products,
             'statistics' => $statistics,
-            'filters' => $filters,
+            'filters' => array_merge(['status' => $selectedStatus], $filters),
             'categories' => ProductCategory::cases(),
         ]);
     }
@@ -112,7 +114,7 @@ class ProductController extends Controller
     /** Présente la fiche du produit et son historique paginé. */
     public function show(Request $request, Product $product): View
     {
-        $this->ensureManagerAccess($request);
+        // La route autorise l'administrateur à consulter cette fiche sans action d'écriture.
 
         return view('stocks.products.show', [
             'product' => $product,
@@ -168,10 +170,6 @@ class ProductController extends Controller
     /** Renforce la sécurité si une route est ajoutée sans le middleware de rôle attendu. */
     private function ensureManagerAccess(Request $request): void
     {
-        $user = $request->user();
-        abort_unless(
-            $user?->hasRole(UserRole::Administrator) || $user?->hasRole(UserRole::FarmManager),
-            403
-        );
+        abort_unless($request->user()?->hasRole(UserRole::FarmManager), 403);
     }
 }

@@ -19,29 +19,54 @@ class DemoUserSeeder extends Seeder
             throw new LogicException('Les comptes de démonstration sont interdits en production.');
         }
 
-        // Ce mot de passe est réservé à la démonstration locale et doit être changé en production.
-        $configuredPassword = trim((string) env('ABIWEIN_DEMO_PASSWORD', ''));
-        $demoPassword = Hash::make($configuredPassword !== '' ? $configuredPassword : 'Abiwein@Demo2026');
-
-        // Le tableau centralise les identités pour modifier facilement les données de démonstration.
+        // Chaque identité possède son adresse et son secret configurables, distincts des deux autres.
         $users = [
-            ['name' => 'Administrateur ABIWEIN', 'email' => 'admin@abiwein.local', 'role' => UserRole::Administrator],
-            ['name' => 'Responsable d’exploitation', 'email' => 'responsable@abiwein.local', 'role' => UserRole::FarmManager],
-            ['name' => 'Vétérinaire ABIWEIN', 'email' => 'veterinaire@abiwein.local', 'role' => UserRole::Veterinarian],
+            [
+                'name' => 'Nadège Nkomo',
+                'email' => env('ABIWEIN_DEMO_ADMIN_EMAIL', 'nadege.nkomo@abiwein.local'),
+                'password' => env('ABIWEIN_DEMO_ADMIN_PASSWORD', 'Nadege#Abiwein26!'),
+                'legacy_email' => 'admin@abiwein.local',
+                'role' => UserRole::Administrator,
+            ],
+            [
+                'name' => 'Alain Tchoumi',
+                'email' => env('ABIWEIN_DEMO_MANAGER_EMAIL', 'alain.tchoumi@abiwein.local'),
+                'password' => env('ABIWEIN_DEMO_MANAGER_PASSWORD', 'Ferme#Tchoumi26!'),
+                'legacy_email' => 'responsable@abiwein.local',
+                'role' => UserRole::FarmManager,
+            ],
+            [
+                'name' => 'Dre Mireille Ngono',
+                'email' => env('ABIWEIN_DEMO_VET_EMAIL', 'mireille.ngono@abiwein.local'),
+                'password' => env('ABIWEIN_DEMO_VET_PASSWORD', 'Sante#Ngono2026!'),
+                'legacy_email' => 'veterinaire@abiwein.local',
+                'role' => UserRole::Veterinarian,
+            ],
         ];
 
+        $emails = array_column($users, 'email');
+        $passwords = array_column($users, 'password');
+
+        // Une erreur de configuration est signalée avant toute écriture partielle en base.
+        if (count(array_unique($emails)) !== count($emails) || count(array_unique($passwords)) !== count($passwords)) {
+            throw new LogicException('Chaque compte de démonstration doit avoir un e-mail et un mot de passe distincts.');
+        }
+
         foreach ($users as $userData) {
-            // updateOrCreate rend le seeder répétable sans violer l’unicité de l’e-mail.
-            User::query()->updateOrCreate(
-                ['email' => $userData['email']],
-                [
-                    'name' => $userData['name'],
-                    'password' => $demoPassword,
-                    'role' => $userData['role'],
-                    'is_active' => true,
-                    'email_verified_at' => now(),
-                ]
-            );
+            // La recherche de l’ancienne adresse migre les trois comptes existants sans doublon.
+            $user = User::query()->where('email', $userData['email'])->first()
+                ?? User::query()->where('email', $userData['legacy_email'])->first()
+                ?? User::query()->where('role', $userData['role'])->oldest('id')->first()
+                ?? new User;
+
+            $user->forceFill([
+                'name' => $userData['name'],
+                'email' => $userData['email'],
+                'password' => Hash::make($userData['password']),
+                'role' => $userData['role'],
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ])->save();
         }
     }
 }

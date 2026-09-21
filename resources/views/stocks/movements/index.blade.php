@@ -13,7 +13,9 @@
         </div>
         <div class="d-flex flex-wrap gap-2">
             <a class="btn btn-private-secondary" href="{{ route('stocks.index') }}">Retour aux stocks</a>
-            <a class="btn btn-private-primary" href="{{ route('stocks.movements.create') }}">Nouveau mouvement</a>
+            @if (auth()->user()->isFarmManager())
+                <a class="btn btn-private-primary" href="{{ route('stocks.movements.create') }}">Nouveau mouvement</a>
+            @endif
         </div>
     </section>
 

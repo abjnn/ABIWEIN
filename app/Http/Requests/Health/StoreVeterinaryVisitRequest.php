@@ -9,14 +9,12 @@ use Illuminate\Validation\Rule;
 /** Valide et sécurise l’enregistrement d’une visite vétérinaire. */
 class StoreVeterinaryVisitRequest extends FormRequest
 {
-    /** Seuls un vétérinaire actif ou un administrateur actif peut créer une visite. */
+    /** Seul un vétérinaire actif peut créer et signer une visite. */
     public function authorize(): bool
     {
         $user = $this->user();
 
-        return $user !== null
-            && $user->is_active
-            && ($user->hasRole(UserRole::Administrator) || $user->hasRole(UserRole::Veterinarian));
+        return $user !== null && $user->is_active && $user->hasRole(UserRole::Veterinarian);
     }
 
     /**
@@ -25,9 +23,8 @@ class StoreVeterinaryVisitRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        if ($this->user()?->hasRole(UserRole::Veterinarian)) {
-            $this->merge(['veterinarian_id' => $this->user()->getKey()]);
-        }
+        // La signature transmise par le navigateur est toujours remplacée par le compte connecté.
+        $this->merge(['veterinarian_id' => $this->user()?->getKey()]);
     }
 
     /** Chaque règle protège la cohérence clinique et relationnelle de la visite. */

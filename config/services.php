@@ -35,4 +35,14 @@ return [
         ],
     ],
 
+    /*
+    | L'assistant utilise l'offre gratuite Gemini lorsque la clé est fournie.
+    | Sans clé, ABIWEIN conserve automatiquement son mode local déterministe.
+    */
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-2.5-flash-lite'),
+        'endpoint' => env('GEMINI_ENDPOINT', 'https://generativelanguage.googleapis.com/v1beta'),
+    ],
+
 ];

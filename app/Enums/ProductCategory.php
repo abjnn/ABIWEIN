@@ -11,7 +11,6 @@ enum ProductCategory: string
     case Feed = 'feed';
     case Health = 'health';
     case Equipment = 'equipment';
-    case ProcessedChicken = 'processed_chicken';
     case Packaging = 'packaging';
     case Other = 'other';
 
@@ -22,7 +21,6 @@ enum ProductCategory: string
             self::Feed => 'Aliments',
             self::Health => 'Produits sanitaires',
             self::Equipment => 'Équipements',
-            self::ProcessedChicken => 'Poulets préparés',
             self::Packaging => 'Emballages',
             self::Other => 'Autres produits',
         };

@@ -31,7 +31,7 @@ class PublicSiteTest extends TestCase
 
         $response
             ->assertRedirect(route('contact'))
-            ->assertSessionHasErrors(['name', 'email', 'subject', 'message', 'consent']);
+            ->assertSessionHasErrors(['last_name', 'first_name', 'email', 'phone', 'subject', 'message', 'consent']);
     }
 
     /** Un message valide déclenche le parcours d'envoi et une confirmation. */
@@ -40,9 +40,10 @@ class PublicSiteTest extends TestCase
         Mail::fake();
 
         $response = $this->post(route('contact.store'), [
-            'name' => 'Visiteur ABIWEIN',
-            'email' => 'visiteur@example.com',
-            'phone' => '+237 600 000 000',
+            'last_name' => 'Ngono',
+            'first_name' => 'Clarisse',
+            'email' => 'clarisse.ngono@gmail.com',
+            'phone' => '699 12 34 56',
             'subject' => 'Information sur ABIWEIN',
             'message' => 'Je souhaite obtenir davantage d’informations sur la plateforme.',
             'consent' => '1',
@@ -51,5 +52,21 @@ class PublicSiteTest extends TestCase
         $response
             ->assertRedirect(route('contact'))
             ->assertSessionHas('contact_status');
+    }
+
+    /** Le serveur refuse un domaine inexistant et un numéro qui n’est pas camerounais. */
+    public function test_contact_form_rejects_unverifiable_email_domain_and_foreign_phone(): void
+    {
+        Mail::fake();
+
+        $this->post(route('contact.store'), [
+            'last_name' => 'Ngono',
+            'first_name' => 'Clarisse',
+            'email' => 'clarisse@domaine-inexistant.invalid',
+            'phone' => '+33 6 12 34 56 78',
+            'subject' => 'Information sur ABIWEIN',
+            'message' => 'Je souhaite obtenir davantage d’informations sur la plateforme.',
+            'consent' => '1',
+        ])->assertSessionHasErrors(['email', 'phone']);
     }
 }

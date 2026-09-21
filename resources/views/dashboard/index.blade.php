@@ -40,7 +40,7 @@
         <a href="{{ route('health.visits.index') }}"><span>Sanitaire</span><strong>Suivre les visites vétérinaires</strong></a>
         @if ($canViewFinancials)
             <a href="{{ route('stocks.index') }}"><span>Stocks</span><strong>Consulter les produits et mouvements</strong></a>
-            <a href="{{ route('sales.create') }}"><span>Ventes</span><strong>Enregistrer une nouvelle opération</strong></a>
+            <a href="{{ auth()->user()->isFarmManager() ? route('sales.create') : route('sales.index') }}"><span>Ventes</span><strong>{{ auth()->user()->isFarmManager() ? 'Enregistrer une nouvelle opération' : 'Consulter les opérations enregistrées' }}</strong></a>
             <a href="{{ route('reports.index') }}"><span>Rapports</span><strong>Analyser la période et imprimer</strong></a>
         @endif
     </nav>

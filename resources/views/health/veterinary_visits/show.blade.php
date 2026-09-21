@@ -16,13 +16,13 @@
         <a class="btn btn-private-secondary" href="{{ route('health.visits.index') }}">Retour à l’historique</a>
     </section>
 
-    {{-- RÉSUMÉ : les quatre blocs suivants donnent les repères opérationnels de la visite. --}}
-    <section class="private-stats" aria-label="Résumé de la visite">
-        <x-private.stat-card label="Date de visite" :value="$visit->visit_date->format('d/m/Y')" detail="Date de l’examen" />
-        <x-private.stat-card label="Bande" :value="$visit->flock->code" :detail="$visit->flock->breed" />
-        <x-private.stat-card label="Bâtiment" :value="$visit->flock->currentBuilding?->code ?? 'Non indiqué'" :detail="$visit->flock->currentBuilding?->name ?? 'Aucune affectation actuelle'" />
-        <x-private.stat-card label="Prochain contrôle" :value="$visit->next_visit_date?->format('d/m/Y') ?? 'Non programmé'" detail="Échéance de suivi" :tone="$visit->next_visit_date ? 'alert' : 'default'" />
-    </section>
+    {{-- RÉSUMÉ : une seule bande horizontale utilise l'espace sans multiplier les rectangles. --}}
+    <dl class="private-summary-strip" aria-label="Résumé de la visite">
+        <div><dt>Date</dt><dd>{{ $visit->visit_date->format('d/m/Y') }}</dd></div>
+        <div><dt>Bande</dt><dd>{{ $visit->flock->code }}</dd></div>
+        <div><dt>Bâtiment</dt><dd>{{ $visit->flock->currentBuilding?->code ?? 'Non indiqué' }}</dd></div>
+        <div><dt>Prochain contrôle</dt><dd>{{ $visit->next_visit_date?->format('d/m/Y') ?? 'Non programmé' }}</dd></div>
+    </dl>
 
     {{-- CONTENU CLINIQUE : deux panneaux distinguent le constat des actions à mener. --}}
     <div class="private-grid private-grid--main">
@@ -48,6 +48,22 @@
             <div class="p-4 lh-lg">
                 @if ($visit->recommendations)
                     {!! nl2br(e($visit->recommendations)) !!}
+
+                    {{-- Le responsable confirme l'exécution sans pouvoir modifier la prescription. --}}
+                    <div class="private-recommendation-state mt-4">
+                        @if ($visit->recommendation_status === 'applied')
+                            <span class="private-status private-status--good">Appliquée</span>
+                            <small>Validée {{ $visit->recommendation_applied_at?->format('d/m/Y à H:i') }} par {{ $visit->recommendationAppliedBy?->name ?? 'un responsable' }}.</small>
+                        @elseif (auth()->user()->isFarmManager())
+                            <form method="POST" action="{{ route('health.visits.mark-applied', $visit) }}">
+                                @csrf
+                                @method('PATCH')
+                                <button class="btn btn-private-primary" type="submit">Valider comme appliquée</button>
+                            </form>
+                        @else
+                            <span class="private-status private-status--watch">En attente d'application</span>
+                        @endif
+                    </div>
                 @else
                     <p class="mb-0 text-secondary">Aucune recommandation particulière n’a été enregistrée.</p>
                 @endif

@@ -2,100 +2,83 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRole;
 use App\Http\Requests\ReportFilterRequest;
-use App\Models\DailyRecord;
-use App\Models\Expense;
-use App\Models\Payment;
-use App\Models\Sale;
-use Carbon\CarbonImmutable;
+use App\Http\Requests\StoreFarmReportRequest;
+use App\Models\FarmReport;
+use App\Services\Reports\FarmReportSnapshotService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Collection;
+use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
-/** Construit le rapport synthétique sans modifier les données de l’exploitation. */
+/** Gère l'archive, la lecture et l'export des rapports administratifs ABIWEIN. */
 class ReportController extends Controller
 {
-    /** Affiche les indicateurs techniques et financiers de la période choisie. */
+    /** Affiche une liste compacte triée par date officielle la plus récente. */
     public function index(ReportFilterRequest $request): View
     {
-        // MODIFICATION : remplacez startOfMonth() pour changer la période proposée par défaut.
-        $dateFrom = CarbonImmutable::parse($request->validated('date_from') ?? now()->startOfMonth()->toDateString())->startOfDay();
+        $filters = $request->validated();
 
-        // La fin de journée permet d’inclure les paiements enregistrés avec une heure.
-        $dateTo = CarbonImmutable::parse($request->validated('date_to') ?? now()->toDateString())->endOfDay();
-
-        // Les ventes annulées ne participent jamais aux montants du rapport.
-        $sales = Sale::query()
-            ->with('client')
-            // whereDate fonctionne de façon identique avec MySQL et la base SQLite des tests.
-            ->whereDate('sale_date', '>=', $dateFrom->toDateString())
-            ->whereDate('sale_date', '<=', $dateTo->toDateString())
-            ->where('status', '!=', 'cancelled')
-            ->orderByDesc('sale_date')
-            ->get();
-
-        // Les encaissements sont calculés depuis le journal réel des paiements en espèces.
-        $payments = Payment::query()
-            ->whereBetween('paid_at', [$dateFrom, $dateTo])
-            ->orderByDesc('paid_at')
-            ->get();
-
-        // Les dépenses de la période servent au solde de trésorerie simplifié.
-        $expenses = Expense::query()
-            ->whereDate('spent_on', '>=', $dateFrom->toDateString())
-            ->whereDate('spent_on', '<=', $dateTo->toDateString())
-            ->orderByDesc('spent_on')
-            ->get();
-
-        // Les relevés quotidiens alimentent la partie technique du rapport.
-        $dailyRecords = DailyRecord::query()
-            ->whereDate('record_date', '>=', $dateFrom->toDateString())
-            ->whereDate('record_date', '<=', $dateTo->toDateString())
-            ->get();
-
-        // Cette méthode privée aligne les ventes et dépenses sur les mêmes dates du graphique.
-        $financialChart = $this->buildFinancialChart($sales, $expenses);
+        $reports = FarmReport::query()
+            ->with('generator:id,name')
+            ->when($filters['date_from'] ?? null, fn ($query, string $date) => $query->whereDate('report_date', '>=', $date))
+            ->when($filters['date_to'] ?? null, fn ($query, string $date) => $query->whereDate('report_date', '<=', $date))
+            ->when($filters['type'] ?? null, fn ($query, string $type) => $query->where('type', $type))
+            ->orderByDesc('report_date')
+            ->orderByDesc('id')
+            ->paginate(20)
+            ->withQueryString();
 
         return view('reports.index', [
-            'dateFrom' => $dateFrom,
-            'dateTo' => $dateTo,
-            'sales' => $sales,
-            'expenses' => $expenses,
-            'totalSales' => (float) $sales->sum('total_amount'),
-            'cashCollected' => (float) $payments->sum('amount'),
-            'totalExpenses' => (float) $expenses->sum('amount'),
-            'receivables' => (float) $sales->sum('balance_due'),
-            'netCash' => (float) $payments->sum('amount') - (float) $expenses->sum('amount'),
-            'totalMortality' => (int) $dailyRecords->sum('mortality'),
-            'totalFeed' => (float) $dailyRecords->sum('feed_kg'),
-            'financialChart' => $financialChart,
-            'salesTypeChart' => [
-                'labels' => ['Comptant', 'Crédit'],
-                'values' => [
-                    (float) $sales->where('sale_type', 'cash')->sum('total_amount'),
-                    (float) $sales->where('sale_type', 'credit')->sum('total_amount'),
-                ],
-            ],
+            'reports' => $reports,
+            'types' => FarmReport::TYPES,
+            'filters' => $filters,
+            'canGenerate' => $request->user()?->hasRole(UserRole::FarmManager) === true,
         ]);
     }
 
-    /** Produit des séries ordonnées uniquement pour les journées contenant une opération. */
-    private function buildFinancialChart(Collection $sales, Collection $expenses): array
+    /** Présente le formulaire réservé au responsable d'exploitation. */
+    public function create(): View
     {
-        // Les clés utilisent le format ISO afin que le tri chronologique reste fiable.
-        $salesByDate = $sales->groupBy(fn (Sale $sale): string => $sale->sale_date->format('Y-m-d'))
-            ->map(fn (Collection $items): float => (float) $items->sum('total_amount'));
+        return view('reports.create', ['types' => FarmReport::TYPES]);
+    }
 
-        // Les dépenses sont regroupées avec le même format pour permettre l’alignement.
-        $expensesByDate = $expenses->groupBy(fn (Expense $expense): string => $expense->spent_on->format('Y-m-d'))
-            ->map(fn (Collection $items): float => (float) $items->sum('amount'));
+    /** Produit et archive une photographie des données au moment de la demande. */
+    public function store(StoreFarmReportRequest $request, FarmReportSnapshotService $service): RedirectResponse
+    {
+        $report = $service->generate($request->validated(), $request->user());
 
-        // L’union conserve toutes les dates, même si une seule série contient une valeur.
-        $dates = $salesByDate->keys()->merge($expensesByDate->keys())->unique()->sort()->values();
+        return redirect()
+            ->route('reports.show', $report)
+            ->with('status', 'Le rapport administratif a été généré et archivé.');
+    }
 
-        return [
-            'labels' => $dates->map(fn (string $date): string => CarbonImmutable::parse($date)->format('d/m'))->all(),
-            'sales' => $dates->map(fn (string $date): float => (float) $salesByDate->get($date, 0))->all(),
-            'expenses' => $dates->map(fn (string $date): float => (float) $expensesByDate->get($date, 0))->all(),
-        ];
+    /** Ouvre le contenu figé sous la forme d'un document administratif. */
+    public function show(FarmReport $farmReport): View
+    {
+        $farmReport->load('generator:id,name');
+
+        return view('reports.show', ['report' => $farmReport]);
+    }
+
+    /** Télécharge le même contenu en PDF A4 sans charger de ressource distante. */
+    public function download(FarmReport $farmReport): Response
+    {
+        $farmReport->load('generator:id,name');
+
+        // Le logo est incorporé en base64 : Dompdf n'a donc aucun accès réseau à effectuer.
+        $logoPath = public_path('brand/abiwein-logo.png');
+        $logoDataUri = is_file($logoPath)
+            ? 'data:image/png;base64,'.base64_encode((string) file_get_contents($logoPath))
+            : null;
+
+        $pdf = Pdf::loadView('reports.pdf', [
+            'report' => $farmReport,
+            'logoDataUri' => $logoDataUri,
+        ])->setPaper('a4', 'portrait')
+            ->setOption('isRemoteEnabled', false);
+
+        return $pdf->download($farmReport->reference.'.pdf');
     }
 }

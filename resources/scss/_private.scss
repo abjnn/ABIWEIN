@@ -101,7 +101,7 @@ body.private-site {
 
 .private-nav__link {
     display: grid;
-    grid-template-columns: 0.45rem 1fr auto;
+    grid-template-columns: 1.15rem 1fr auto;
     gap: 0.7rem;
     align-items: center;
     min-height: 2.65rem;
@@ -123,6 +123,69 @@ body.private-site {
 
     &.active .private-nav__marker {
         background: $abiwein-olive;
+    }
+}
+
+// Les symboles utilisent une ligne unique et restent discrets à côté des libellés.
+.private-nav__icon {
+    display: inline-grid;
+    width: 1.05rem;
+    height: 1.05rem;
+    place-items: center;
+}
+
+.private-nav__icon svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+}
+
+// Le groupe commercial se déplie sans JavaScript et conserve l'état de la page active.
+.private-nav__group summary {
+    cursor: pointer;
+    list-style: none;
+}
+
+.private-nav__group summary::-webkit-details-marker {
+    display: none;
+}
+
+.private-nav__chevron {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 150ms ease;
+}
+
+.private-nav__group[open] .private-nav__chevron {
+    transform: rotate(225deg);
+}
+
+.private-nav__subnav {
+    display: grid;
+    gap: 0.1rem;
+    padding: 0.25rem 0 0.35rem 1.85rem;
+}
+
+.private-nav__sublink {
+    padding: 0.48rem 0.65rem;
+    color: $abiwein-muted;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-left: 1px solid rgba($abiwein-olive, 0.2);
+
+    &:hover,
+    &:focus,
+    &.active {
+        color: $abiwein-olive;
+        border-left-color: $abiwein-olive;
     }
 }
 
@@ -255,11 +318,12 @@ body.private-site {
     gap: 2rem;
     align-items: flex-end;
     justify-content: space-between;
-    padding: clamp(1.5rem, 4vw, 3rem);
+    padding: 0 0 1.25rem;
     margin-bottom: 1.25rem;
-    background: $abiwein-white;
-    border: 1px solid rgba($abiwein-ink, 0.09);
-    border-radius: $border-radius-lg;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba($abiwein-ink, 0.09);
+    border-radius: 0;
 }
 
 .private-intro--compact {
@@ -316,11 +380,69 @@ body.private-site {
 }
 
 .private-stat {
-    min-height: 9.5rem;
-    padding: 1.35rem;
+    min-height: 7.5rem;
+    padding: 1rem 1.15rem;
     background: $abiwein-white;
     border: 1px solid rgba($abiwein-ink, 0.09);
     border-radius: $border-radius-lg;
+}
+
+// Une seule ligne synthétique remplace les grandes cartes répétitives des modules métier.
+.private-summary-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding-block: 0.85rem;
+    margin: 0 0 1.25rem;
+    background: transparent;
+    border-top: 1px solid rgba($abiwein-ink, 0.1);
+    border-bottom: 1px solid rgba($abiwein-ink, 0.1);
+}
+
+.private-summary-strip > div {
+    padding: 0.2rem 1rem;
+    border-right: 1px solid rgba($abiwein-ink, 0.1);
+}
+
+.private-summary-strip > div:last-child {
+    border-right: 0;
+}
+
+.private-summary-strip dt {
+    margin-bottom: 0.2rem;
+    color: $abiwein-muted;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.private-summary-strip dd {
+    margin: 0;
+    color: $abiwein-ink;
+    font-size: 1rem;
+    font-weight: 750;
+}
+
+// Les lignes de vente suivent une grille compacte séparée par de simples traits.
+.sale-lines {
+    border-top: 1px solid rgba($abiwein-ink, 0.12);
+}
+
+.sale-line {
+    display: grid;
+    grid-template-columns: minmax(13rem, 2fr) minmax(7rem, 0.65fr) minmax(9rem, 0.8fr) minmax(8rem, 0.7fr) auto;
+    gap: 0.85rem;
+    align-items: end;
+    padding-block: 0.9rem;
+    border-bottom: 1px solid rgba($abiwein-ink, 0.12);
+}
+
+.private-recommendation-state {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba($abiwein-ink, 0.1);
 }
 
 .private-stat--alert {
@@ -637,6 +759,24 @@ body.private-site {
         grid-template-columns: 1fr;
     }
 
+    .private-summary-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .private-summary-strip > div:nth-child(2) {
+        border-right: 0;
+    }
+
+    .private-summary-strip > div:nth-child(-n + 2) {
+        padding-bottom: 0.7rem;
+        margin-bottom: 0.7rem;
+        border-bottom: 1px solid rgba($abiwein-ink, 0.08);
+    }
+
+    .sale-line {
+        grid-template-columns: 1fr 1fr;
+    }
+
     .private-filter {
         align-items: stretch;
         flex-direction: column;
@@ -664,6 +804,19 @@ body.private-site {
     .private-panel__header,
     .private-form-card {
         padding: 1.15rem;
+    }
+
+    .private-summary-strip,
+    .sale-line {
+        grid-template-columns: 1fr;
+    }
+
+    .private-summary-strip > div,
+    .private-summary-strip > div:nth-child(2) {
+        padding-block: 0.55rem;
+        margin: 0;
+        border-right: 0;
+        border-bottom: 1px solid rgba($abiwein-ink, 0.08);
     }
 
     .private-quick-actions {

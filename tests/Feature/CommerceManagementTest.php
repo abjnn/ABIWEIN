@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\SaleItemType;
 use App\Enums\UserRole;
 use App\Http\Controllers\Commerce\ClientController;
 use App\Http\Controllers\Commerce\CommerceDashboardController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Commerce\PaymentController;
 use App\Http\Controllers\Commerce\ReceivableController;
 use App\Http\Controllers\Commerce\SaleController;
 use App\Models\Client;
+use App\Models\Expense;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\User;
@@ -88,8 +90,8 @@ class CommerceManagementTest extends TestCase
         ]);
     }
 
-    /** Une vente au comptant est soldée, encaissée en espèces et sortie du stock. */
-    public function test_cash_sale_updates_stock_and_creates_cash_receipt_atomically(): void
+    /** Une vente au comptant est soldée sans toucher au stock d'intrants. */
+    public function test_cash_sale_keeps_input_stock_unchanged_and_creates_cash_receipt(): void
     {
         $manager = User::factory()->create(['role' => UserRole::FarmManager]);
         $product = $this->createProduct(stock: 10);
@@ -98,7 +100,7 @@ class CommerceManagementTest extends TestCase
             'sale_date' => now()->toDateString(),
             'sale_type' => 'cash',
             'items' => [[
-                'product_id' => $product->id,
+                'item_type' => SaleItemType::PreparedChicken->value,
                 'quantity' => 3,
                 'unit_price' => 2500,
             ]],
@@ -109,10 +111,10 @@ class CommerceManagementTest extends TestCase
         $this->assertSame('paid', $sale->status);
         $this->assertSame('7500.00', $sale->paid_amount);
         $this->assertSame('0.00', $sale->balance_due);
-        $this->assertDatabaseHas('sale_items', ['sale_id' => $sale->id, 'line_total' => 7500]);
+        $this->assertDatabaseHas('sale_items', ['sale_id' => $sale->id, 'product_id' => null, 'description' => 'Poulet de chair préparé', 'line_total' => 7500]);
         $this->assertDatabaseHas('payments', ['sale_id' => $sale->id, 'amount' => 7500, 'payment_method' => 'cash']);
-        $this->assertDatabaseHas('stock_movements', ['product_id' => $product->id, 'type' => 'exit', 'quantity' => 3]);
-        $this->assertSame('7.00', $product->fresh()->current_stock);
+        $this->assertDatabaseCount('stock_movements', 0);
+        $this->assertSame('10.00', $product->fresh()->current_stock);
     }
 
     /** Une vente à crédit conserve son client, son premier versement et son solde. */
@@ -128,7 +130,7 @@ class CommerceManagementTest extends TestCase
             'sale_type' => 'credit',
             'initial_payment' => 3000,
             'items' => [[
-                'product_id' => $product->id,
+                'item_type' => SaleItemType::LiveChicken->value,
                 'quantity' => 4,
                 'unit_price' => 2000,
             ]],
@@ -177,28 +179,28 @@ class CommerceManagementTest extends TestCase
         $this->assertDatabaseCount('payments', 0);
     }
 
-    /** Un stock insuffisant annule la vente, ses lignes, son paiement et tout mouvement. */
-    public function test_insufficient_stock_rolls_back_the_entire_sale(): void
+    /** Une vente de poulets reste indépendante de la quantité d'aliments en magasin. */
+    public function test_sale_is_independent_from_farm_input_stock(): void
     {
         $manager = User::factory()->create(['role' => UserRole::FarmManager]);
-        $product = $this->createProduct(stock: 2);
+        $product = $this->createProduct(stock: 0);
 
         $response = $this->actingAs($manager)->post(route('sales.store'), [
             'sale_date' => now()->toDateString(),
             'sale_type' => 'cash',
             'items' => [[
-                'product_id' => $product->id,
+                'item_type' => SaleItemType::LiveChicken->value,
                 'quantity' => 3,
                 'unit_price' => 2500,
             ]],
         ]);
 
-        $response->assertSessionHasErrors('items.0.quantity');
-        $this->assertDatabaseCount('sales', 0);
-        $this->assertDatabaseCount('sale_items', 0);
-        $this->assertDatabaseCount('payments', 0);
+        $response->assertRedirect();
+        $this->assertDatabaseCount('sales', 1);
+        $this->assertDatabaseCount('sale_items', 1);
+        $this->assertDatabaseCount('payments', 1);
         $this->assertDatabaseCount('stock_movements', 0);
-        $this->assertSame('2.00', $product->fresh()->current_stock);
+        $this->assertSame('0.00', $product->fresh()->current_stock);
     }
 
     /** Une dépense valide reçoit une référence et conserve l'identité de son auteur. */
@@ -219,7 +221,7 @@ class CommerceManagementTest extends TestCase
             'amount' => 125000,
             'recorded_by' => $manager->id,
         ]);
-        $this->assertStringStartsWith('DEP-', (string) \App\Models\Expense::query()->value('reference'));
+        $this->assertStringStartsWith('DEP-', (string) Expense::query()->value('reference'));
     }
 
     /** Un vétérinaire ne peut pas ouvrir les écrans financiers. */
@@ -230,14 +232,28 @@ class CommerceManagementTest extends TestCase
         $this->actingAs($veterinarian)->get(route('sales.index'))->assertForbidden();
     }
 
+    /** L'administrateur consulte les ventes mais toute écriture lui est refusée. */
+    public function test_administrator_has_read_only_commercial_access(): void
+    {
+        $administrator = User::factory()->administrator()->create();
+
+        $this->actingAs($administrator)->get(route('sales.index'))->assertOk();
+        $this->actingAs($administrator)->get(route('clients.index'))->assertOk();
+        $this->actingAs($administrator)->get(route('expenses.index'))->assertOk();
+
+        $this->actingAs($administrator)->post(route('sales.store'), [])->assertForbidden();
+        $this->actingAs($administrator)->post(route('clients.store'), [])->assertForbidden();
+        $this->actingAs($administrator)->post(route('expenses.store'), [])->assertForbidden();
+    }
+
     /** Crée un produit vendable minimal utilisé par plusieurs scénarios. */
     private function createProduct(float $stock): Product
     {
         return Product::query()->create([
             'code' => 'VENT-'.str_pad((string) Product::query()->count() + 1, 3, '0', STR_PAD_LEFT),
-            'name' => 'Poulet entier préparé',
-            'category' => 'processed_chicken',
-            'unit' => 'pièce',
+            'name' => 'Aliment finition',
+            'category' => 'feed',
+            'unit' => 'kg',
             'current_stock' => $stock,
             'alert_threshold' => 1,
             'is_active' => true,

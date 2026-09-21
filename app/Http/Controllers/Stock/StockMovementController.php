@@ -114,10 +114,6 @@ class StockMovementController extends Controller
     /** Sécurise également les actions appelées hors d’un FormRequest. */
     private function ensureManagerAccess(Request $request): void
     {
-        $user = $request->user();
-        abort_unless(
-            $user?->hasRole(UserRole::Administrator) || $user?->hasRole(UserRole::FarmManager),
-            403
-        );
+        abort_unless($request->user()?->hasRole(UserRole::FarmManager), 403);
     }
 }

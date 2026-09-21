@@ -20,13 +20,13 @@
         @endif
     </section>
 
-    {{-- INDICATEURS : résument l’historique filtré et les contrôles encore à venir. --}}
-    <section class="private-stats" aria-label="Indicateurs sanitaires">
-        <x-private.stat-card label="Visites retrouvées" :value="number_format($visits->total(), 0, ',', ' ')" detail="Selon les filtres actuels" />
-        <x-private.stat-card label="Contrôles à venir" :value="number_format($upcomingCount, 0, ',', ' ')" detail="Prochaines visites programmées" :tone="$upcomingCount > 0 ? 'alert' : 'default'" />
-        <x-private.stat-card label="Bandes disponibles" :value="number_format($flocks->count(), 0, ',', ' ')" detail="Cycles présents dans le registre" />
-        <x-private.stat-card label="Vétérinaires actifs" :value="number_format($veterinarians->count(), 0, ',', ' ')" detail="Professionnels pouvant signer" />
-    </section>
+    {{-- INDICATEURS : une ligne compacte remplace les grandes cartes inutiles. --}}
+    <dl class="private-summary-strip" aria-label="Indicateurs sanitaires">
+        <div><dt>Visites</dt><dd>{{ number_format($visits->total(), 0, ',', ' ') }}</dd></div>
+        <div><dt>Contrôles à venir</dt><dd>{{ number_format($upcomingCount, 0, ',', ' ') }}</dd></div>
+        <div><dt>Bandes</dt><dd>{{ number_format($flocks->count(), 0, ',', ' ') }}</dd></div>
+        <div><dt>Vétérinaires actifs</dt><dd>{{ number_format($veterinarians->count(), 0, ',', ' ') }}</dd></div>
+    </dl>
 
     {{-- FILTRES : tous les champs utilisent la méthode GET afin de produire une URL partageable. --}}
     <section class="private-form-card mb-3" aria-labelledby="health-filters-title">
@@ -108,6 +108,7 @@
                         <th scope="col">Bande</th>
                         <th scope="col">Vétérinaire</th>
                         <th scope="col">Diagnostic</th>
+                        <th scope="col">Recommandation</th>
                         <th scope="col">Prochain contrôle</th>
                         <th scope="col"><span class="visually-hidden">Action</span></th>
                     </tr>
@@ -123,6 +124,7 @@
                             </td>
                             <td>{{ $visit->veterinarian->name }}</td>
                             <td>{{ \Illuminate\Support\Str::limit($visit->diagnosis, 90) }}</td>
+                            <td><span class="private-status {{ $visit->recommendation_status === 'applied' ? 'private-status--good' : 'private-status--watch' }}">{{ $visit->recommendation_status === 'applied' ? 'Appliquée' : 'À appliquer' }}</span></td>
                             <td>
                                 @if ($visit->next_visit_date)
                                     {{-- Une échéance du jour reste normale ; seules les dates antérieures sont signalées. --}}
@@ -137,7 +139,7 @@
                         </tr>
                     @empty
                         {{-- Cet état informe clairement lorsque les filtres ne renvoient aucune visite. --}}
-                        <tr><td colspan="6" class="private-empty">Aucune visite vétérinaire ne correspond aux critères.</td></tr>
+                        <tr><td colspan="7" class="private-empty">Aucune visite vétérinaire ne correspond aux critères.</td></tr>
                     @endforelse
                 </tbody>
             </table>

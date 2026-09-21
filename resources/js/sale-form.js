@@ -33,23 +33,13 @@ const initializeSaleForm = () => {
         grandTotal.textContent = formatMoney(total);
     };
 
-    // Cette fonction relie les champs, le stock disponible et le retrait d’une ligne.
+    // Cette fonction relie le calcul financier et le retrait d'une ligne.
     const bindLine = (line) => {
-        const productField = line.querySelector('[data-product]');
-        const stockLabel = line.querySelector('[data-stock-label]');
         const removeButton = line.querySelector('[data-remove-line]');
 
         [line.querySelector('[data-quantity]'), line.querySelector('[data-price]')]
             .forEach((field) => field.addEventListener('input', updateGrandTotal));
 
-        productField.addEventListener('change', () => {
-            const option = productField.selectedOptions[0];
-            stockLabel.textContent = option?.dataset.stock
-                ? `Stock : ${option.dataset.stock} ${option.dataset.unit}`
-                : 'Choisissez un produit pour voir le stock.';
-        });
-
-        productField.dispatchEvent(new Event('change'));
         removeButton.addEventListener('click', () => {
             if (linesContainer.querySelectorAll('[data-sale-line]').length > 1) {
                 line.remove();

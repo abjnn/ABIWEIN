@@ -1,0 +1,198 @@
+// -----------------------------------------------------------------------------
+// Conversation ABIWEIN : une composition linéaire, sobre et peu encombrante.
+// La palette réutilise exclusivement les variables déjà présentes dans le projet.
+// -----------------------------------------------------------------------------
+
+.ai-heading {
+    align-items: flex-start;
+    border-bottom: 1px solid rgba($abiwein-ink, 0.14);
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+
+    h2 {
+        color: $abiwein-ink;
+        font-size: clamp(1.45rem, 2vw, 2rem);
+        margin: 0.2rem 0 0.45rem;
+    }
+
+    p:last-child {
+        color: rgba($abiwein-ink, 0.72);
+        margin: 0;
+        max-width: 48rem;
+    }
+}
+
+.ai-provider-status {
+    color: $abiwein-olive;
+    flex: 0 0 auto;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding-top: 0.35rem;
+    text-transform: uppercase;
+}
+
+.ai-suggestions {
+    margin-bottom: 1.5rem;
+
+    h3 {
+        color: $abiwein-ink;
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+    }
+}
+
+.ai-suggestions__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1.1rem;
+
+    button {
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid rgba($abiwein-olive, 0.32);
+        color: $abiwein-olive;
+        font-size: 0.88rem;
+        padding: 0 0 0.15rem;
+        text-align: left;
+
+        &:hover,
+        &:focus-visible {
+            border-bottom-color: $abiwein-olive;
+            color: darken($abiwein-olive, 8%);
+        }
+    }
+}
+
+.ai-conversation {
+    background: #fff;
+    border: 1px solid rgba($abiwein-ink, 0.11);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.ai-conversation__header {
+    align-items: center;
+    border-bottom: 1px solid rgba($abiwein-ink, 0.1);
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+
+    h3 {
+        color: $abiwein-ink;
+        font-size: 1rem;
+        margin: 0;
+    }
+}
+
+.ai-clear-button {
+    background: transparent;
+    border: 0;
+    color: rgba($abiwein-ink, 0.65);
+    font-size: 0.8rem;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 0.2rem;
+}
+
+.ai-messages {
+    max-height: 31rem;
+    overflow-y: auto;
+    padding: 0.35rem 1.25rem;
+}
+
+.ai-message {
+    border-bottom: 1px solid rgba($abiwein-ink, 0.08);
+    padding: 1rem 0;
+
+    &:last-child {
+        border-bottom: 0;
+    }
+
+    p {
+        color: rgba($abiwein-ink, 0.86);
+        line-height: 1.65;
+        margin: 0.45rem 0 0;
+        max-width: 58rem;
+    }
+
+    small {
+        color: rgba($abiwein-ink, 0.58);
+        display: block;
+        margin-top: 0.45rem;
+    }
+}
+
+.ai-message--user {
+    border-left: 3px solid $abiwein-sage;
+    padding-left: 0.85rem;
+}
+
+.ai-message__meta {
+    align-items: center;
+    color: $abiwein-ink;
+    display: flex;
+    font-size: 0.8rem;
+    gap: 0.75rem;
+
+    time {
+        color: rgba($abiwein-ink, 0.5);
+    }
+}
+
+.ai-empty-state {
+    padding: 2.5rem 0;
+    text-align: center;
+
+    h4 {
+        color: $abiwein-ink;
+        font-size: 1.05rem;
+    }
+
+    p {
+        color: rgba($abiwein-ink, 0.65);
+        margin: 0 auto;
+        max-width: 36rem;
+    }
+}
+
+.ai-composer {
+    background: rgba($abiwein-beige-light, 0.38);
+    border-top: 1px solid rgba($abiwein-ink, 0.1);
+    padding: 1rem 1.25rem;
+
+    textarea {
+        background: #fff;
+        border-color: rgba($abiwein-ink, 0.2);
+        resize: vertical;
+    }
+}
+
+.ai-composer__footer {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-top: 0.75rem;
+
+    p {
+        color: rgba($abiwein-ink, 0.58);
+        font-size: 0.78rem;
+        margin: 0;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .ai-heading,
+    .ai-composer__footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .ai-provider-status {
+        padding-top: 0;
+    }
+}

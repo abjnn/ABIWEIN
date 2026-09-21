@@ -2,15 +2,16 @@
 
 namespace App\Http\Requests\Commerce;
 
+use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
 
 /** Valide une entrée du registre des dépenses. */
 class SaveExpenseRequest extends FormRequest
 {
-    /** Les rôles sont filtrés par la route du module financier. */
+    /** Seul le responsable enregistre les sorties de caisse. */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->hasRole(UserRole::FarmManager) ?? false;
     }
 
     /** Chaque règle protège une information utilisée dans les bilans. */

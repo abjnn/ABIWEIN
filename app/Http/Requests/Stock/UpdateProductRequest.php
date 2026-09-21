@@ -12,11 +12,10 @@ use Illuminate\Validation\Rule;
 /** Contrôle la modification d’un produit sans permettre d’altérer son stock directement. */
 class UpdateProductRequest extends FormRequest
 {
-    /** L’écriture est limitée aux deux rôles chargés de l’exploitation. */
+    /** Seul le responsable d'exploitation peut modifier une référence. */
     public function authorize(): bool
     {
-        return $this->user()?->hasRole(UserRole::Administrator)
-            || $this->user()?->hasRole(UserRole::FarmManager);
+        return $this->user()?->hasRole(UserRole::FarmManager) ?? false;
     }
 
     /** Uniformise la référence et le nom avant d’appliquer les règles. */

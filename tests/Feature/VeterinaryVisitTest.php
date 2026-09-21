@@ -105,24 +105,20 @@ class VeterinaryVisitTest extends TestCase
         $this->assertSame($veterinarian->id, $visit->veterinarian_id);
     }
 
-    /** L’administrateur peut enregistrer une visite au nom d’un vétérinaire actif. */
-    public function test_administrator_can_assign_active_veterinarian(): void
+    /** L’administrateur consulte les visites mais ne peut créer aucun diagnostic. */
+    public function test_administrator_has_read_only_health_access(): void
     {
         $administrator = User::factory()->administrator()->create();
         $veterinarian = User::factory()->veterinarian()->create();
         $flock = Flock::factory()->create();
 
-        $response = $this->actingAs($administrator)
-            ->post(route('health.visits.store'), $this->validPayload($flock, $veterinarian));
+        $this->actingAs($administrator)->get(route('health.visits.index'))->assertOk();
+        $this->actingAs($administrator)->get(route('health.visits.create'))->assertForbidden();
+        $this->actingAs($administrator)
+            ->post(route('health.visits.store'), $this->validPayload($flock, $veterinarian))
+            ->assertForbidden();
 
-        $visit = VeterinaryVisit::query()->sole();
-
-        $response->assertRedirect(route('health.visits.show', $visit));
-        $this->assertDatabaseHas('veterinary_visits', [
-            'flock_id' => $flock->id,
-            'veterinarian_id' => $veterinarian->id,
-            'diagnosis' => 'Aucun signe clinique préoccupant.',
-        ]);
+        $this->assertDatabaseCount('veterinary_visits', 0);
     }
 
     /** Une prochaine visite antérieure à l’examen est rejetée sans écriture en base. */
@@ -152,9 +148,25 @@ class VeterinaryVisitTest extends TestCase
 
         $this->actingAs($administrator)
             ->post(route('health.visits.store'), $this->validPayload($flock, $manager))
-            ->assertSessionHasErrors('veterinarian_id');
+            ->assertForbidden();
 
         $this->assertDatabaseCount('veterinary_visits', 0);
+    }
+
+    /** Le responsable peut confirmer une recommandation sans modifier le diagnostic. */
+    public function test_farm_manager_can_mark_recommendation_as_applied(): void
+    {
+        $manager = User::factory()->create(['role' => UserRole::FarmManager]);
+        $visit = VeterinaryVisit::factory()->create(['recommendations' => 'Augmenter la ventilation.']);
+
+        $this->actingAs($manager)
+            ->patch(route('health.visits.mark-applied', $visit))
+            ->assertRedirect();
+
+        $visit->refresh();
+        $this->assertSame('applied', $visit->recommendation_status);
+        $this->assertSame($manager->id, $visit->recommendation_applied_by);
+        $this->assertNotNull($visit->recommendation_applied_at);
     }
 
     /** Construit les données valides communes aux scénarios de création. */

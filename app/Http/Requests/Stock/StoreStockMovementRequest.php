@@ -14,8 +14,7 @@ class StoreStockMovementRequest extends FormRequest
     /** Seuls les rôles opérationnels autorisés peuvent modifier une quantité. */
     public function authorize(): bool
     {
-        return $this->user()?->hasRole(UserRole::Administrator)
-            || $this->user()?->hasRole(UserRole::FarmManager);
+        return $this->user()?->hasRole(UserRole::FarmManager) ?? false;
     }
 
     /** Nettoie la justification afin d’éviter les espaces inutiles dans l’historique. */

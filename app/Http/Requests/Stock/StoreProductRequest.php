@@ -11,11 +11,10 @@ use Illuminate\Validation\Rule;
 /** Contrôle les informations utilisées pour créer un produit stocké. */
 class StoreProductRequest extends FormRequest
 {
-    /** L’écriture est limitée aux deux rôles chargés de l’exploitation. */
+    /** Seul le responsable d'exploitation tient le registre des intrants. */
     public function authorize(): bool
     {
-        return $this->user()?->hasRole(UserRole::Administrator)
-            || $this->user()?->hasRole(UserRole::FarmManager);
+        return $this->user()?->hasRole(UserRole::FarmManager) ?? false;
     }
 
     /** Normalise le code avant validation pour conserver des références homogènes. */

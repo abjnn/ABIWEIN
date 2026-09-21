@@ -36,7 +36,8 @@
                 {{-- Ce bloc crée l’identifiant de connexion unique. --}}
                 <div class="col-md-6">
                     <label class="form-label" for="email">Adresse e-mail</label>
-                    <input class="form-control @error('email') is-invalid @enderror" id="email" name="email" type="email" value="{{ old('email') }}" maxlength="150" autocomplete="off" required>
+                    <input class="form-control @error('email') is-invalid @enderror" id="email" name="email" type="email" value="{{ old('email') }}" maxlength="150" autocomplete="off" aria-describedby="account-email-help" required>
+                    <div class="form-text" id="account-email-help">Utilisez l’adresse personnelle de l’utilisateur ; son domaine doit exister.</div>
                     @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
@@ -56,7 +57,7 @@
                 <div class="col-md-6">
                     <label class="form-label" for="password">Mot de passe temporaire</label>
                     <input class="form-control @error('password') is-invalid @enderror" id="password" name="password" type="password" minlength="12" autocomplete="new-password" aria-describedby="password-help" required>
-                    <div class="form-text" id="password-help">12 caractères minimum avec majuscule, minuscule, chiffre et symbole.</div>
+                    <div class="form-text" id="password-help">12 caractères minimum avec majuscule, minuscule, chiffre et symbole. Le secret doit être différent de ceux des autres comptes.</div>
                     @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
                 <div class="col-md-6">

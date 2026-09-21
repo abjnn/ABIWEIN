@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Commerce;
 
+use App\Enums\SaleItemType;
+use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -12,12 +14,11 @@ class StoreSaleRequest extends FormRequest
     /** Les autorisations sont centralisées dans les middlewares des routes privées. */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()?->hasRole(UserRole::FarmManager) ?? false;
     }
 
     /**
-     * Les lignes doivent référencer des produits actifs et un produit ne peut
-     * apparaître qu'une seule fois dans le même document de vente.
+     * Les lignes décrivent les poulets vendus sans référencer le stock d'intrants.
      */
     public function rules(): array
     {
@@ -31,11 +32,10 @@ class StoreSaleRequest extends FormRequest
             'sale_type' => ['required', Rule::in(['cash', 'credit'])],
             'initial_payment' => ['nullable', 'numeric', 'decimal:0,2', 'min:0', 'max:9999999999.99'],
             'items' => ['required', 'array', 'min:1', 'max:50'],
-            'items.*.product_id' => [
+            'items.*.item_type' => [
                 'required',
-                'integer',
                 'distinct',
-                Rule::exists('products', 'id')->where(fn ($query) => $query->where('is_active', true)),
+                Rule::enum(SaleItemType::class),
             ],
             'items.*.quantity' => ['required', 'numeric', 'decimal:0,2', 'gt:0', 'max:9999999999.99'],
             'items.*.unit_price' => ['required', 'numeric', 'decimal:0,2', 'min:0', 'max:9999999999.99'],
@@ -80,9 +80,9 @@ class StoreSaleRequest extends FormRequest
             'sale_type.in' => 'Le type de vente est invalide.',
             'items.required' => 'Ajoutez au moins une ligne de vente.',
             'items.min' => 'Ajoutez au moins une ligne de vente.',
-            'items.*.product_id.required' => 'Chaque ligne doit contenir un produit.',
-            'items.*.product_id.distinct' => 'Regroupez les quantités d’un même produit sur une seule ligne.',
-            'items.*.product_id.exists' => 'Un produit sélectionné est introuvable ou inactif.',
+            'items.*.item_type.required' => 'Chaque ligne doit préciser le type de poulet vendu.',
+            'items.*.item_type.distinct' => 'Regroupez un même type de poulet sur une seule ligne.',
+            'items.*.item_type.enum' => 'Le type de poulet sélectionné n’est pas autorisé.',
             'items.*.quantity.gt' => 'La quantité doit être supérieure à zéro.',
             'items.*.unit_price.min' => 'Le prix unitaire ne peut pas être négatif.',
         ];

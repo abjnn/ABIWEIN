@@ -68,20 +68,29 @@
                             <div class="visually-hidden" aria-hidden="true"><label for="website">Site internet</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
 
                             <div class="row g-4">
-                                {{-- MODIFICATION : gardez les attributs name synchronisés avec ContactMessageController. --}}
+                                {{-- IDENTITÉ : les deux champs restent séparés pour éviter un nom ambigu dans les réponses. --}}
                                 <div class="col-md-6">
-                                    <label class="form-label" for="name">Nom complet <span aria-hidden="true">*</span></label>
-                                    <input class="form-control @error('name') is-invalid @enderror" id="name" name="name" type="text" value="{{ old('name') }}" maxlength="100" autocomplete="name" required>
-                                    @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    <label class="form-label" for="last_name">Nom <span aria-hidden="true">*</span></label>
+                                    <input class="form-control @error('last_name') is-invalid @enderror" id="last_name" name="last_name" type="text" value="{{ old('last_name') }}" maxlength="60" autocomplete="family-name" required>
+                                    @error('last_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-6">
+                                    <label class="form-label" for="first_name">Prénom <span aria-hidden="true">*</span></label>
+                                    <input class="form-control @error('first_name') is-invalid @enderror" id="first_name" name="first_name" type="text" value="{{ old('first_name') }}" maxlength="60" autocomplete="given-name" required>
+                                    @error('first_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+
+                                {{-- COORDONNÉES : le serveur contrôle le domaine e-mail et normalise le numéro en +237. --}}
+                                <div class="col-md-6">
                                     <label class="form-label" for="email">Adresse e-mail <span aria-hidden="true">*</span></label>
-                                    <input class="form-control @error('email') is-invalid @enderror" id="email" name="email" type="email" value="{{ old('email') }}" maxlength="150" autocomplete="email" required>
+                                    <input class="form-control @error('email') is-invalid @enderror" id="email" name="email" type="email" value="{{ old('email') }}" maxlength="150" autocomplete="email" aria-describedby="email-help" required>
+                                    <div class="form-text" id="email-help">Le format et l’existence du domaine sont contrôlés avant l’envoi.</div>
                                     @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label" for="phone">Téléphone</label>
-                                    <input class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" type="tel" value="{{ old('phone') }}" maxlength="30" autocomplete="tel">
+                                    <label class="form-label" for="phone">Téléphone camerounais <span aria-hidden="true">*</span></label>
+                                    <input class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" type="tel" value="{{ old('phone') }}" maxlength="24" autocomplete="tel" inputmode="tel" placeholder="+237 699 12 34 56" aria-describedby="phone-help" required>
+                                    <div class="form-text" id="phone-help">Vous pouvez saisir +237 ou commencer directement par 2 ou 6.</div>
                                     @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                                 <div class="col-md-6">

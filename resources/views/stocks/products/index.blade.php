@@ -8,23 +8,25 @@
     <section class="private-intro private-intro--compact" aria-labelledby="stocks-title">
         <div>
             <p class="private-kicker">Gestion des stocks</p>
-            <h2 id="stocks-title">Produits et disponibilités</h2>
-            <p>Contrôlez les quantités, les seuils de réapprovisionnement et les dates d’expiration depuis un registre unique.</p>
+            <h2 id="stocks-title">Intrants et disponibilités</h2>
+            <p>Aliments, vitamines, produits sanitaires, emballages et matériel utilisés par la ferme. Aucun article de ce registre n'est vendu.</p>
         </div>
         <div class="d-flex flex-wrap gap-2">
             <a class="btn btn-private-secondary" href="{{ route('stocks.movements.index') }}">Consulter l’historique</a>
-            <a class="btn btn-private-secondary" href="{{ route('stocks.movements.create') }}">Enregistrer un mouvement</a>
-            <a class="btn btn-private-primary" href="{{ route('stocks.create') }}">Ajouter un produit</a>
+            @if (auth()->user()->isFarmManager())
+                <a class="btn btn-private-secondary" href="{{ route('stocks.movements.create') }}">Enregistrer un mouvement</a>
+                <a class="btn btn-private-primary" href="{{ route('stocks.create') }}">Ajouter un intrant</a>
+            @endif
         </div>
     </section>
 
     {{-- INDICATEURS : les valeurs globales restent visibles même lorsqu’un filtre est actif. --}}
-    <section class="private-stats" aria-label="Indicateurs des stocks">
-        <x-private.stat-card label="Produits actifs" :value="$statistics['active']" detail="Références suivies" />
-        <x-private.stat-card label="Seuil atteint" :value="$statistics['low']" detail="Réapprovisionnement à prévoir" :tone="$statistics['low'] > 0 ? 'alert' : 'default'" />
-        <x-private.stat-card label="Produits expirés" :value="$statistics['expired']" detail="À isoler du stock utilisable" :tone="$statistics['expired'] > 0 ? 'alert' : 'default'" />
-        <x-private.stat-card label="Expiration sous 30 jours" :value="$statistics['expiring']" detail="À utiliser en priorité" :tone="$statistics['expiring'] > 0 ? 'alert' : 'default'" />
-    </section>
+    <dl class="private-summary-strip" aria-label="Indicateurs des stocks">
+        <div><dt>Intrants actifs</dt><dd>{{ $statistics['active'] }}</dd></div>
+        <div><dt>Seuil atteint</dt><dd>{{ $statistics['low'] }}</dd></div>
+        <div><dt>Expirés</dt><dd>{{ $statistics['expired'] }}</dd></div>
+        <div><dt>Expiration sous 30 jours</dt><dd>{{ $statistics['expiring'] }}</dd></div>
+    </dl>
 
     {{-- FILTRES : cette requête GET peut être partagée ou actualisée sans modifier les données. --}}
     <section class="private-form-card mb-3" aria-labelledby="stock-filters-title">
@@ -55,8 +57,8 @@
                 <div class="col-md-6 col-lg-2">
                     <label class="form-label" for="status">État</label>
                     <select class="form-select" id="status" name="status">
-                        <option value="all" @selected(($filters['status'] ?? 'all') === 'all')>Tous</option>
-                        <option value="active" @selected(($filters['status'] ?? '') === 'active')>Actifs</option>
+                        <option value="all" @selected(($filters['status'] ?? 'active') === 'all')>Tous</option>
+                        <option value="active" @selected(($filters['status'] ?? 'active') === 'active')>Actifs</option>
                         <option value="low" @selected(($filters['status'] ?? '') === 'low')>Seuil atteint</option>
                         <option value="expired" @selected(($filters['status'] ?? '') === 'expired')>Expirés</option>
                         <option value="expiring" @selected(($filters['status'] ?? '') === 'expiring')>Expiration proche</option>
@@ -117,9 +119,11 @@
                             <td class="text-end">
                                 <div class="d-inline-flex flex-wrap justify-content-end gap-2">
                                     <a class="btn btn-sm btn-private-secondary" href="{{ route('stocks.show', $product) }}">Consulter</a>
-                                    <a class="btn btn-sm btn-private-secondary" href="{{ route('stocks.edit', $product) }}">Modifier</a>
-                                    @if ($product->is_active)
-                                        <a class="btn btn-sm btn-private-primary" href="{{ route('stocks.movements.create', ['product' => $product->id]) }}">Mouvement</a>
+                                    @if (auth()->user()->isFarmManager())
+                                        <a class="btn btn-sm btn-private-secondary" href="{{ route('stocks.edit', $product) }}">Modifier</a>
+                                        @if ($product->is_active)
+                                            <a class="btn btn-sm btn-private-primary" href="{{ route('stocks.movements.create', ['product' => $product->id]) }}">Mouvement</a>
+                                        @endif
                                     @endif
                                 </div>
                             </td>

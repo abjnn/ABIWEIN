@@ -2,60 +2,41 @@
 
 namespace App\Services\Commerce;
 
+use App\Enums\SaleItemType;
 use App\Models\Payment;
-use App\Models\Product;
 use App\Models\Sale;
-use App\Models\StockMovement;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Centralise les calculs financiers et les mouvements de stock d'une vente.
+ * Centralise les calculs financiers d'une vente de poulets.
  * Les contrôleurs restent ainsi courts et aucune interface ne peut contourner ces règles.
  */
 class SaleService
 {
     /**
-     * Crée la vente, ses lignes, le paiement initial et les sorties de stock
-     * dans une seule transaction : une erreur annule l'ensemble de l'opération.
+     * Crée la vente, ses lignes et le paiement initial dans une seule transaction.
+     * Les intrants (aliments, vitamines, matériel) ne sont jamais diminués ici.
      */
     public function create(array $data, User $actor): Sale
     {
         return DB::transaction(function () use ($data, $actor): Sale {
-            // Le verrou empêche deux ventes simultanées de consommer le même stock.
-            $products = Product::query()
-                ->whereIn('id', collect($data['items'])->pluck('product_id'))
-                ->lockForUpdate()
-                ->get()
-                ->keyBy('id');
-
             $preparedItems = [];
             $totalAmount = 0.0;
 
-            // Chaque ligne est recalculée côté serveur et comparée au stock disponible.
-            foreach ($data['items'] as $index => $item) {
-                $product = $products->get((int) $item['product_id']);
+            // Chaque ligne est recalculée côté serveur à partir d'un type autorisé.
+            foreach ($data['items'] as $item) {
+                $itemType = SaleItemType::from($item['item_type']);
                 $quantity = round((float) $item['quantity'], 2);
                 $unitPrice = round((float) $item['unit_price'], 2);
-
-                if (! $product || ! $product->is_active) {
-                    throw ValidationException::withMessages([
-                        "items.$index.product_id" => 'Ce produit n’est plus disponible à la vente.',
-                    ]);
-                }
-
-                if ((float) $product->current_stock < $quantity) {
-                    throw ValidationException::withMessages([
-                        "items.$index.quantity" => "Stock insuffisant pour {$product->name} : {$product->current_stock} {$product->unit} disponible(s).",
-                    ]);
-                }
 
                 // MODIFICATION : changez ici l'arrondi si la comptabilité adopte un autre nombre de décimales.
                 $lineTotal = round($quantity * $unitPrice, 2);
                 $totalAmount = round($totalAmount + $lineTotal, 2);
-                $preparedItems[] = compact('product', 'quantity', 'unitPrice', 'lineTotal');
+                $description = $itemType->label();
+                $preparedItems[] = compact('description', 'quantity', 'unitPrice', 'lineTotal');
             }
 
             // Une vente au comptant est toujours intégralement payée dès sa création.
@@ -89,27 +70,13 @@ class SaleService
             ]);
 
             foreach ($preparedItems as $preparedItem) {
-                /** @var Product $product */
-                $product = $preparedItem['product'];
-
-                // La ligne conserve le nom et le prix appliqués au jour de la vente.
+                // Une vente ne pointe vers aucun intrant du magasin de la ferme.
                 $sale->items()->create([
-                    'product_id' => $product->id,
-                    'description' => $product->name,
+                    'product_id' => null,
+                    'description' => $preparedItem['description'],
                     'quantity' => $preparedItem['quantity'],
                     'unit_price' => $preparedItem['unitPrice'],
                     'line_total' => $preparedItem['lineTotal'],
-                ]);
-
-                // La quantité disponible et son historique sont mis à jour ensemble.
-                $product->decrement('current_stock', $preparedItem['quantity']);
-                StockMovement::query()->create([
-                    'product_id' => $product->id,
-                    'type' => 'exit',
-                    'quantity' => $preparedItem['quantity'],
-                    'occurred_at' => now(),
-                    'reason' => "Vente {$reference}",
-                    'recorded_by' => $actor->id,
                 ]);
             }
 
@@ -124,7 +91,7 @@ class SaleService
                 ]);
             }
 
-            return $sale->load(['client', 'items.product', 'payments.recordedBy', 'creator']);
+            return $sale->load(['client', 'items', 'payments.recordedBy', 'creator']);
         });
     }
 

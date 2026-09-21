@@ -40,7 +40,7 @@ class AuthorizationTest extends TestCase
 
         $response = $this->actingAs($administrator)->post(route('admin.users.store'), [
             'name' => 'Responsable Test',
-            'email' => 'responsable.test@abiwein.local',
+            'email' => 'responsable.abiwein.2026@gmail.com',
             'role' => UserRole::FarmManager->value,
             'password' => 'MotDePasse@2026',
             'password_confirmation' => 'MotDePasse@2026',
@@ -49,7 +49,7 @@ class AuthorizationTest extends TestCase
 
         $response->assertRedirect(route('admin.users.index'));
         $this->assertDatabaseHas('users', [
-            'email' => 'responsable.test@abiwein.local',
+            'email' => 'responsable.abiwein.2026@gmail.com',
             'role' => UserRole::FarmManager->value,
             'is_active' => true,
         ]);
