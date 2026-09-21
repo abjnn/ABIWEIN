@@ -2,7 +2,7 @@
 
 ABIWEIN est une application web de gestion d'exploitation avicole. Elle centralise les opérations de la ferme, leur suivi et les indicateurs utiles à la décision dans une interface française, responsive et adaptée à un usage quotidien.
 
-Le socle technique est installé et l'espace visiteur est structuré en pages Blade distinctes : accueil, présentation, contact et entrée de l'espace privé. Les modules métier seront ajoutés par étapes sur cette fondation.
+Le socle technique est installé. L'espace visiteur est structuré en pages Blade distinctes et l'espace privé dispose maintenant d'une connexion sécurisée, de trois rôles, d'un tableau de bord et d'une gestion administrative des comptes. La base métier et son jeu de démonstration couvrent l'exploitation, le suivi quotidien, les stocks, la santé et les ventes.
 
 ## Décisions fonctionnelles établies
 
@@ -110,12 +110,15 @@ DB_ENGINE=InnoDB
 
 Le fichier `.env` contient des secrets : il reste local, ne doit jamais être joint à un message et ne doit pas être ajouté à Git.
 
-Initialiser le schéma :
+Initialiser le schéma et les données fictives de démonstration :
 
 ```powershell
 php artisan config:clear
 php artisan migrate
+php artisan db:seed
 ```
+
+Les trois comptes locaux et leur mot de passe commun sont documentés dans [`docs/DATABASE_AND_ACCESS.md`](docs/DATABASE_AND_ACCESS.md). Ils ne sont jamais créés en production.
 
 ### 4. Démarrage
 
@@ -145,7 +148,7 @@ php artisan test
 php artisan migrate:status
 ```
 
-Ces contrôles ont réussi sur le poste de développement le 21 septembre 2026. Les preuves synthétiques et les éventuels contrôles restant à faire sont consignés dans [`docs/VALIDATION.md`](docs/VALIDATION.md).
+Ces contrôles ont réussi sur le poste de développement le 21 septembre 2026, avec 15 tests et 50 assertions. Les preuves synthétiques et les éventuels contrôles restant à faire sont consignés dans [`docs/VALIDATION.md`](docs/VALIDATION.md).
 
 ## Organisation du projet
 
@@ -167,6 +170,7 @@ docs/                architecture, marque et journal de validation
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) : architecture et frontières du socle.
 - [`docs/BRAND.md`](docs/BRAND.md) : palette, typographie et règles du logo.
 - [`docs/CADRAGE.md`](docs/CADRAGE.md) : périmètre, acteurs et règles fonctionnelles validées.
+- [`docs/DATABASE_AND_ACCESS.md`](docs/DATABASE_AND_ACCESS.md) : tables, rôles et comptes de démonstration.
 - [`docs/FRONTEND_CUSTOMIZATION.md`](docs/FRONTEND_CUSTOMIZATION.md) : repères pour modifier chaque partie de l'interface.
 - [`docs/IMAGE_CREDITS.md`](docs/IMAGE_CREDITS.md) : sources et licences des photographies professionnelles.
 - [`docs/VALIDATION.md`](docs/VALIDATION.md) : preuves observées et contrôles restants.

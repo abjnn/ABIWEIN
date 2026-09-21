@@ -14,7 +14,7 @@ class PublicSiteTest extends TestCase
         $this->get(route('home'))->assertOk();
         $this->get(route('about'))->assertOk()->assertSeeText('Notre mission');
         $this->get(route('contact'))->assertOk()->assertSeeText('Parlons de votre demande');
-        $this->get(route('login'))->assertOk()->assertSeeText('Aucun identifiant n’est encore accepté');
+        $this->get(route('login'))->assertOk()->assertSeeText('Se connecter');
     }
 
     /** Aucun parcours d'inscription publique ne doit exister. */

@@ -52,8 +52,9 @@
             <div class="row align-items-center g-5">
                 <div class="col-lg-6">
                     <figure class="editorial-image">
-                        <img src="{{ asset('images/public/farmer-poultry.jpg') }}" alt="Éleveur nourrissant des poulets devant un poulailler" width="1400" height="933" loading="lazy">
-                        <figcaption>Une gestion proche du terrain et de ses réalités.</figcaption>
+                        {{-- Cette image montre la croissance des jeunes poulets autour de leur mangeoire. --}}
+                        <img src="{{ asset('images/public/farmer-poultry.jpg') }}" alt="Jeunes poulets de chair rassemblés autour d’une mangeoire" width="1400" height="933" loading="lazy">
+                        <figcaption>Des observations quotidiennes au plus près de la croissance.</figcaption>
                     </figure>
                 </div>
                 <div class="col-lg-6">
@@ -104,7 +105,8 @@
                 </div>
                 <div class="col-md-6 col-xl-4">
                     <article class="activity-card activity-card--image">
-                        <img src="{{ asset('images/public/prepared-chicken.jpg') }}" alt="Viande de poulet fraîche préparée sur une planche" width="1400" height="933" loading="lazy">
+                        {{-- Cette image illustre le produit fini sans montrer de personne ni la phase d’abattage. --}}
+                        <img src="{{ asset('images/public/prepared-chicken.jpg') }}" alt="Poulets entiers déplumés et conditionnés sous emballage" width="1400" height="933" loading="lazy">
                         <div class="activity-card__overlay">
                             <div class="activity-card__number">03</div>
                             <h3>Préparation et vente</h3>

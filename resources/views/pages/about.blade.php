@@ -24,8 +24,9 @@
                 </div>
                 <div class="col-lg-6 order-1 order-lg-2">
                     <figure class="editorial-image editorial-image--portrait">
-                        <img src="{{ asset('images/public/farmer-poultry.jpg') }}" alt="Travail d’un éleveur auprès de ses poulets" width="1400" height="933">
-                        <figcaption>L’expertise humaine demeure au centre de chaque décision.</figcaption>
+                        {{-- Cette image peut être remplacée en conservant le même nom de fichier. --}}
+                        <img src="{{ asset('images/public/farmer-poultry.jpg') }}" alt="Jeunes poulets de chair en croissance autour d’une mangeoire" width="1400" height="933">
+                        <figcaption>Le suivi de la croissance repose sur des observations régulières.</figcaption>
                     </figure>
                 </div>
             </div>

@@ -1,0 +1,549 @@
+// =============================================================================
+// ESPACE PRIVÉ ABIWEIN
+// =============================================================================
+// La palette provient exclusivement de _brand.scss. Chaque section porte le
+// nom du composant Blade correspondant pour faciliter les modifications.
+
+// -----------------------------------------------------------------------------
+// 1. Grille générale et zone de travail
+// -----------------------------------------------------------------------------
+body.private-site {
+    min-width: 0; // Permet aux très petits écrans de rester sans défilement horizontal global.
+    overflow-x: hidden; // Les grands tableaux défilent dans leur propre conteneur responsive.
+    color: $abiwein-ink;
+    background: #f4f5f1; // Fond neutre, légèrement teinté par la palette agricole.
+}
+
+.private-shell {
+    display: grid;
+    grid-template-columns: 17.5rem minmax(0, 1fr); // MODIFICATION : 17.5rem règle la largeur du menu.
+    min-height: 100vh;
+}
+
+.private-workspace {
+    min-width: 0; // Autorise les tableaux à défiler sans élargir toute la page.
+}
+
+.private-content {
+    width: min(100%, 96rem);
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+    margin-inline: auto;
+}
+
+// -----------------------------------------------------------------------------
+// 2. Barre latérale sombre inspirée des outils professionnels
+// -----------------------------------------------------------------------------
+.private-sidebar {
+    width: 17.5rem !important;
+    color: rgba($abiwein-white, 0.74);
+    background: $abiwein-ink;
+    border-right: 1px solid rgba($abiwein-white, 0.08);
+}
+
+.private-sidebar__body {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 1.25rem;
+    overflow-y: auto;
+}
+
+.private-sidebar__mobile-header {
+    color: $abiwein-white;
+    border-bottom: 1px solid rgba($abiwein-white, 0.1);
+}
+
+.private-sidebar__mobile-header h2 {
+    font-size: 1rem;
+}
+
+.private-brand {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 0.55rem;
+    margin-bottom: 2rem;
+    background: $abiwein-white;
+    border-radius: 0.55rem;
+}
+
+.private-brand img {
+    width: 6.25rem; // MODIFICATION : taille du logo dans le menu privé.
+    height: 3.9rem;
+    object-fit: contain;
+}
+
+.private-nav {
+    display: grid;
+    gap: 0.3rem;
+}
+
+.private-nav__label {
+    padding-inline: 0.75rem;
+    margin: 0 0 0.45rem;
+    color: rgba($abiwein-white, 0.42);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.private-nav__label--spaced {
+    margin-top: 1.4rem;
+}
+
+.private-nav__link {
+    display: grid;
+    grid-template-columns: 0.45rem 1fr auto;
+    gap: 0.7rem;
+    align-items: center;
+    min-height: 2.65rem;
+    padding: 0.65rem 0.75rem;
+    color: rgba($abiwein-white, 0.76);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 0.45rem;
+    transition: color 150ms ease, background-color 150ms ease;
+
+    &:hover,
+    &:focus,
+    &.active {
+        color: $abiwein-white;
+        background: rgba($abiwein-white, 0.09);
+    }
+
+    &.active .private-nav__marker {
+        background: $abiwein-beige-light;
+    }
+}
+
+.private-nav__marker {
+    width: 0.35rem;
+    height: 0.35rem;
+    background: rgba($abiwein-white, 0.3);
+    border-radius: 50%;
+}
+
+.private-nav__link small {
+    color: rgba($abiwein-white, 0.38);
+    font-size: 0.64rem;
+    font-weight: 600;
+}
+
+.private-nav__link--disabled {
+    cursor: default;
+    opacity: 0.66;
+}
+
+.private-sidebar__public-link {
+    padding: 0.8rem 0.75rem;
+    margin-top: auto;
+    color: rgba($abiwein-white, 0.74);
+    font-size: 0.86rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-top: 1px solid rgba($abiwein-white, 0.1);
+
+    &:hover,
+    &:focus {
+        color: $abiwein-white;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// 3. En-tête de l’espace privé
+// -----------------------------------------------------------------------------
+.private-header {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 5.4rem;
+    padding: 0.85rem clamp(1.25rem, 3vw, 2.5rem);
+    background: rgba($abiwein-white, 0.96);
+    border-bottom: 1px solid rgba($abiwein-ink, 0.09);
+    backdrop-filter: blur(12px);
+}
+
+.private-header__left,
+.private-header__account {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.private-header__eyebrow {
+    margin-bottom: 0.15rem;
+    color: $abiwein-olive;
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+}
+
+.private-header h1 {
+    margin-bottom: 0;
+    font-size: 1.15rem;
+}
+
+.private-header__identity {
+    display: grid;
+    text-align: right;
+}
+
+.private-header__identity strong {
+    font-size: 0.88rem;
+}
+
+.private-header__identity span {
+    color: $abiwein-muted;
+    font-size: 0.74rem;
+}
+
+.private-menu-button {
+    display: grid;
+    gap: 0.25rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.65rem;
+    background: $abiwein-white;
+    border: 1px solid rgba($abiwein-ink, 0.18);
+    border-radius: 0.4rem;
+}
+
+.private-menu-button span {
+    display: block;
+    height: 2px;
+    background: $abiwein-ink;
+}
+
+.btn-private-primary {
+    --bs-btn-color: #{$abiwein-white};
+    --bs-btn-bg: #{$abiwein-olive};
+    --bs-btn-border-color: #{$abiwein-olive};
+    --bs-btn-hover-color: #{$abiwein-white};
+    --bs-btn-hover-bg: #202607;
+    --bs-btn-hover-border-color: #202607;
+}
+
+.btn-private-secondary {
+    --bs-btn-color: #{$abiwein-ink};
+    --bs-btn-bg: #{$abiwein-white};
+    --bs-btn-border-color: rgba(20, 32, 43, 0.2);
+    --bs-btn-hover-color: #{$abiwein-olive};
+    --bs-btn-hover-bg: rgba(226, 212, 185, 0.28);
+    --bs-btn-hover-border-color: #{$abiwein-sage};
+}
+
+// -----------------------------------------------------------------------------
+// 4. Introduction, indicateurs et panneaux
+// -----------------------------------------------------------------------------
+.private-intro {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    margin-bottom: 1.25rem;
+    background: $abiwein-white;
+    border: 1px solid rgba($abiwein-ink, 0.09);
+    border-radius: $border-radius-lg;
+}
+
+.private-intro--compact {
+    align-items: center;
+}
+
+.private-intro h2 {
+    margin-bottom: 0.5rem;
+    font-size: clamp(1.7rem, 3vw, 2.6rem);
+    letter-spacing: -0.035em;
+}
+
+.private-intro p:not(.private-kicker, .private-intro__date) {
+    max-width: 45rem;
+    margin-bottom: 0;
+    color: $abiwein-muted;
+}
+
+.private-intro__date {
+    flex: 0 0 auto;
+    margin-bottom: 0;
+    color: $abiwein-muted;
+    font-size: 0.84rem;
+    text-transform: capitalize;
+}
+
+.private-kicker {
+    margin-bottom: 0.35rem;
+    color: $abiwein-olive;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.private-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.private-stat {
+    min-height: 9.5rem;
+    padding: 1.35rem;
+    background: $abiwein-white;
+    border: 1px solid rgba($abiwein-ink, 0.09);
+    border-radius: $border-radius-lg;
+}
+
+.private-stat--alert {
+    border-top: 3px solid $abiwein-olive;
+}
+
+.private-stat p {
+    margin-bottom: 1.25rem;
+    color: $abiwein-muted;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.private-stat strong,
+.private-stat small {
+    display: block;
+}
+
+.private-stat strong {
+    margin-bottom: 0.35rem;
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    letter-spacing: -0.03em;
+}
+
+.private-stat small {
+    color: $abiwein-muted;
+    font-size: 0.72rem;
+}
+
+.private-grid {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.private-grid--main {
+    grid-template-columns: minmax(0, 1.65fr) minmax(18rem, 0.75fr);
+}
+
+.private-panel,
+.private-form-card {
+    background: $abiwein-white;
+    border: 1px solid rgba($abiwein-ink, 0.09);
+    border-radius: $border-radius-lg;
+    box-shadow: 0 0.65rem 2rem rgba($abiwein-ink, 0.035);
+}
+
+.private-panel {
+    overflow: hidden;
+}
+
+.private-panel__header {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.35rem 1.5rem;
+    border-bottom: 1px solid rgba($abiwein-ink, 0.09);
+}
+
+.private-panel__header h2 {
+    margin-bottom: 0;
+    font-size: 1.12rem;
+}
+
+.private-panel__header > span {
+    color: $abiwein-muted;
+    font-size: 0.75rem;
+}
+
+.private-form-card {
+    max-width: 60rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+// -----------------------------------------------------------------------------
+// 5. Tableaux, états et alertes
+// -----------------------------------------------------------------------------
+.private-table {
+    min-width: 42rem;
+    margin-bottom: 0;
+}
+
+.private-table > :not(caption) > * > * {
+    padding: 1rem 1.5rem;
+    border-bottom-color: rgba($abiwein-ink, 0.075);
+}
+
+.private-table thead th {
+    color: $abiwein-muted;
+    font-size: 0.67rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: rgba($abiwein-beige-light, 0.16);
+}
+
+.private-table tbody td {
+    color: $abiwein-ink;
+    font-size: 0.84rem;
+}
+
+.private-table td strong,
+.private-table td small {
+    display: block;
+}
+
+.private-table td small {
+    margin-top: 0.2rem;
+    color: $abiwein-muted;
+    font-size: 0.72rem;
+}
+
+.private-status {
+    display: inline-flex;
+    padding: 0.28rem 0.55rem;
+    color: $abiwein-ink;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: rgba($abiwein-beige-light, 0.42);
+    border: 1px solid rgba($abiwein-ink, 0.1);
+    border-radius: 999px;
+}
+
+.private-status--good {
+    color: $abiwein-olive;
+    background: rgba($abiwein-sage, 0.16);
+}
+
+.private-status--watch,
+.private-status--blocked {
+    color: $abiwein-ink;
+    background: rgba($abiwein-beige-taupe, 0.42);
+}
+
+.private-alert-list article {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba($abiwein-ink, 0.08);
+}
+
+.private-alert-list article:last-child {
+    border-bottom: 0;
+}
+
+.private-alert-list__severity {
+    display: block;
+    margin-bottom: 0.45rem;
+    color: $abiwein-olive;
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.private-alert-list h3 {
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+}
+
+.private-alert-list p {
+    margin-bottom: 0;
+    color: $abiwein-muted;
+    font-size: 0.8rem;
+    line-height: 1.6;
+}
+
+.private-empty {
+    padding: 2rem !important;
+    color: $abiwein-muted !important;
+    text-align: center;
+}
+
+.private-pagination {
+    padding: 1rem 1.5rem 0;
+}
+
+// -----------------------------------------------------------------------------
+// 6. Adaptation aux tablettes et téléphones
+// -----------------------------------------------------------------------------
+@media (max-width: 1199.98px) {
+    .private-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .private-grid--main {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .private-shell {
+        display: block;
+    }
+
+    .private-sidebar__body {
+        position: static;
+        height: calc(100vh - 3.5rem);
+    }
+
+    .private-header__identity {
+        display: none;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .private-header {
+        min-height: 4.7rem;
+    }
+
+    .private-header__account .btn {
+        padding-inline: 0.8rem;
+        font-size: 0.78rem;
+    }
+
+    .private-intro {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .private-intro__date {
+        flex: auto;
+    }
+
+    .private-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .private-content {
+        padding: 1rem;
+    }
+
+    .private-header {
+        padding-inline: 1rem;
+    }
+
+    .private-header h1 {
+        font-size: 1rem;
+    }
+
+    .private-intro,
+    .private-panel__header,
+    .private-form-card {
+        padding: 1.15rem;
+    }
+}

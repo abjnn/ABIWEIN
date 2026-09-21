@@ -1,0 +1,50 @@
+# Base de données, démonstration et accès
+
+Ce document décrit le socle actuellement exécutable. Les données créées par les seeders sont fictives et réservées au développement local.
+
+## Modules de données disponibles
+
+| Domaine | Tables principales | Usage |
+|---|---|---|
+| Accès | `users` | Comptes, rôles, état actif ou bloqué, dernière connexion |
+| Exploitation | `suppliers`, `buildings`, `flocks`, `flock_building_assignments`, `flock_movements` | Fournisseurs, bâtiments, bandes, affectations et mouvements d’effectifs |
+| Suivi quotidien | `daily_records` | Mortalité, aliment, eau, poids moyen, état sanitaire et observations |
+| Stocks | `products`, `stock_movements` | Produits, quantités, seuils d’alerte, entrées et sorties |
+| Commerce | `clients`, `sales`, `sale_items`, `payments`, `expenses` | Ventes comptant ou crédit, paiements en espèces et dépenses |
+| Santé | `veterinary_visits` | Visites, diagnostics, prescriptions et suivi vétérinaire |
+| Alertes | `alerts` | Alertes internes à l’application et état de lecture |
+
+## Rôles
+
+| Rôle | Portée actuelle |
+|---|---|
+| Administrateur | Tableau de bord et gestion des comptes |
+| Responsable d’exploitation | Tableau de bord opérationnel |
+| Vétérinaire | Tableau de bord ; écrans sanitaires spécialisés à ajouter dans le module métier |
+
+## Comptes locaux de démonstration
+
+Après `php artisan db:seed`, trois comptes fictifs sont créés :
+
+| Rôle | Adresse | Mot de passe local |
+|---|---|---|
+| Administrateur | `admin@abiwein.local` | `Abiwein@Demo2026` |
+| Responsable | `responsable@abiwein.local` | `Abiwein@Demo2026` |
+| Vétérinaire | `veterinaire@abiwein.local` | `Abiwein@Demo2026` |
+
+Ces identifiants sont volontairement documentés parce qu’ils ne doivent servir qu’à la démonstration locale. Le seeder refuse de les créer lorsque `APP_ENV=production`.
+
+## Initialisation locale
+
+```powershell
+php artisan migrate
+php artisan db:seed
+```
+
+Pour reconstruire intégralement une base locale de démonstration :
+
+```powershell
+php artisan migrate:fresh --seed
+```
+
+La seconde commande efface les tables avant de les recréer. Elle ne doit jamais être lancée sur une base contenant des données utiles.

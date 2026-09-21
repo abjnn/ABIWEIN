@@ -10,11 +10,15 @@ Ce guide indique précisément où intervenir. Les commentaires `MODIFICATION` d
 | Contenu de la page À propos | `resources/views/pages/about.blade.php` |
 | Contenu et champs du contact | `resources/views/pages/contact.blade.php` |
 | Aperçu de la connexion | `resources/views/auth/login.blade.php` |
+| Tableau de bord privé | `resources/views/dashboard/index.blade.php` |
+| Gestion des utilisateurs | `resources/views/admin/users/` |
 | Liens du menu | `resources/views/partials/public/header.blade.php` |
+| Menu privé | `resources/views/partials/private/sidebar.blade.php` |
 | Contenu du pied de page | `resources/views/partials/public/footer.blade.php` |
 | Structure HTML commune | `resources/views/layouts/public.blade.php` |
 | Couleurs et typographie | `resources/scss/_brand.scss` |
 | Dimensions, espacements et mise en page | `resources/scss/_public.scss` |
+| Mise en page de l’espace privé | `resources/scss/_private.scss` |
 | Adresses des pages | `routes/web.php` |
 | Coordonnées publiques | `.env`, à partir des clés de `.env.example` |
 
@@ -22,9 +26,10 @@ Ce guide indique précisément où intervenir. Les commentaires `MODIFICATION` d
 
 Les photos sont dans `public/images/public`. Conserver le même nom permet de les remplacer sans toucher au code :
 
-- `hero-poultry.jpg` pour le grand visuel d’accueil, À propos et connexion ;
-- `farmer-poultry.jpg` pour le visuel humain ;
-- `prepared-chicken.jpg` pour la carte de préparation et vente.
+- `hero-poultry.jpg` pour le grand visuel d’accueil et À propos ;
+- `farmer-poultry.jpg` pour les jeunes poulets autour d’une mangeoire ;
+- `prepared-chicken.jpg` pour les poulets entiers conditionnés ;
+- `private-access-poultry.jpg` pour la connexion, conservé indépendamment des autres pages.
 
 Vérifier la licence, privilégier une image horizontale d’au moins 1 400 pixels, l’optimiser pour le web et mettre à jour `docs/IMAGE_CREDITS.md`.
 

@@ -4,8 +4,9 @@ Les photographies sont téléchargées localement pour stabiliser l’interface.
 
 | Fichier local | Sujet | Photographe | Source |
 |---|---|---|---|
-| `public/images/public/hero-poultry.jpg` | Poulailler professionnel | Mark Stebnicki / NC Farm Bureau | [Page Pexels](https://www.pexels.com/photo/white-chickens-crowded-in-large-poultry-farm-35877058/) |
-| `public/images/public/farmer-poultry.jpg` | Éleveur nourrissant des poulets | RDNE Stock project | [Page Pexels](https://www.pexels.com/photo/a-man-feeding-the-chicken-7782048/) |
-| `public/images/public/prepared-chicken.jpg` | Produit de poulet frais | alleksana | [Page Pexels](https://www.pexels.com/photo/raw-chicken-on-a-cutting-board-6107725/) |
+| `public/images/public/hero-poultry.jpg` | Poulets adultes dans un grand bâtiment avicole | Mark Stebnicki / NC Farm Bureau | [Page Pexels](https://www.pexels.com/photo/white-chickens-crowded-in-large-poultry-farm-35877058/) |
+| `public/images/public/private-access-poultry.jpg` | Visuel historique de l’accès privé | Mark Stebnicki / NC Farm Bureau | [Page Pexels](https://www.pexels.com/photo/white-chickens-crowded-in-large-poultry-farm-35877058/) |
+| `public/images/public/farmer-poultry.jpg` | Jeunes poulets autour d’une mangeoire | raja j | [Page Pexels](https://www.pexels.com/photo/food-bird-dinner-animal-17064389/) |
+| `public/images/public/prepared-chicken.jpg` | Poulets entiers déplumés sous emballage | Laudia Tysara | [Page Pexels](https://www.pexels.com/photo/raw-chicken-in-the-supermarket-10886018/) |
 
 Ces images ne doivent pas être revendues sans modification, utilisées comme marque, ni présentées comme une approbation d’ABIWEIN par les personnes ou auteurs représentés.

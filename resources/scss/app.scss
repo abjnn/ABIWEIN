@@ -6,3 +6,6 @@
 
 // Les règles propres à l'espace visiteur sont isolées dans ce fichier dédié.
 @import "public";
+
+// L’espace authentifié possède sa propre mise en page sans modifier la palette officielle.
+@import "private";

@@ -24,8 +24,8 @@ Ce document sépare les faits déjà observés sur le poste de développement de
 | Apache | Apache 2.4.65 actif ; `httpd -t` a retourné `Syntax OK` | Service démarré après bascule Wamp vers PHP 8.4.15 |
 | Front-end | Bootstrap 5.3.8, Popper 2.11.8, Chart.js 4.5.1, Sass 1.104.1 et Vite 7.3.6 | Dépendances verrouillées par `package-lock.json` et build réussi |
 | Audits | `composer audit` et `npm audit --omit=dev` | Aucun avis de vulnérabilité détecté |
-| Base applicative | Base `abiwein`, compte `abiwein_app@127.0.0.1`, tables InnoDB | Compte dédié et migrations Laravel validés |
-| Tests | `php artisan test` | 7 tests réussis, 25 assertions, dont les pages publiques et le formulaire de contact |
+| Base applicative | Base `abiwein`, compte `abiwein_app@127.0.0.1`, tables InnoDB | Cinq migrations appliquées ; schéma métier et jeu de démonstration validés |
+| Tests | `php artisan test` | 15 tests réussis, 50 assertions, dont l’authentification, le blocage et les rôles |
 | HTTP | `/`, `/a-propos`, `/contact`, `/connexion`, `/up`, JavaScript et CSS compilés | Toutes les requêtes ont répondu HTTP 200 |
 | Node.js | v26.1.0 | Version présente et exécutable ; Node.js 24 LTS reste recommandé pour la stabilité à long terme |
 | npm | v11.13.0 | Gestionnaire front-end présent |
@@ -43,9 +43,11 @@ Ce document sépare les faits déjà observés sur le poste de développement de
 | Services | `wampapache64` et `wampmysqld64` actifs ; `wampmariadb64` arrêté |
 | Configuration Laravel | Nom ABIWEIN, locale `fr`, fuseau `Africa/Douala`, connexion `mysql` |
 | Composer | Définition valide, prérequis PHP satisfaits, aucun avis de sécurité |
-| MySQL | Base et utilisateur dédiés opérationnels, trois migrations appliquées avec InnoDB |
+| MySQL | Base et utilisateur dédiés opérationnels, cinq migrations appliquées avec InnoDB |
 | Front-end | 83 paquets installés, build Vite produit, aucun avis npm de niveau production |
-| Tests automatisés | 7 tests réussis, 25 assertions |
+| Tests automatisés | 15 tests réussis, 50 assertions |
+| Accès privé | Connexion, déconnexion, compte bloqué et restriction administrateur validés |
+| Démonstration | Trois comptes fictifs et un scénario cohérent de ferme créés localement |
 | HTTP | Accueil, À propos, contact, connexion et santé : HTTP 200 |
 | Responsive | Contrôle visuel effectué en format ordinateur et téléphone |
 | Marque | Logo officiel et cinq couleurs exactes intégrés |

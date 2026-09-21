@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserRole;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+// MODIFICATION : ajoutez ici uniquement les champs qu’un formulaire peut remplir.
+#[Fillable(['name', 'email', 'password', 'role', 'is_active', 'last_login_at'])]
+// Les informations sensibles ne doivent jamais apparaître dans une réponse sérialisée.
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -27,6 +30,29 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => UserRole::class,
+            'is_active' => 'boolean',
+            'last_login_at' => 'datetime',
         ];
+    }
+
+    /** Indique si l’utilisateur possède le rôle demandé. */
+    public function hasRole(UserRole|string $role): bool
+    {
+        $expectedRole = $role instanceof UserRole ? $role : UserRole::tryFrom($role);
+
+        return $expectedRole !== null && $this->role === $expectedRole;
+    }
+
+    /** Raccourci utilisé dans les vues et contrôleurs d’administration. */
+    public function isAdministrator(): bool
+    {
+        return $this->hasRole(UserRole::Administrator);
+    }
+
+    /** Retourne les relevés quotidiens créés par cet utilisateur. */
+    public function dailyRecords(): HasMany
+    {
+        return $this->hasMany(DailyRecord::class, 'recorded_by');
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 /** Affiche les pages accessibles aux visiteurs sans compte ABIWEIN. */
 class PublicSiteController extends Controller
@@ -26,8 +28,13 @@ class PublicSiteController extends Controller
     }
 
     /** Affiche l'entrée de l'espace privé, sans simuler l'authentification. */
-    public function login(): View
+    public function login(): View|RedirectResponse
     {
+        // Un utilisateur déjà connecté retourne directement dans son espace privé.
+        if (Auth::check()) {
+            return to_route('dashboard');
+        }
+
         return view('auth.login');
     }
 }
