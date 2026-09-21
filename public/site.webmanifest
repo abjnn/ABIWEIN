@@ -1,0 +1,19 @@
+{
+    "name": "ABIWEIN",
+    "short_name": "ABIWEIN",
+    "description": "Application de gestion avicole ABIWEIN",
+    "lang": "fr",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#E2D4B9",
+    "theme_color": "#31380F",
+    "icons": [
+        {
+            "src": "/brand/abiwein-logo.png",
+            "sizes": "256x256",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}
