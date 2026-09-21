@@ -1,20 +1,34 @@
-$abiwein-olive: #31380f;
-$abiwein-sage: #798057;
-$abiwein-beige-light: #e2d4b9;
-$abiwein-beige-taupe: #c7af97;
-$abiwein-beige-rose: #d8c7b5;
+// =============================================================================
+// JETONS VISUELS ABIWEIN
+// =============================================================================
+// MODIFICATION : ce fichier est le point unique pour changer la palette, la
+// typographie, les rayons ou les ombres dans toute l'application.
 
+// Couleurs officielles fournies dans la charte ABIWEIN.
+$abiwein-olive: #31380f; // Boutons principaux, accents et surfaces foncées.
+$abiwein-sage: #798057; // Accents secondaires et détails calmes.
+$abiwein-beige-light: #e2d4b9; // Fonds secondaires très légers.
+$abiwein-beige-taupe: #c7af97; // Bordures et nuances chaudes.
+$abiwein-beige-rose: #d8c7b5; // Accent ponctuel, jamais utilisé en excès.
+
+// Couleurs neutres nécessaires à une lecture professionnelle et contrastée.
+$abiwein-ink: #14202b; // Texte principal inspiré du bleu foncé du logo.
+$abiwein-muted: #5f685f; // Paragraphes secondaires.
+$abiwein-canvas: #fbfcf9; // Fond général presque blanc.
+$abiwein-white: #ffffff; // Cartes, navigation et zones de respiration.
+
+// Variables Bootstrap : les composants natifs héritent automatiquement de la marque.
 $primary: $abiwein-olive;
 $secondary: $abiwein-sage;
-$body-color: $abiwein-olive;
-$body-bg: #f8f5ef;
+$body-color: $abiwein-ink;
+$body-bg: $abiwein-canvas;
 $link-color: $abiwein-olive;
-$link-hover-color: #1f2409;
-$border-color: rgba($abiwein-olive, 0.16);
-$font-family-sans-serif: "Roboto", "Segoe UI", Arial, sans-serif;
+$link-hover-color: #202607;
+$border-color: rgba($abiwein-ink, 0.12);
+$font-family-sans-serif: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
 $headings-font-weight: 700;
-$border-radius: 0.75rem;
-$border-radius-lg: 1.125rem;
-$border-radius-xl: 1.5rem;
-$box-shadow: 0 1rem 3rem rgba($abiwein-olive, 0.09);
-$focus-ring-color: rgba($abiwein-sage, 0.45);
+$border-radius: 0.5rem;
+$border-radius-lg: 0.85rem;
+$border-radius-xl: 1.25rem;
+$box-shadow: 0 1.5rem 4rem rgba($abiwein-ink, 0.1);
+$focus-ring-color: rgba($abiwein-sage, 0.42);

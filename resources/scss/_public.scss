@@ -1,0 +1,1102 @@
+// =============================================================================
+// ESPACE PUBLIC ABIWEIN
+// =============================================================================
+// Chaque section porte le nom du bloc Blade qu'elle met en forme. Les couleurs
+// restent centralisées dans _brand.scss pour éviter les incohérences.
+
+// -----------------------------------------------------------------------------
+// 1. Base, accessibilité et composants communs
+// -----------------------------------------------------------------------------
+:root {
+    --abiwein-olive: #{$abiwein-olive};
+    --abiwein-sage: #{$abiwein-sage};
+    --abiwein-beige-light: #{$abiwein-beige-light};
+    --abiwein-ink: #{$abiwein-ink};
+    --abiwein-muted: #{$abiwein-muted};
+}
+
+html {
+    scroll-behavior: smooth; // Rend les ancres comme #activites plus agréables.
+    scroll-padding-top: 6rem; // Évite que l'en-tête masque le titre ciblé.
+}
+
+body.public-site {
+    min-width: 320px; // Largeur minimale encore exploitable sur téléphone.
+    overflow-x: hidden;
+    color: $abiwein-ink;
+    background: $abiwein-canvas;
+}
+
+img {
+    max-width: 100%; // Une image ne dépasse jamais son conteneur.
+}
+
+a,
+button,
+input,
+select,
+textarea {
+    &:focus-visible {
+        outline: 3px solid rgba($abiwein-sage, 0.52);
+        outline-offset: 3px;
+    }
+}
+
+.skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 1200;
+    padding: 0.75rem 1rem;
+    color: $abiwein-white;
+    background: $abiwein-olive;
+    border-radius: $border-radius;
+    transform: translateY(-160%);
+    transition: transform 160ms ease;
+
+    &:focus {
+        color: $abiwein-white;
+        transform: translateY(0);
+    }
+}
+
+.section-space {
+    padding: clamp(4.5rem, 8vw, 7rem) 0; // Espacement vertical général des sections.
+}
+
+.section-space--soft {
+    background: rgba($abiwein-beige-light, 0.3);
+    border-block: 1px solid rgba($abiwein-olive, 0.08);
+}
+
+.section-heading {
+    max-width: 42rem;
+    margin-bottom: 2.5rem;
+}
+
+.section-heading--center {
+    margin-inline: auto;
+    text-align: center;
+}
+
+.section-eyebrow,
+.hero-eyebrow {
+    margin-bottom: 0.8rem;
+    // Le vert olive atteint un contraste AA pour ce petit texte ; le sauge reste décoratif.
+    color: $abiwein-olive;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.section-title {
+    margin-bottom: 1rem;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+}
+
+.section-intro,
+.body-copy {
+    margin-bottom: 0;
+    color: $abiwein-muted;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.body-copy + .body-copy {
+    margin-top: 1.25rem;
+}
+
+.btn {
+    padding: 0.78rem 1.35rem;
+    font-weight: 700;
+    border-radius: 0.35rem;
+}
+
+.btn-lg {
+    padding: 0.95rem 1.55rem;
+    font-size: 0.98rem;
+}
+
+.btn-brand {
+    --bs-btn-color: #{$abiwein-white};
+    --bs-btn-bg: #{$abiwein-olive};
+    --bs-btn-border-color: #{$abiwein-olive};
+    --bs-btn-hover-color: #{$abiwein-white};
+    --bs-btn-hover-bg: #202607;
+    --bs-btn-hover-border-color: #202607;
+    --bs-btn-disabled-color: rgba(255, 255, 255, 0.8);
+    --bs-btn-disabled-bg: #596033;
+    --bs-btn-disabled-border-color: #596033;
+}
+
+.btn-light-outline {
+    --bs-btn-color: #{$abiwein-ink};
+    --bs-btn-bg: rgba(255, 255, 255, 0.82);
+    --bs-btn-border-color: rgba(20, 32, 43, 0.2);
+    --bs-btn-hover-color: #{$abiwein-ink};
+    --bs-btn-hover-bg: #{$abiwein-white};
+    --bs-btn-hover-border-color: rgba(20, 32, 43, 0.32);
+}
+
+.btn-white {
+    --bs-btn-color: #{$abiwein-olive};
+    --bs-btn-bg: #{$abiwein-white};
+    --bs-btn-border-color: #{$abiwein-white};
+    --bs-btn-hover-color: #{$abiwein-white};
+    --bs-btn-hover-bg: transparent;
+    --bs-btn-hover-border-color: #{$abiwein-white};
+}
+
+.text-link,
+.back-link {
+    display: inline-flex;
+    gap: 0.55rem;
+    align-items: center;
+    color: $abiwein-olive;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover {
+        color: $abiwein-ink;
+    }
+}
+
+// -----------------------------------------------------------------------------
+// 2. En-tête et navigation
+// -----------------------------------------------------------------------------
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    background: rgba($abiwein-white, 0.97);
+    border-bottom: 1px solid rgba($abiwein-ink, 0.08);
+    box-shadow: 0 0.45rem 1.8rem rgba($abiwein-ink, 0.04);
+    backdrop-filter: blur(14px);
+}
+
+.site-header .navbar {
+    min-height: 5.5rem; // MODIFICATION : hauteur globale de la navigation.
+    padding-block: 0.45rem;
+}
+
+.site-brand {
+    display: inline-flex;
+    align-items: center;
+}
+
+.site-brand img {
+    width: 7.4rem; // MODIFICATION : largeur du logo dans l'en-tête.
+    height: 4.4rem;
+    object-fit: contain;
+}
+
+.site-header .nav-link {
+    position: relative;
+    padding: 0.65rem 0.9rem !important;
+    color: $abiwein-ink;
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    &::after {
+        position: absolute;
+        right: 0.9rem;
+        bottom: 0.35rem;
+        left: 0.9rem;
+        height: 2px;
+        content: "";
+        background: $abiwein-olive;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 180ms ease;
+    }
+
+    &:hover,
+    &:focus,
+    &.active {
+        color: $abiwein-olive;
+    }
+
+    &:hover::after,
+    &:focus::after,
+    &.active::after {
+        transform: scaleX(1);
+    }
+}
+
+.nav-item--private {
+    margin-left: 0.75rem;
+}
+
+.navbar-toggler {
+    border-color: rgba($abiwein-ink, 0.2);
+}
+
+// -----------------------------------------------------------------------------
+// 3. Hero de l'accueil
+// -----------------------------------------------------------------------------
+.public-hero {
+    position: relative;
+    min-height: calc(100vh - 5.5rem);
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background-image: var(--hero-image);
+    background-position: center;
+    background-size: cover;
+
+    // Voile blanc : il rend le texte lisible tout en conservant la photo à droite.
+    &::before {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        content: "";
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.92) 38%, rgba(255, 255, 255, 0.3) 67%, rgba(255, 255, 255, 0.06) 100%);
+    }
+
+    // Second voile : il adoucit uniquement le bas de l'image.
+    &::after {
+        position: absolute;
+        inset: auto 0 0;
+        z-index: -1;
+        height: 28%;
+        content: "";
+        background: linear-gradient(0deg, rgba($abiwein-ink, 0.25), transparent);
+    }
+}
+
+.public-hero__container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    gap: 3rem;
+    align-items: end;
+    padding-block: clamp(5rem, 9vw, 8rem);
+}
+
+.public-hero__content {
+    max-width: 46rem;
+}
+
+.public-hero h1 {
+    max-width: 12ch;
+    margin-bottom: 1.4rem;
+    font-size: clamp(3rem, 7vw, 6.1rem);
+    line-height: 0.96;
+    letter-spacing: -0.055em;
+}
+
+.public-hero h1 span {
+    display: block;
+    color: $abiwein-olive;
+}
+
+.public-hero__lead {
+    max-width: 39rem;
+    margin-bottom: 0;
+    color: #3f4a4f;
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    line-height: 1.75;
+}
+
+.public-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 2rem;
+}
+
+.hero-summary {
+    padding: 1.6rem;
+    color: $abiwein-white;
+    background: rgba($abiwein-olive, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: $border-radius-lg;
+    box-shadow: 0 1.5rem 4rem rgba($abiwein-ink, 0.18);
+    backdrop-filter: blur(9px);
+}
+
+.hero-summary__label {
+    margin-bottom: 0.35rem;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.hero-summary__title {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.hero-summary ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.hero-summary li {
+    padding-top: 0.65rem;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.82rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+// -----------------------------------------------------------------------------
+// 4. Bandeau de repères
+// -----------------------------------------------------------------------------
+.trust-strip {
+    background: $abiwein-white;
+    border-bottom: 1px solid rgba($abiwein-ink, 0.1);
+}
+
+.trust-strip__item {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    min-height: 7rem;
+    padding: 1.5rem 2rem;
+    border-right: 1px solid rgba($abiwein-ink, 0.1);
+
+    &:last-child {
+        border-right: 0;
+    }
+}
+
+.trust-strip__item > span {
+    color: $abiwein-olive;
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.trust-strip__item strong,
+.trust-strip__item small {
+    display: block;
+}
+
+.trust-strip__item strong {
+    margin-bottom: 0.15rem;
+    font-size: 1.05rem;
+}
+
+.trust-strip__item small {
+    color: $abiwein-muted;
+}
+
+// -----------------------------------------------------------------------------
+// 5. Image éditoriale et points de contenu
+// -----------------------------------------------------------------------------
+.editorial-image {
+    position: relative;
+    margin: 0;
+}
+
+.editorial-image img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 4.35;
+    object-fit: cover;
+    border-radius: $border-radius-lg;
+    box-shadow: $box-shadow;
+}
+
+.editorial-image figcaption {
+    position: absolute;
+    right: -1rem;
+    bottom: 1.5rem;
+    max-width: 17rem;
+    padding: 1rem 1.2rem;
+    color: $abiwein-white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.5;
+    background: $abiwein-olive;
+    border-radius: $border-radius;
+}
+
+.editorial-image--portrait img {
+    aspect-ratio: 5 / 4.3;
+}
+
+.text-points {
+    margin: 2rem 0;
+}
+
+.text-points article {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 1rem;
+    padding: 1.15rem 0;
+    border-top: 1px solid rgba($abiwein-ink, 0.1);
+}
+
+.text-points article > span {
+    padding-top: 0.2rem;
+    color: $abiwein-olive;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.text-points h3 {
+    margin-bottom: 0.35rem;
+    font-size: 1.05rem;
+}
+
+.text-points p {
+    margin-bottom: 0;
+    color: $abiwein-muted;
+    line-height: 1.65;
+}
+
+// -----------------------------------------------------------------------------
+// 6. Cartes d'activités
+// -----------------------------------------------------------------------------
+.activity-grid {
+    margin-top: 0.5rem;
+}
+
+.activity-card {
+    position: relative;
+    height: 100%;
+    min-height: 23rem;
+    padding: 2.2rem;
+    overflow: hidden;
+    background: $abiwein-white;
+    border: 1px solid rgba($abiwein-ink, 0.1);
+    border-radius: $border-radius-lg;
+    box-shadow: 0 1rem 3rem rgba($abiwein-ink, 0.06);
+}
+
+.activity-card__number {
+    margin-bottom: 4.5rem;
+    color: $abiwein-olive;
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.activity-card h3 {
+    max-width: 11ch;
+    margin-bottom: 1rem;
+    font-size: 1.65rem;
+    line-height: 1.15;
+}
+
+.activity-card p {
+    margin-bottom: 0;
+    color: $abiwein-muted;
+    line-height: 1.7;
+}
+
+.activity-card__line {
+    position: absolute;
+    right: 2.2rem;
+    bottom: 2.2rem;
+    left: 2.2rem;
+    height: 3px;
+    background: linear-gradient(90deg, $abiwein-olive 0 24%, rgba($abiwein-ink, 0.08) 24% 100%);
+}
+
+.activity-card--image {
+    padding: 0;
+    color: $abiwein-white;
+    border: 0;
+}
+
+.activity-card--image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.activity-card__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2.2rem;
+    background: linear-gradient(180deg, rgba($abiwein-ink, 0.04) 15%, rgba($abiwein-ink, 0.88) 100%);
+}
+
+.activity-card__overlay .activity-card__number {
+    margin-bottom: auto;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.activity-card__overlay p {
+    color: rgba(255, 255, 255, 0.82);
+}
+
+// -----------------------------------------------------------------------------
+// 7. Appel vers la plateforme et contact final
+// -----------------------------------------------------------------------------
+.platform-callout {
+    padding: clamp(4rem, 7vw, 6rem) 0;
+    color: $abiwein-white;
+    background: $abiwein-olive;
+}
+
+.platform-callout__inner {
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.platform-callout h2 {
+    max-width: 20ch;
+    margin-bottom: 0.85rem;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    letter-spacing: -0.04em;
+}
+
+.platform-callout p:not(.section-eyebrow) {
+    max-width: 43rem;
+    margin-bottom: 0;
+    color: rgba(255, 255, 255, 0.72);
+    line-height: 1.7;
+}
+
+.platform-callout .section-eyebrow {
+    color: $abiwein-beige-light;
+}
+
+.contact-invitation h2 {
+    max-width: 23ch;
+    margin: 0 auto 1rem;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    letter-spacing: -0.035em;
+}
+
+.contact-invitation p:not(.section-eyebrow) {
+    margin-bottom: 1.7rem;
+    color: $abiwein-muted;
+}
+
+// -----------------------------------------------------------------------------
+// 8. En-têtes des pages intérieures
+// -----------------------------------------------------------------------------
+.page-hero {
+    position: relative;
+    isolation: isolate;
+    min-height: 30rem;
+    display: flex;
+    align-items: flex-end;
+    padding: 6rem 0;
+    color: $abiwein-white;
+    background-image: var(--page-image);
+    background-position: center 46%;
+    background-size: cover;
+
+    &::before {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        content: "";
+        background: linear-gradient(90deg, rgba($abiwein-ink, 0.9), rgba($abiwein-ink, 0.36));
+    }
+}
+
+.page-hero h1,
+.page-heading h1 {
+    max-width: 18ch;
+    margin-bottom: 1rem;
+    font-size: clamp(2.7rem, 6vw, 5rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+}
+
+.page-hero > .container > p:last-child,
+.page-heading > .container > p:last-child {
+    max-width: 42rem;
+    margin-bottom: 0;
+    font-size: 1.12rem;
+    line-height: 1.7;
+}
+
+.page-hero .hero-eyebrow {
+    color: $abiwein-beige-light;
+}
+
+.page-heading {
+    padding: clamp(5rem, 9vw, 8rem) 0;
+    background: linear-gradient(135deg, $abiwein-white, rgba($abiwein-beige-light, 0.42));
+    border-bottom: 1px solid rgba($abiwein-ink, 0.08);
+}
+
+.page-heading > .container > p:last-child {
+    color: $abiwein-muted;
+}
+
+// -----------------------------------------------------------------------------
+// 9. Page À propos
+// -----------------------------------------------------------------------------
+.facility-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 64rem;
+    margin: 3rem auto 0;
+    border-top: 1px solid rgba($abiwein-ink, 0.12);
+    border-left: 1px solid rgba($abiwein-ink, 0.12);
+}
+
+.facility-list article {
+    display: grid;
+    grid-template-columns: 2.3rem 1fr;
+    gap: 1.2rem;
+    min-height: 12rem;
+    padding: 2rem;
+    background: rgba($abiwein-white, 0.72);
+    border-right: 1px solid rgba($abiwein-ink, 0.12);
+    border-bottom: 1px solid rgba($abiwein-ink, 0.12);
+}
+
+.facility-list article > span,
+.principle-grid article > span {
+    color: $abiwein-olive;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.facility-list h3,
+.principle-grid h3 {
+    margin-bottom: 0.55rem;
+    font-size: 1.2rem;
+}
+
+.facility-list p,
+.principle-grid p {
+    margin-bottom: 0;
+    color: $abiwein-muted;
+    line-height: 1.65;
+}
+
+.principle-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.principle-grid article {
+    min-height: 12rem;
+    padding: 1.6rem;
+    background: $abiwein-white;
+    border: 1px solid rgba($abiwein-ink, 0.1);
+    border-radius: $border-radius-lg;
+}
+
+.principle-grid article > span {
+    display: block;
+    margin-bottom: 2.5rem;
+}
+
+// -----------------------------------------------------------------------------
+// 10. Page Contact et champs de formulaire
+// -----------------------------------------------------------------------------
+.contact-information {
+    position: sticky;
+    top: 8rem;
+}
+
+.contact-information h2 {
+    margin-bottom: 1rem;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+}
+
+.contact-information > p:not(.section-eyebrow, .configuration-note) {
+    color: $abiwein-muted;
+    line-height: 1.75;
+}
+
+.contact-details {
+    margin: 2rem 0;
+}
+
+.contact-details > div {
+    padding: 1rem 0;
+    border-top: 1px solid rgba($abiwein-ink, 0.1);
+}
+
+.contact-details dt {
+    margin-bottom: 0.25rem;
+    color: $abiwein-olive;
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.contact-details dd {
+    margin-bottom: 0;
+    font-weight: 600;
+}
+
+.contact-details a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.configuration-note {
+    padding: 1rem 1.15rem;
+    color: $abiwein-muted;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    background: rgba($abiwein-beige-light, 0.4);
+    border-left: 3px solid $abiwein-sage;
+}
+
+.contact-form-card {
+    padding: clamp(1.5rem, 4vw, 3rem);
+    background: $abiwein-white;
+    border: 1px solid rgba($abiwein-ink, 0.1);
+    border-radius: $border-radius-lg;
+    box-shadow: $box-shadow;
+}
+
+.form-label {
+    margin-bottom: 0.55rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.form-control,
+.form-select {
+    min-height: 3.25rem;
+    padding: 0.75rem 0.9rem;
+    color: $abiwein-ink;
+    background-color: #fdfdfb;
+    border-color: rgba($abiwein-ink, 0.2);
+    border-radius: 0.35rem;
+
+    &:focus {
+        background-color: $abiwein-white;
+        border-color: $abiwein-sage;
+        box-shadow: 0 0 0 0.22rem rgba($abiwein-sage, 0.18);
+    }
+}
+
+textarea.form-control {
+    min-height: 10rem;
+    resize: vertical;
+}
+
+.form-check-input:checked {
+    background-color: $abiwein-olive;
+    border-color: $abiwein-olive;
+}
+
+// -----------------------------------------------------------------------------
+// 11. Page de connexion
+// -----------------------------------------------------------------------------
+.login-section {
+    min-height: calc(100vh - 5.5rem);
+    display: flex;
+    align-items: center;
+    padding: clamp(2rem, 6vw, 5rem) 0;
+    background: rgba($abiwein-beige-light, 0.28);
+}
+
+.login-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(22rem, 0.85fr);
+    min-height: 40rem;
+    overflow: hidden;
+    background: $abiwein-white;
+    border: 1px solid rgba($abiwein-ink, 0.1);
+    border-radius: $border-radius-xl;
+    box-shadow: $box-shadow;
+}
+
+.login-visual {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    padding: clamp(2rem, 5vw, 4rem);
+    color: $abiwein-white;
+    background-image: var(--login-image);
+    background-position: center;
+    background-size: cover;
+
+    &::before {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        content: "";
+        background: linear-gradient(180deg, rgba($abiwein-ink, 0.08), rgba($abiwein-ink, 0.88));
+    }
+}
+
+.login-visual .hero-eyebrow {
+    color: $abiwein-beige-light;
+}
+
+.login-visual h1 {
+    max-width: 12ch;
+    margin-bottom: 1rem;
+    font-size: clamp(2.4rem, 5vw, 4.2rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+}
+
+.login-visual p:last-child {
+    max-width: 30rem;
+    margin-bottom: 0;
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.7;
+}
+
+.login-form-panel {
+    padding: clamp(2rem, 5vw, 4rem);
+}
+
+.login-logo img {
+    width: 8.5rem;
+    height: auto;
+    margin-bottom: 2rem;
+}
+
+.login-form-panel h2 {
+    margin-bottom: 0.55rem;
+    font-size: 2rem;
+}
+
+.login-intro {
+    margin-bottom: 1.5rem;
+    color: $abiwein-muted;
+}
+
+.login-notice {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    color: #555e3b;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    background: rgba($abiwein-beige-light, 0.45);
+    border-left: 3px solid $abiwein-sage;
+}
+
+.back-link {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+}
+
+// -----------------------------------------------------------------------------
+// 12. Pied de page
+// -----------------------------------------------------------------------------
+.site-footer {
+    padding: 5rem 0 1.5rem;
+    color: rgba(255, 255, 255, 0.72);
+    background: $abiwein-ink;
+}
+
+.footer-brand {
+    display: inline-block;
+    padding: 0.65rem;
+    margin-bottom: 1.25rem;
+    background: $abiwein-white;
+    border-radius: $border-radius;
+}
+
+.footer-brand img {
+    display: block;
+    width: 7.8rem;
+    height: auto;
+}
+
+.footer-description {
+    max-width: 30rem;
+    margin-bottom: 0;
+    line-height: 1.75;
+}
+
+.footer-title {
+    margin-bottom: 1.2rem;
+    color: $abiwein-white;
+    font-size: 0.9rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.footer-links {
+    display: grid;
+    gap: 0.7rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.72);
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        color: $abiwein-white;
+    }
+}
+
+.footer-bottom {
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
+    padding-top: 1.5rem;
+    margin-top: 4rem;
+    font-size: 0.82rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.footer-bottom p {
+    margin-bottom: 0;
+}
+
+// -----------------------------------------------------------------------------
+// 13. Adaptation tablette et téléphone
+// -----------------------------------------------------------------------------
+@media (max-width: 991.98px) {
+    .site-header .navbar-collapse {
+        padding: 1rem 0 1.25rem;
+        border-top: 1px solid rgba($abiwein-ink, 0.08);
+    }
+
+    .site-header .nav-link {
+        padding-inline: 0 !important;
+
+        &::after {
+            right: auto;
+            left: 0;
+            width: 2rem;
+        }
+    }
+
+    .nav-item--private {
+        margin-top: 0.75rem;
+        margin-left: 0;
+    }
+
+    .public-hero {
+        min-height: auto;
+        background-position: 62% center;
+
+        &::before {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.72));
+        }
+    }
+
+    .public-hero__container {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-summary {
+        max-width: 29rem;
+    }
+
+    .platform-callout__inner {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .contact-information {
+        position: static;
+    }
+
+    .login-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .login-visual {
+        min-height: 30rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .public-hero h1 {
+        font-size: clamp(2.8rem, 15vw, 4.4rem);
+    }
+
+    .trust-strip__item {
+        border-right: 0;
+        border-bottom: 1px solid rgba($abiwein-ink, 0.1);
+    }
+
+    .trust-strip__item:last-child {
+        border-bottom: 0;
+    }
+
+    .editorial-image figcaption {
+        right: 0.8rem;
+        bottom: 0.8rem;
+        left: 0.8rem;
+        max-width: none;
+    }
+
+    .facility-list,
+    .principle-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .facility-list article {
+        min-height: auto;
+    }
+
+    .footer-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.45rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .section-space {
+        padding-block: 4rem;
+    }
+
+    .public-hero__actions .btn {
+        width: 100%;
+    }
+
+    .hero-summary ul {
+        grid-template-columns: 1fr;
+    }
+
+    .activity-card {
+        min-height: 21rem;
+    }
+
+    .login-section .container {
+        padding-inline: 0;
+    }
+
+    .login-shell {
+        border-inline: 0;
+        border-radius: 0;
+    }
+
+    .login-visual {
+        min-height: 25rem;
+    }
+}
+
+// Respecte le réglage système des personnes sensibles aux animations.
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

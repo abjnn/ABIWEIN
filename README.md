@@ -2,7 +2,7 @@
 
 ABIWEIN est une application web de gestion d'exploitation avicole. Elle centralise les opérations de la ferme, leur suivi et les indicateurs utiles à la décision dans une interface française, responsive et adaptée à un usage quotidien.
 
-Cette base correspond à l'étape 2 du projet : environnement de développement, socle Laravel, configuration locale, connexion MySQL, chaîne front-end, identité visuelle, Git/GitHub, documentation et contrôles techniques.
+Le socle technique est installé et l'espace visiteur est structuré en pages Blade distinctes : accueil, présentation, contact et entrée de l'espace privé. Les modules métier seront ajoutés par étapes sur cette fondation.
 
 ## Décisions fonctionnelles établies
 
@@ -166,6 +166,9 @@ docs/                architecture, marque et journal de validation
 
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) : architecture et frontières du socle.
 - [`docs/BRAND.md`](docs/BRAND.md) : palette, typographie et règles du logo.
+- [`docs/CADRAGE.md`](docs/CADRAGE.md) : périmètre, acteurs et règles fonctionnelles validées.
+- [`docs/FRONTEND_CUSTOMIZATION.md`](docs/FRONTEND_CUSTOMIZATION.md) : repères pour modifier chaque partie de l'interface.
+- [`docs/IMAGE_CREDITS.md`](docs/IMAGE_CREDITS.md) : sources et licences des photographies professionnelles.
 - [`docs/VALIDATION.md`](docs/VALIDATION.md) : preuves observées et contrôles restants.
 
 ## Gestion du code

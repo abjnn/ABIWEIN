@@ -1,66 +1,36 @@
+// Charge les réglages Axios/Laravel définis par le projet.
 import './bootstrap';
-import 'bootstrap';
-import Chart from 'chart.js/auto';
 
-const initializeBrandChart = () => {
-    const canvas = document.querySelector('[data-abiwein-brand-chart]');
+// Charge les composants Bootstrap, notamment le menu responsive.
+import * as bootstrap from 'bootstrap';
 
-    if (!canvas) {
+/**
+ * Referme le menu mobile après la sélection d'un lien.
+ * MODIFICATION : changez le sélecteur uniquement si l'identifiant du menu
+ * change aussi dans resources/views/partials/public/header.blade.php.
+ */
+const closeMobileNavigation = () => {
+    const navigation = document.querySelector('#navigationPublique');
+
+    // Les futurs écrans privés pourront ne pas utiliser cette navigation.
+    if (!navigation) {
         return;
     }
 
-    Chart.getChart(canvas)?.destroy();
+    navigation.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+            const collapse = bootstrap.Collapse.getInstance(navigation);
 
-    const styles = getComputedStyle(document.documentElement);
-    const palette = [
-        styles.getPropertyValue('--abiwein-olive').trim(),
-        styles.getPropertyValue('--abiwein-sage').trim(),
-        styles.getPropertyValue('--abiwein-beige-light').trim(),
-        styles.getPropertyValue('--abiwein-beige-taupe').trim(),
-        styles.getPropertyValue('--abiwein-beige-rose').trim(),
-    ];
-
-    new Chart(canvas, {
-        type: 'doughnut',
-        data: {
-            labels: [
-                'Vert olive foncé',
-                'Vert sauge',
-                'Beige clair',
-                'Beige taupe',
-                'Beige rosé',
-            ],
-            datasets: [
-                {
-                    data: [1, 1, 1, 1, 1],
-                    backgroundColor: palette,
-                    borderColor: '#ffffff',
-                    borderWidth: 4,
-                    hoverOffset: 8,
-                },
-            ],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? false : undefined,
-            cutout: '62%',
-            plugins: {
-                legend: {
-                    display: false,
-                },
-                tooltip: {
-                    callbacks: {
-                        label: (context) => `${context.label} — couleur de la palette ABIWEIN`,
-                    },
-                },
-            },
-        },
+            if (collapse && navigation.classList.contains('show')) {
+                collapse.hide();
+            }
+        });
     });
 };
 
+// Attend que le HTML existe avant de rechercher le menu.
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeBrandChart, { once: true });
+    document.addEventListener('DOMContentLoaded', closeMobileNavigation, { once: true });
 } else {
-    initializeBrandChart();
+    closeMobileNavigation();
 }
