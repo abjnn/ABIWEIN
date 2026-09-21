@@ -34,13 +34,14 @@ body.private-site {
 // 2. Barre latérale sombre inspirée des outils professionnels
 // -----------------------------------------------------------------------------
 .private-sidebar {
-    // MODIFICATION : cette variable impose le fond vert au composant Offcanvas de Bootstrap.
-    --bs-offcanvas-bg: #{$abiwein-olive};
+    // MODIFICATION : cette variable impose le fond blanc au composant Offcanvas de Bootstrap.
+    --bs-offcanvas-bg: #{$abiwein-white};
     width: 17.5rem !important;
-    color: rgba($abiwein-white, 0.74);
-    // Cette ligne contrôle la couleur visible de toute la navigation latérale.
-    background: $abiwein-olive;
-    border-right: 1px solid rgba($abiwein-white, 0.08);
+    // Cette ligne contrôle la couleur générale des textes de la navigation.
+    color: $abiwein-olive;
+    // Cette ligne maintient tout le fond de la navigation en blanc.
+    background: $abiwein-white;
+    border-right: 1px solid rgba($abiwein-olive, 0.14);
 }
 
 .private-sidebar__body {
@@ -54,8 +55,9 @@ body.private-site {
 }
 
 .private-sidebar__mobile-header {
-    color: $abiwein-white;
-    border-bottom: 1px solid rgba($abiwein-white, 0.1);
+    // Le titre du menu mobile utilise le vert olive foncé sur le fond blanc.
+    color: $abiwein-olive;
+    border-bottom: 1px solid rgba($abiwein-olive, 0.14);
 }
 
 .private-sidebar__mobile-header h2 {
@@ -67,7 +69,7 @@ body.private-site {
     align-self: flex-start;
     padding: 0.55rem;
     margin-bottom: 2rem;
-    background: $abiwein-white;
+    background: rgba($abiwein-beige-light, 0.24);
     border-radius: 0.55rem;
 }
 
@@ -85,7 +87,8 @@ body.private-site {
 .private-nav__label {
     padding-inline: 0.75rem;
     margin: 0 0 0.45rem;
-    color: rgba($abiwein-white, 0.42);
+    // Les titres « Espace de travail » et « Modules préparés » restent lisibles en vert.
+    color: $abiwein-olive;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -103,7 +106,8 @@ body.private-site {
     align-items: center;
     min-height: 2.65rem;
     padding: 0.65rem 0.75rem;
-    color: rgba($abiwein-white, 0.76);
+    // Cette couleur s’applique à Vue d’ensemble, Utilisateurs et aux modules.
+    color: $abiwein-olive;
     font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;
@@ -113,24 +117,24 @@ body.private-site {
     &:hover,
     &:focus,
     &.active {
-        color: $abiwein-white;
-        background: rgba($abiwein-white, 0.09);
+        color: $abiwein-olive;
+        background: rgba($abiwein-beige-light, 0.44);
     }
 
     &.active .private-nav__marker {
-        background: $abiwein-beige-light;
+        background: $abiwein-olive;
     }
 }
 
 .private-nav__marker {
     width: 0.35rem;
     height: 0.35rem;
-    background: rgba($abiwein-white, 0.3);
+    background: $abiwein-sage;
     border-radius: 50%;
 }
 
 .private-nav__link small {
-    color: rgba($abiwein-white, 0.38);
+    color: $abiwein-sage;
     font-size: 0.64rem;
     font-weight: 600;
 }
@@ -143,15 +147,16 @@ body.private-site {
 .private-sidebar__public-link {
     padding: 0.8rem 0.75rem;
     margin-top: auto;
-    color: rgba($abiwein-white, 0.74);
+    color: $abiwein-olive;
     font-size: 0.86rem;
     font-weight: 600;
     text-decoration: none;
-    border-top: 1px solid rgba($abiwein-white, 0.1);
+    border-top: 1px solid rgba($abiwein-olive, 0.14);
 
     &:hover,
     &:focus {
-        color: $abiwein-white;
+        color: $abiwein-olive;
+        background: rgba($abiwein-beige-light, 0.28);
     }
 }
 

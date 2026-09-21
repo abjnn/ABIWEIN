@@ -7,7 +7,8 @@
     {{-- Cet en-tête est visible uniquement lorsque le menu s’ouvre sur téléphone. --}}
     <div class="offcanvas-header private-sidebar__mobile-header">
         <h2 class="offcanvas-title" id="privateNavigationLabel">Navigation ABIWEIN</h2>
-        <button class="btn-close btn-close-white" type="button" data-bs-dismiss="offcanvas" data-bs-target="#privateNavigation" aria-label="Fermer le menu"></button>
+        {{-- Le bouton sombre reste visible puisque le fond du menu mobile est blanc. --}}
+        <button class="btn-close" type="button" data-bs-dismiss="offcanvas" data-bs-target="#privateNavigation" aria-label="Fermer le menu"></button>
     </div>
 
     <div class="private-sidebar__body">
