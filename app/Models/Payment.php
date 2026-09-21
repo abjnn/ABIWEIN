@@ -21,4 +21,10 @@ class Payment extends Model
     {
         return $this->belongsTo(Sale::class);
     }
+
+    /** Utilisateur ayant encaissé et saisi le versement en espèces. */
+    public function recordedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'recorded_by');
+    }
 }

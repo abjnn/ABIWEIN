@@ -25,7 +25,7 @@ Ce document sépare les faits déjà observés sur le poste de développement de
 | Front-end | Bootstrap 5.3.8, Popper 2.11.8, Chart.js 4.5.1, Sass 1.104.1 et Vite 7.3.6 | Dépendances verrouillées par `package-lock.json` et build réussi |
 | Audits | `composer audit` et `npm audit --omit=dev` | Aucun avis de vulnérabilité détecté |
 | Base applicative | Base `abiwein`, compte `abiwein_app@127.0.0.1`, tables InnoDB | Cinq migrations appliquées ; schéma métier et jeu de démonstration validés |
-| Tests | `php artisan test` | 15 tests réussis, 50 assertions, dont l’authentification, le blocage et les rôles |
+| Tests | Suite PHPUnit complète et reprise ciblée du rapport | 43 tests validés : accès, stocks, santé, commerce, rapports et site public |
 | HTTP | `/`, `/a-propos`, `/contact`, `/connexion`, `/up`, JavaScript et CSS compilés | Toutes les requêtes ont répondu HTTP 200 |
 | Node.js | v26.1.0 | Version présente et exécutable ; Node.js 24 LTS reste recommandé pour la stabilité à long terme |
 | npm | v11.13.0 | Gestionnaire front-end présent |
@@ -45,10 +45,10 @@ Ce document sépare les faits déjà observés sur le poste de développement de
 | Composer | Définition valide, prérequis PHP satisfaits, aucun avis de sécurité |
 | MySQL | Base et utilisateur dédiés opérationnels, cinq migrations appliquées avec InnoDB |
 | Front-end | 83 paquets installés, build Vite produit, aucun avis npm de niveau production |
-| Tests automatisés | 15 tests réussis, 50 assertions |
+| Tests automatisés | 43 tests validés ; modules métier et autorisations couverts |
 | Accès privé | Connexion, déconnexion, compte bloqué et restriction administrateur validés |
 | Démonstration | Trois comptes fictifs et un scénario cohérent de ferme créés localement |
-| HTTP | Accueil, À propos, contact, connexion et santé : HTTP 200 |
+| HTTP | Accueil HTTP 200 ; photographies croissance et santé chargées ; routes privées enregistrées |
 | Responsive | Contrôle visuel effectué en format ordinateur et téléphone |
 | Marque | Logo officiel et cinq couleurs exactes intégrés |
 | Secrets Git | `.env` ignoré ; aucun secret ajouté à l'index |

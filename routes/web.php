@@ -53,3 +53,9 @@ Route::middleware(['auth', 'active'])->group(function (): void {
         Route::patch('/utilisateurs/{user}/statut', [AdminUserController::class, 'toggleStatus'])->name('users.toggle-status');
     });
 });
+
+/* Les modules métier conservent leurs routes dans des fichiers séparés. */
+require __DIR__.'/commerce.php';
+require __DIR__.'/health.php';
+require __DIR__.'/reports.php';
+require __DIR__.'/stocks.php';

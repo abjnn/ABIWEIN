@@ -30,6 +30,8 @@ Les photos sont dans `public/images/public`. Conserver le même nom permet de le
 - `farmer-poultry.jpg` pour les jeunes poulets autour d’une mangeoire ;
 - `prepared-chicken.jpg` pour les poulets entiers conditionnés ;
 - `private-access-poultry.jpg` pour la connexion, conservé indépendamment des autres pages.
+- `activity-growth.jpg` pour la carte Élevage et croissance ;
+- `activity-health.jpg` pour la carte Santé et prévention.
 
 Vérifier la licence, privilégier une image horizontale d’au moins 1 400 pixels, l’optimiser pour le web et mettre à jour `docs/IMAGE_CREDITS.md`.
 

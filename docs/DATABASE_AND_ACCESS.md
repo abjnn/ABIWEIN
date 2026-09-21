@@ -18,9 +18,9 @@ Ce document décrit le socle actuellement exécutable. Les données créées par
 
 | Rôle | Portée actuelle |
 |---|---|
-| Administrateur | Tableau de bord et gestion des comptes |
-| Responsable d’exploitation | Tableau de bord opérationnel |
-| Vétérinaire | Tableau de bord ; écrans sanitaires spécialisés à ajouter dans le module métier |
+| Administrateur | Tableau de bord, rapports, stocks, commerce, finances, santé et gestion des comptes |
+| Responsable d’exploitation | Tableau de bord, rapports, stocks, commerce, finances et consultation sanitaire |
+| Vétérinaire | Tableau de bord technique et création/consultation des visites sanitaires |
 
 ## Comptes locaux de démonstration
 

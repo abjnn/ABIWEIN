@@ -2,7 +2,7 @@
 
 ABIWEIN est une application web de gestion d'exploitation avicole. Elle centralise les opérations de la ferme, leur suivi et les indicateurs utiles à la décision dans une interface française, responsive et adaptée à un usage quotidien.
 
-Le socle technique est installé. L'espace visiteur est structuré en pages Blade distinctes et l'espace privé dispose maintenant d'une connexion sécurisée, de trois rôles, d'un tableau de bord et d'une gestion administrative des comptes. La base métier et son jeu de démonstration couvrent l'exploitation, le suivi quotidien, les stocks, la santé et les ventes.
+Le socle technique est installé. L'espace visiteur est structuré en pages Blade distinctes et l'espace privé dispose d'une connexion sécurisée, de trois rôles, d'un tableau de bord professionnel, de rapports, ainsi que des modules stocks, sanitaire, commercial et financier. La base métier et son jeu de démonstration couvrent l'exploitation, le suivi quotidien, les stocks, la santé et les ventes.
 
 ## Décisions fonctionnelles établies
 
@@ -148,7 +148,7 @@ php artisan test
 php artisan migrate:status
 ```
 
-Ces contrôles ont réussi sur le poste de développement le 21 septembre 2026, avec 15 tests et 50 assertions. Les preuves synthétiques et les éventuels contrôles restant à faire sont consignés dans [`docs/VALIDATION.md`](docs/VALIDATION.md).
+Ces contrôles ont réussi sur le poste de développement le 21 septembre 2026, avec 43 tests fonctionnels et unitaires. Les preuves synthétiques et les éventuels contrôles restant à faire sont consignés dans [`docs/VALIDATION.md`](docs/VALIDATION.md).
 
 ## Organisation du projet
 

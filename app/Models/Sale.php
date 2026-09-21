@@ -33,4 +33,16 @@ class Sale extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    /** Lignes de produits figées au moment de la vente. */
+    public function items(): HasMany
+    {
+        return $this->hasMany(SaleItem::class);
+    }
+
+    /** Utilisateur ayant enregistré la vente dans ABIWEIN. */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

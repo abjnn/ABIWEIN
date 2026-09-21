@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Database\Factories\VeterinaryVisitFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -10,6 +12,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable(['flock_id', 'veterinarian_id', 'visit_date', 'diagnosis', 'recommendations', 'next_visit_date'])]
 class VeterinaryVisit extends Model
 {
+    /** @use HasFactory<VeterinaryVisitFactory> */
+    use HasFactory;
+
     /** Les deux dates sont converties pour les rappels et calendriers. */
     protected function casts(): array
     {

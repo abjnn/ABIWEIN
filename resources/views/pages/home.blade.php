@@ -88,19 +88,25 @@
 
             <div class="row g-4 activity-grid">
                 <div class="col-md-6 col-xl-4">
-                    <article class="activity-card">
-                        <div class="activity-card__number">01</div>
-                        <h3>Élevage et croissance</h3>
-                        <p>Suivi des bâtiments, bandes, effectifs, consommations, poids et observations quotidiennes.</p>
-                        <span class="activity-card__line" aria-hidden="true"></span>
+                    {{-- La première photo montre une exploitation réelle de poulets de chair. --}}
+                    <article class="activity-card activity-card--image">
+                        <img src="{{ asset('images/public/activity-growth.jpg') }}" alt="Poulets de chair dans un grand bâtiment équipé de mangeoires" width="1600" height="1067" loading="lazy">
+                        <div class="activity-card__overlay">
+                            <div class="activity-card__number">01</div>
+                            <h3>Élevage et croissance</h3>
+                            <p>Suivi des bâtiments, bandes, effectifs, consommations, poids et observations quotidiennes.</p>
+                        </div>
                     </article>
                 </div>
                 <div class="col-md-6 col-xl-4">
-                    <article class="activity-card">
-                        <div class="activity-card__number">02</div>
-                        <h3>Santé et prévention</h3>
-                        <p>Organisation des visites vétérinaires, diagnostics, programmes et interventions sanitaires.</p>
-                        <span class="activity-card__line" aria-hidden="true"></span>
+                    {{-- La seconde photo illustre l’examen manuel attentif d’un poulet. --}}
+                    <article class="activity-card activity-card--image">
+                        <img src="{{ asset('images/public/activity-health.jpg') }}" alt="Poulet tenu avec précaution pendant un contrôle sanitaire" width="1600" height="1067" loading="lazy">
+                        <div class="activity-card__overlay">
+                            <div class="activity-card__number">02</div>
+                            <h3>Santé et prévention</h3>
+                            <p>Organisation des visites vétérinaires, diagnostics, programmes et interventions sanitaires.</p>
+                        </div>
                     </article>
                 </div>
                 <div class="col-md-6 col-xl-4">

@@ -21,4 +21,10 @@ class StockMovement extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    /** Utilisateur ayant enregistré l’opération dans le journal des stocks. */
+    public function recordedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'recorded_by');
+    }
 }

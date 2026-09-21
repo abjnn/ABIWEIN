@@ -1,7 +1,7 @@
 {{--
     NAVIGATION PRIVÉE
-    MODIFICATION : ajoutez une route réelle seulement quand le module fonctionne.
-    Les éléments "À venir" restent non cliquables et ne simulent aucune fonction.
+    Les groupes ci-dessous séparent le pilotage, les opérations et l’administration.
+    MODIFICATION : le nom placé entre route(...) détermine l’écran ouvert par un lien.
 --}}
 <aside class="offcanvas-lg offcanvas-start private-sidebar" tabindex="-1" id="privateNavigation" aria-labelledby="privateNavigationLabel">
     {{-- Cet en-tête est visible uniquement lorsque le menu s’ouvre sur téléphone. --}}
@@ -17,31 +17,56 @@
             <img src="{{ asset('brand/abiwein-logo.png') }}" alt="ABIWEIN" width="120" height="120">
         </a>
 
-        {{-- Le premier groupe contient uniquement les écrans opérationnels. --}}
+        {{-- PILOTAGE : synthèse générale et rapports consolidés. --}}
         <nav class="private-nav" aria-label="Navigation de l’espace privé">
-            <p class="private-nav__label">Espace de travail</p>
+            <p class="private-nav__label">Pilotage</p>
             <a class="private-nav__link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}" @if(request()->routeIs('dashboard')) aria-current="page" @endif>
                 <span class="private-nav__marker" aria-hidden="true"></span>
                 Vue d’ensemble
             </a>
 
-            {{-- Seul l’administrateur voit la gestion des comptes. --}}
+            {{-- Les rapports financiers restent limités aux rôles qui pilotent la ferme. --}}
+            @if (auth()->user()->canManageOperations())
+                <a class="private-nav__link {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="{{ route('reports.index') }}" @if(request()->routeIs('reports.*')) aria-current="page" @endif>
+                    <span class="private-nav__marker" aria-hidden="true"></span>
+                    Rapports
+                </a>
+
+                {{-- OPÉRATIONS : chaque entrée mène à un module désormais fonctionnel. --}}
+                <p class="private-nav__label private-nav__label--spaced">Opérations</p>
+                <a class="private-nav__link {{ request()->routeIs('stocks.*') ? 'active' : '' }}" href="{{ route('stocks.index') }}" @if(request()->routeIs('stocks.*')) aria-current="page" @endif>
+                    <span class="private-nav__marker" aria-hidden="true"></span>
+                    Stocks
+                </a>
+                <a class="private-nav__link {{ request()->routeIs('commerce.dashboard') || request()->routeIs('clients.*', 'sales.*', 'receivables.*', 'expenses.*') ? 'active' : '' }}" href="{{ route('commerce.dashboard') }}" @if(request()->routeIs('commerce.dashboard', 'clients.*', 'sales.*', 'receivables.*', 'expenses.*')) aria-current="page" @endif>
+                    <span class="private-nav__marker" aria-hidden="true"></span>
+                    Ventes et finances
+                </a>
+                <a class="private-nav__link {{ request()->routeIs('clients.*') ? 'active' : '' }}" href="{{ route('clients.index') }}" @if(request()->routeIs('clients.*')) aria-current="page" @endif>
+                    <span class="private-nav__marker" aria-hidden="true"></span>
+                    Clients
+                </a>
+                <a class="private-nav__link {{ request()->routeIs('receivables.*') ? 'active' : '' }}" href="{{ route('receivables.index') }}" @if(request()->routeIs('receivables.*')) aria-current="page" @endif>
+                    <span class="private-nav__marker" aria-hidden="true"></span>
+                    Créances
+                </a>
+            @endif
+
+            {{-- SANTÉ : accessible en lecture aux trois rôles autorisés. --}}
+            <p class="private-nav__label private-nav__label--spaced">Santé</p>
+            <a class="private-nav__link {{ request()->routeIs('health.*') ? 'active' : '' }}" href="{{ route('health.visits.index') }}" @if(request()->routeIs('health.*')) aria-current="page" @endif>
+                <span class="private-nav__marker" aria-hidden="true"></span>
+                Visites vétérinaires
+            </a>
+
+            {{-- ADMINISTRATION : seul l’administrateur peut gérer les comptes. --}}
             @if (auth()->user()->isAdministrator())
+                <p class="private-nav__label private-nav__label--spaced">Administration</p>
                 <a class="private-nav__link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}" @if(request()->routeIs('admin.users.*')) aria-current="page" @endif>
                     <span class="private-nav__marker" aria-hidden="true"></span>
                     Utilisateurs
                 </a>
             @endif
-
-            {{-- Ces libellés montrent l’organisation prévue sans faux liens. --}}
-            <p class="private-nav__label private-nav__label--spaced">Modules préparés</p>
-            @foreach (['Exploitation', 'Suivi quotidien', 'Stocks', 'Santé', 'Ventes', 'Finances', 'Alertes'] as $module)
-                <span class="private-nav__link private-nav__link--disabled" aria-disabled="true">
-                    <span class="private-nav__marker" aria-hidden="true"></span>
-                    {{ $module }}
-                    <small>À venir</small>
-                </span>
-            @endforeach
         </nav>
 
         {{-- Ce lien permet de consulter l’espace visiteur sans fermer la session. --}}

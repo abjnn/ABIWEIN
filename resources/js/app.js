@@ -4,6 +4,9 @@ import './bootstrap';
 // Charge les composants Bootstrap, notamment le menu responsive.
 import * as bootstrap from 'bootstrap';
 
+// Charge les graphiques uniquement lorsqu’une vue privée fournit une configuration.
+import './private-charts';
+
 /**
  * Referme le menu mobile après la sélection d'un lien.
  * MODIFICATION : changez le sélecteur uniquement si l'identifiant du menu

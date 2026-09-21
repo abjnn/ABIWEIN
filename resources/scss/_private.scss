@@ -286,6 +286,14 @@ body.private-site {
     text-transform: capitalize;
 }
 
+// Regroupe la date et l’action principale à droite de l’introduction.
+.private-intro__aside {
+    display: grid;
+    flex: 0 0 auto;
+    gap: 0.85rem;
+    justify-items: end;
+}
+
 .private-kicker {
     margin-bottom: 0.35rem;
     color: $abiwein-olive;
@@ -300,6 +308,11 @@ body.private-site {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1rem;
     margin-bottom: 1rem;
+}
+
+// MODIFICATION : cette variante affiche six indicateurs en trois colonnes équilibrées.
+.private-stats--six {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .private-stat {
@@ -384,7 +397,84 @@ body.private-site {
 }
 
 // -----------------------------------------------------------------------------
-// 5. Tableaux, états et alertes
+// 5. Accès rapides, filtres et graphiques
+// -----------------------------------------------------------------------------
+.private-quick-actions {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.private-quick-actions a {
+    display: grid;
+    gap: 0.45rem;
+    min-height: 7rem;
+    padding: 1.15rem;
+    color: $abiwein-ink;
+    text-decoration: none;
+    background: $abiwein-white;
+    border: 1px solid rgba($abiwein-olive, 0.14);
+    border-radius: $border-radius-lg;
+    transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+
+    &:hover,
+    &:focus-visible {
+        color: $abiwein-olive;
+        border-color: $abiwein-sage;
+        box-shadow: 0 0.75rem 2rem rgba($abiwein-ink, 0.07);
+        transform: translateY(-2px);
+    }
+}
+
+.private-quick-actions span {
+    color: $abiwein-sage;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.private-quick-actions strong {
+    font-size: 0.92rem;
+    line-height: 1.45;
+}
+
+.private-filter {
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+    padding: 1.15rem;
+    margin-bottom: 1rem;
+    background: $abiwein-white;
+    border: 1px solid rgba($abiwein-ink, 0.09);
+    border-radius: $border-radius-lg;
+}
+
+.private-filter > div {
+    min-width: 12rem;
+}
+
+.private-grid--charts {
+    grid-template-columns: minmax(0, 1.55fr) minmax(18rem, 0.75fr);
+}
+
+.private-chart {
+    position: relative;
+    height: 20rem;
+    padding: 1.25rem;
+}
+
+.private-chart--wide {
+    height: 22rem;
+}
+
+.private-chart-panel {
+    margin-bottom: 1rem;
+}
+
+// -----------------------------------------------------------------------------
+// 6. Tableaux, états et alertes
 // -----------------------------------------------------------------------------
 .private-table {
     min-width: 42rem;
@@ -485,7 +575,7 @@ body.private-site {
 }
 
 // -----------------------------------------------------------------------------
-// 6. Adaptation aux tablettes et téléphones
+// 7. Adaptation aux tablettes et téléphones
 // -----------------------------------------------------------------------------
 @media (max-width: 1199.98px) {
     .private-stats {
@@ -494,6 +584,10 @@ body.private-site {
 
     .private-grid--main {
         grid-template-columns: 1fr;
+    }
+
+    .private-quick-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -509,6 +603,10 @@ body.private-site {
 
     .private-header__identity {
         display: none;
+    }
+
+    .private-grid--charts {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -531,8 +629,21 @@ body.private-site {
         flex: auto;
     }
 
+    .private-intro__aside {
+        justify-items: start;
+    }
+
     .private-stats {
         grid-template-columns: 1fr;
+    }
+
+    .private-filter {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .private-filter > div {
+        min-width: 0;
     }
 }
 
@@ -553,5 +664,42 @@ body.private-site {
     .private-panel__header,
     .private-form-card {
         padding: 1.15rem;
+    }
+
+    .private-quick-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .private-chart,
+    .private-chart--wide {
+        height: 17rem;
+        padding: 0.85rem;
+    }
+}
+
+// L’impression masque la navigation et conserve uniquement le rapport lisible.
+@media print {
+    .private-sidebar,
+    .private-header,
+    .no-print,
+    .private-quick-actions {
+        display: none !important;
+    }
+
+    .private-shell,
+    .private-workspace {
+        display: block;
+    }
+
+    .private-content {
+        width: 100%;
+        padding: 0;
+    }
+
+    .private-panel,
+    .private-stat,
+    .private-intro {
+        break-inside: avoid;
+        box-shadow: none;
     }
 }

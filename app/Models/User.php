@@ -50,6 +50,13 @@ class User extends Authenticatable
         return $this->hasRole(UserRole::Administrator);
     }
 
+    /** Indique si le compte peut gérer les stocks, ventes, finances et rapports. */
+    public function canManageOperations(): bool
+    {
+        // MODIFICATION : ajoutez ici un rôle seulement s’il doit accéder aux données commerciales.
+        return in_array($this->role, [UserRole::Administrator, UserRole::FarmManager], true);
+    }
+
     /** Retourne les relevés quotidiens créés par cet utilisateur. */
     public function dailyRecords(): HasMany
     {

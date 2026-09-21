@@ -12,16 +12,49 @@
             <p>Voici l’état synthétique des données actuellement disponibles dans ABIWEIN.</p>
         </div>
         {{-- La date suit la locale française configurée dans Laravel. --}}
-        <p class="private-intro__date">{{ now()->translatedFormat('l d F Y') }}</p>
+        <div class="private-intro__aside">
+            <p class="private-intro__date">{{ now()->translatedFormat('l d F Y') }}</p>
+            {{-- Le rapport détaillé reste accessible sans encombrer le premier écran. --}}
+            @if ($canViewFinancials)
+                <a class="btn btn-private-primary" href="{{ route('reports.index') }}">Voir les rapports</a>
+            @endif
+        </div>
     </section>
 
     {{-- INDICATEURS : chaque valeur est calculée par DashboardController. --}}
-    <section class="private-stats" aria-label="Indicateurs principaux">
+    <section class="private-stats private-stats--six" aria-label="Indicateurs principaux">
         <x-private.stat-card label="Bandes actives" :value="$activeFlocks->count()" detail="Cycles actuellement suivis" />
         <x-private.stat-card label="Effectif actuel" :value="number_format($totalBirds, 0, ',', ' ')" detail="Sujets dans les bandes actives" />
-        <x-private.stat-card label="Stocks sous le seuil" :value="$lowStockCount" detail="Produits à contrôler" :tone="$lowStockCount > 0 ? 'alert' : 'default'" />
-        <x-private.stat-card label="Créances" :value="number_format($receivables, 0, ',', ' ').' FCFA'" detail="Soldes des ventes non réglées" />
+        @if ($canViewFinancials)
+            <x-private.stat-card label="Stocks sous le seuil" :value="$lowStockCount" detail="Produits à contrôler" :tone="$lowStockCount > 0 ? 'alert' : 'default'" />
+            <x-private.stat-card label="Créances" :value="number_format($receivables, 0, ',', ' ').' FCFA'" detail="Soldes des ventes non réglées" />
+            <x-private.stat-card label="Trésorerie du mois" :value="number_format($netCashThisMonth, 0, ',', ' ').' FCFA'" detail="Encaissements moins dépenses" :tone="$netCashThisMonth < 0 ? 'alert' : 'default'" />
+        @else
+            <x-private.stat-card label="Alertes ouvertes" :value="$openAlertsCount" detail="Situations à examiner" :tone="$openAlertsCount > 0 ? 'alert' : 'default'" />
+        @endif
+        <x-private.stat-card label="Visites à venir" :value="$upcomingVisitsCount" detail="Suivis sanitaires programmés" />
     </section>
+
+    {{-- ACCÈS RAPIDES : chaque carte mène à une fonction réellement disponible. --}}
+    <nav class="private-quick-actions" aria-label="Actions rapides">
+        <a href="{{ route('health.visits.index') }}"><span>Sanitaire</span><strong>Suivre les visites vétérinaires</strong></a>
+        @if ($canViewFinancials)
+            <a href="{{ route('stocks.index') }}"><span>Stocks</span><strong>Consulter les produits et mouvements</strong></a>
+            <a href="{{ route('sales.create') }}"><span>Ventes</span><strong>Enregistrer une nouvelle opération</strong></a>
+            <a href="{{ route('reports.index') }}"><span>Rapports</span><strong>Analyser la période et imprimer</strong></a>
+        @endif
+    </nav>
+
+    {{-- GRAPHIQUE FINANCIER : ventes et dépenses proviennent des six derniers mois. --}}
+    @if ($canViewFinancials)
+        <section class="private-panel private-chart-panel" aria-labelledby="dashboard-chart-title">
+            <div class="private-panel__header">
+                <div><p class="private-kicker">Tendance sur six mois</p><h2 id="dashboard-chart-title">Activité financière</h2></div>
+                <span>{{ number_format($cashThisMonth, 0, ',', ' ') }} FCFA encaissés ce mois</span>
+            </div>
+            <div class="private-chart private-chart--wide"><canvas id="dashboardFinancialChart" aria-label="Évolution mensuelle des ventes et dépenses"></canvas></div>
+        </section>
+    @endif
 
     <div class="private-grid private-grid--main">
         {{-- BANDES : aperçu des cycles actifs et de leur bâtiment actuel. --}}
@@ -97,4 +130,21 @@
             </table>
         </div>
     </section>
+
+    {{-- CONFIGURATION : ce bloc transmet uniquement les séries autorisées au module Chart.js. --}}
+    @if ($canViewFinancials)
+        <script type="application/json" data-chart-config data-target="dashboardFinancialChart">
+            {!! Illuminate\Support\Js::encode([
+                'type' => 'bar',
+                'currency' => true,
+                'data' => [
+                    'labels' => $financialTrend['labels'],
+                    'datasets' => [
+                        ['label' => 'Ventes', 'data' => $financialTrend['sales'], 'backgroundColor' => '#31380F', 'borderRadius' => 5],
+                        ['label' => 'Dépenses', 'data' => $financialTrend['expenses'], 'backgroundColor' => '#C7AF97', 'borderRadius' => 5],
+                    ],
+                ],
+            ]) !!}
+        </script>
+    @endif
 @endsection
