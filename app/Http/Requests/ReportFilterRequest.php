@@ -15,12 +15,11 @@ class ReportFilterRequest extends FormRequest
         return true;
     }
 
-    /** Les dates ciblent la date officielle du rapport, et non ses données internes. */
+    /** La date cible exactement la date officielle du rapport, et non ses données internes. */
     public function rules(): array
     {
         return [
-            'date_from' => ['nullable', 'date'],
-            'date_to' => ['nullable', 'date', 'after_or_equal:date_from'],
+            'date' => ['nullable', 'date'],
             'type' => ['nullable', 'string', Rule::in(array_keys(FarmReport::TYPES))],
         ];
     }
@@ -29,9 +28,7 @@ class ReportFilterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'date_from.date' => 'La date de début doit être valide.',
-            'date_to.date' => 'La date de fin doit être valide.',
-            'date_to.after_or_equal' => 'La date de fin doit être postérieure ou égale à la date de début.',
+            'date.date' => 'La date du rapport doit être valide.',
             'type.in' => 'Le type de rapport choisi n’est pas reconnu.',
         ];
     }

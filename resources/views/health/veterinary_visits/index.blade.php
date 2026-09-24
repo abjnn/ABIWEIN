@@ -31,22 +31,15 @@
     {{-- FILTRES : tous les champs utilisent la méthode GET afin de produire une URL partageable. --}}
     <section class="private-form-card mb-3" aria-labelledby="health-filters-title">
         <div class="mb-3">
-            <p class="private-kicker">Recherche</p>
+            <p class="private-kicker">Filtres sanitaires</p>
             <h2 class="h5 mb-0" id="health-filters-title">Filtrer l’historique</h2>
         </div>
 
         {{-- Ce formulaire ne modifie aucune donnée ; il limite seulement les résultats affichés. --}}
         <form method="GET" action="{{ route('health.visits.index') }}">
             <div class="row g-3 align-items-end">
-                {{-- Ce champ recherche dans le code de bande et les textes cliniques. --}}
-                <div class="col-lg-4 col-md-6">
-                    <label class="form-label" for="search">Recherche</label>
-                    <input class="form-control @error('search') is-invalid @enderror" id="search" name="search" type="search" value="{{ request('search') }}" maxlength="120" placeholder="Bande, diagnostic, recommandation">
-                    @error('search')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
-
                 {{-- Ce sélecteur limite l’historique à une seule bande. --}}
-                <div class="col-lg-4 col-md-6">
+                <div class="col-lg-3 col-md-6">
                     <label class="form-label" for="flock_id">Bande</label>
                     <select class="form-select @error('flock_id') is-invalid @enderror" id="flock_id" name="flock_id">
                         <option value="">Toutes les bandes</option>
@@ -58,7 +51,7 @@
                 </div>
 
                 {{-- Ce sélecteur limite l’historique au professionnel choisi. --}}
-                <div class="col-lg-4 col-md-6">
+                <div class="col-lg-3 col-md-6">
                     <label class="form-label" for="veterinarian_id">Vétérinaire</label>
                     <select class="form-select @error('veterinarian_id') is-invalid @enderror" id="veterinarian_id" name="veterinarian_id">
                         <option value="">Tous les vétérinaires</option>
@@ -69,20 +62,15 @@
                     @error('veterinarian_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
-                {{-- Ces deux dates définissent la période de visites à consulter. --}}
-                <div class="col-md-4">
-                    <label class="form-label" for="date_from">Du</label>
-                    <input class="form-control @error('date_from') is-invalid @enderror" id="date_from" name="date_from" type="date" value="{{ request('date_from') }}">
-                    @error('date_from')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label" for="date_to">Au</label>
-                    <input class="form-control @error('date_to') is-invalid @enderror" id="date_to" name="date_to" type="date" value="{{ request('date_to') }}">
-                    @error('date_to')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                {{-- Une seule date affiche les visites effectuées pendant ce jour précis. --}}
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label" for="date">Date</label>
+                    <input class="form-control @error('date') is-invalid @enderror" id="date" name="date" type="date" value="{{ request('date') }}">
+                    @error('date')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
 
                 {{-- Le premier bouton applique les filtres ; le second restaure la liste complète. --}}
-                <div class="col-md-4 d-flex gap-2">
+                <div class="col-lg-3 col-md-6 d-flex gap-2">
                     <button class="btn btn-private-primary" type="submit">Appliquer</button>
                     <a class="btn btn-private-secondary" href="{{ route('health.visits.index') }}">Réinitialiser</a>
                 </div>

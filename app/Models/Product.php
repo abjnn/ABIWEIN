@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/** Produit stocké ou vendu par l’exploitation. */
+/** Intrant conservé dans le magasin de la ferme ; les ventes sont gérées séparément. */
 #[Fillable(['code', 'name', 'category', 'unit', 'current_stock', 'alert_threshold', 'expires_at', 'is_active'])]
 class Product extends Model
 {
@@ -23,6 +23,31 @@ class Product extends Model
             'expires_at' => 'date',
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Exprime l'échéance en temps restant ou écoulé, sans répéter la date brute.
+     * La date du jour est traitée séparément afin d'éviter un trompeur « dans 0 jour ».
+     */
+    public function expirationTimeLabel(): string
+    {
+        if (! $this->expires_at) {
+            return 'Non applicable';
+        }
+
+        $today = today();
+        $expirationDate = $this->expires_at->copy()->startOfDay();
+
+        if ($expirationDate->isSameDay($today)) {
+            return 'Expire aujourd’hui';
+        }
+
+        $days = (int) $today->diffInDays($expirationDate, true);
+        $unit = $days === 1 ? 'jour' : 'jours';
+
+        return $expirationDate->isBefore($today)
+            ? "Expiré depuis {$days} {$unit}"
+            : "Expire dans {$days} {$unit}";
     }
 
     /** Historique des entrées, sorties et ajustements. */

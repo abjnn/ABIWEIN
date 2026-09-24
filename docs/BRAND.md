@@ -2,27 +2,25 @@
 
 ## 1. Intention
 
-L'identité d'ABIWEIN associe l'élevage avicole, la gestion agricole et l'analyse numérique. Elle doit rester sobre, naturelle, rassurante et lisible. Le vert traduit la croissance et l'environnement agricole ; les tons beiges apportent chaleur et équilibre ; le bleu foncé et le doré présents dans le logo évoquent respectivement la fiabilité technologique et la prospérité.
+L'identité d'ABIWEIN associe l'élevage avicole, la fiabilité et l'analyse numérique. Elle doit rester sobre, professionnelle, rassurante et très lisible. Le blanc domine toutes les interfaces pour conserver de l'espace et de la clarté ; le bleu foncé structure la navigation et les actions, tandis que le bleu clair distingue les surfaces secondaires.
 
 ## 2. Palette officielle
 
 | Jeton recommandé | Couleur | Code | Usage principal |
 |---|---|---:|---|
-| `brand-olive` | Vert olive foncé | `#31380F` | navigation, titres, texte fort, boutons principaux |
-| `brand-sage` | Vert sauge | `#798057` | éléments secondaires, bordures, états calmes |
-| `brand-beige-light` | Beige clair | `#E2D4B9` | arrière-plans doux, surfaces secondaires |
-| `brand-beige-taupe` | Beige taupe | `#C7AF97` | séparateurs, encadrés, accents neutres |
-| `brand-beige-rose` | Beige rosé | `#D8C7B5` | états chaleureux, arrière-plans ponctuels |
+| `brand-blue-dark` | Bleu foncé | `#1F4E79` | navigation, titres, texte fort et boutons principaux |
+| `brand-white` | Blanc | `#FFFFFF` | fond dominant, cartes et zones de respiration |
+| `brand-blue-light` | Bleu clair | `#BDD7EE` | surfaces secondaires, séparateurs, focus et deuxième série des graphiques |
 
 Les codes hexadécimaux sont normatifs. Ne pas les remplacer par une couleur visuellement proche.
 
 ### Règles d'emploi
 
-- Utiliser le vert olive foncé pour le texte sur fond clair.
-- Réserver le vert sauge aux éléments secondaires ; ne pas l'utiliser automatiquement pour de longs textes sans contrôle de contraste.
-- Utiliser les beiges comme surfaces et accents, pas comme couleur de texte principal.
-- Préserver des surfaces blanches afin de garder l'interface légère et lisible.
-- Les couleurs dorée et bleu foncé du logo appartiennent au fichier officiel. Elles ne deviennent pas des jetons d'interface sans validation ultérieure.
+- Garder le blanc comme couleur dominante des pages, cartes, formulaires et menus.
+- Utiliser le bleu foncé pour le texte sur fond clair, les liens, la navigation et les actions principales.
+- Réserver le bleu clair aux fonds secondaires, bordures, focus et accents ; ne jamais l'utiliser seul pour un petit texte sur fond blanc.
+- Employer les opacités du bleu foncé ou du bleu clair pour les nuances, sans introduire une quatrième couleur décorative.
+- Les autres couleurs du logo restent propres au fichier officiel et ne deviennent pas des jetons d'interface sans validation ultérieure.
 - Un état ne doit jamais être communiqué par la couleur seule : ajouter un libellé, une icône ou un motif.
 
 ## 3. Logo officiel
@@ -72,7 +70,7 @@ font-family: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
 ## 5. Interface
 
 - Les composants doivent conserver un rayon, des espacements et des états cohérents dans toute l'application.
-- Le bouton principal utilise le vert olive foncé avec un texte clair dont le contraste est vérifié.
+- Le bouton principal utilise le bleu foncé avec un texte blanc dont le contraste est vérifié.
 - Les messages de succès, d'avertissement et d'erreur peuvent employer des couleurs fonctionnelles supplémentaires, clairement identifiées comme telles et conformes aux exigences de contraste.
 - Le focus clavier doit être visible.
 - Le corps de texte vise une taille minimale de 16 px sur téléphone.
@@ -81,7 +79,7 @@ font-family: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
 ## 6. Contrôle avant livraison
 
 - Logo officiel, net, proportionné et entouré d'espace libre.
-- Cinq couleurs exactes présentes dans les variables de thème.
+- Trois couleurs exactes présentes dans les variables de thème, avec le blanc dominant.
 - Police Roboto avec une pile de repli.
 - Contraste des textes et contrôles vérifié.
 - Mise en page testée sur téléphone, tablette et ordinateur.

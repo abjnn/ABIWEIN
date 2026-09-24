@@ -22,8 +22,8 @@ class ReportController extends Controller
 
         $reports = FarmReport::query()
             ->with('generator:id,name')
-            ->when($filters['date_from'] ?? null, fn ($query, string $date) => $query->whereDate('report_date', '>=', $date))
-            ->when($filters['date_to'] ?? null, fn ($query, string $date) => $query->whereDate('report_date', '<=', $date))
+            // Une date sélectionnée correspond à un jour précis, sans intervalle implicite.
+            ->when($filters['date'] ?? null, fn ($query, string $date) => $query->whereDate('report_date', $date))
             ->when($filters['type'] ?? null, fn ($query, string $type) => $query->where('type', $type))
             ->orderByDesc('report_date')
             ->orderByDesc('id')

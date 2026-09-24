@@ -39,6 +39,28 @@ class SecurityHardeningTest extends TestCase
             ->assertHeader('Cache-Control', 'no-store, private');
     }
 
+    /** Les trois profils reçoivent la même liste verticale compacte, sans anciennes cartes statistiques. */
+    public function test_each_role_dashboard_uses_compact_metric_rows(): void
+    {
+        // Ces trois comptes couvrent l'administrateur, le responsable et le vétérinaire.
+        $users = [
+            User::factory()->administrator()->create(),
+            User::factory()->create(),
+            User::factory()->veterinarian()->create(),
+        ];
+
+        foreach ($users as $user) {
+            // Chaque réponse doit contenir la liste et au moins une ligne, jamais l'ancienne grille de cartes.
+            $this->actingAs($user)
+                ->get(route('dashboard'))
+                ->assertOk()
+                ->assertSee('class="private-metrics-list"', false)
+                ->assertSee('class="private-metric"', false)
+                ->assertDontSee('private-stats', false)
+                ->assertDontSee('<article class="private-stat', false);
+        }
+    }
+
     /** Un mot de passe trop simple reste refusé même si sa confirmation correspond. */
     public function test_weak_password_is_rejected_for_new_account(): void
     {

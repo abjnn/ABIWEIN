@@ -8,9 +8,9 @@
 // 1. Base, accessibilité et composants communs
 // -----------------------------------------------------------------------------
 :root {
-    --abiwein-olive: #{$abiwein-olive};
-    --abiwein-sage: #{$abiwein-sage};
-    --abiwein-beige-light: #{$abiwein-beige-light};
+    --abiwein-blue-dark: #{$abiwein-blue-dark};
+    --abiwein-white: #{$abiwein-white};
+    --abiwein-blue-light: #{$abiwein-blue-light};
     --abiwein-ink: #{$abiwein-ink};
     --abiwein-muted: #{$abiwein-muted};
 }
@@ -82,7 +82,7 @@ textarea {
 .section-eyebrow,
 .hero-eyebrow {
     margin-bottom: 0.8rem;
-    // Le vert olive atteint un contraste AA pour ce petit texte ; le sauge reste décoratif.
+    // Le bleu foncé atteint un contraste AA pour ce petit texte sur le fond blanc.
     color: $abiwein-olive;
     font-size: 0.78rem;
     font-weight: 800;
@@ -125,20 +125,20 @@ textarea {
     --bs-btn-bg: #{$abiwein-olive};
     --bs-btn-border-color: #{$abiwein-olive};
     --bs-btn-hover-color: #{$abiwein-white};
-    --bs-btn-hover-bg: #202607;
-    --bs-btn-hover-border-color: #202607;
+    --bs-btn-hover-bg: #{$abiwein-olive};
+    --bs-btn-hover-border-color: #{$abiwein-beige-taupe};
     --bs-btn-disabled-color: rgba(255, 255, 255, 0.8);
-    --bs-btn-disabled-bg: #596033;
-    --bs-btn-disabled-border-color: #596033;
+    --bs-btn-disabled-bg: #{$abiwein-sage};
+    --bs-btn-disabled-border-color: #{$abiwein-sage};
 }
 
 .btn-light-outline {
     --bs-btn-color: #{$abiwein-ink};
     --bs-btn-bg: rgba(255, 255, 255, 0.82);
-    --bs-btn-border-color: rgba(20, 32, 43, 0.2);
+    --bs-btn-border-color: #{rgba($abiwein-ink, 0.2)};
     --bs-btn-hover-color: #{$abiwein-ink};
     --bs-btn-hover-bg: #{$abiwein-white};
-    --bs-btn-hover-border-color: rgba(20, 32, 43, 0.32);
+    --bs-btn-hover-border-color: #{rgba($abiwein-ink, 0.32)};
 }
 
 .btn-white {
@@ -296,7 +296,7 @@ textarea {
 .public-hero__lead {
     max-width: 39rem;
     margin-bottom: 0;
-    color: #3f4a4f;
+    color: rgba($abiwein-ink, 0.82);
     font-size: clamp(1.05rem, 2vw, 1.25rem);
     line-height: 1.75;
 }
@@ -772,7 +772,7 @@ textarea {
     min-height: 3.25rem;
     padding: 0.75rem 0.9rem;
     color: $abiwein-ink;
-    background-color: #fdfdfb;
+    background-color: $abiwein-white;
     border-color: rgba($abiwein-ink, 0.2);
     border-radius: 0.35rem;
 
@@ -877,7 +877,7 @@ textarea.form-control {
 .login-notice {
     padding: 1rem;
     margin-bottom: 1.5rem;
-    color: #555e3b;
+    color: $abiwein-ink;
     font-size: 0.9rem;
     line-height: 1.55;
     background: rgba($abiwein-beige-light, 0.45);

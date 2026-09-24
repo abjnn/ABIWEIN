@@ -59,6 +59,30 @@ class VeterinaryVisitTest extends TestCase
         }
     }
 
+    /** L’historique propose une seule date exacte et aucun champ de recherche textuelle. */
+    public function test_health_history_filters_on_one_exact_date(): void
+    {
+        $administrator = User::factory()->administrator()->create();
+        VeterinaryVisit::factory()->create([
+            'visit_date' => '2026-09-20',
+            'diagnosis' => 'Diagnostic du jour sélectionné.',
+        ]);
+        VeterinaryVisit::factory()->create([
+            'visit_date' => '2026-09-19',
+            'diagnosis' => 'Diagnostic de la veille.',
+        ]);
+
+        $this->actingAs($administrator)
+            ->get(route('health.visits.index', ['date' => '2026-09-20']))
+            ->assertOk()
+            ->assertSeeText('Diagnostic du jour sélectionné.')
+            ->assertDontSeeText('Diagnostic de la veille.')
+            ->assertSee('name="date"', false)
+            ->assertDontSee('name="search"', false)
+            ->assertDontSee('name="date_from"', false)
+            ->assertDontSee('name="date_to"', false);
+    }
+
     /** Le responsable peut consulter une fiche mais ne peut pas créer de diagnostic. */
     public function test_farm_manager_has_read_only_access(): void
     {

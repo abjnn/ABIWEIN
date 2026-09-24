@@ -25,21 +25,12 @@ class VeterinaryVisitController extends Controller
         // La requête charge les relations en une fois afin d’éviter les requêtes répétées.
         $visits = VeterinaryVisit::query()
             ->with(['flock.currentBuilding', 'veterinarian'])
-            ->when($filters['search'] ?? null, function ($query, string $search): void {
-                // Le groupe évite que les conditions OR contournent les autres filtres.
-                $query->where(function ($query) use ($search): void {
-                    $query->where('diagnosis', 'like', "%{$search}%")
-                        ->orWhere('recommendations', 'like', "%{$search}%")
-                        ->orWhereHas('flock', fn ($query) => $query->where('code', 'like', "%{$search}%"));
-                });
-            })
             // Ce filtre affiche uniquement la bande choisie.
             ->when($filters['flock_id'] ?? null, fn ($query, $flockId) => $query->where('flock_id', $flockId))
             // Ce filtre affiche uniquement les visites signées par le vétérinaire choisi.
             ->when($filters['veterinarian_id'] ?? null, fn ($query, $veterinarianId) => $query->where('veterinarian_id', $veterinarianId))
-            // Ces deux filtres délimitent la période de consultation.
-            ->when($filters['date_from'] ?? null, fn ($query, $date) => $query->whereDate('visit_date', '>=', $date))
-            ->when($filters['date_to'] ?? null, fn ($query, $date) => $query->whereDate('visit_date', '<=', $date))
+            // La date choisie cible un seul jour de visite.
+            ->when($filters['date'] ?? null, fn ($query, $date) => $query->whereDate('visit_date', $date))
             // Les fiches les plus récentes restent visibles en premier.
             ->orderByDesc('visit_date')
             ->orderByDesc('id')

@@ -69,7 +69,13 @@ class ReportTest extends TestCase
             'title' => 'Ancien rapport',
             'report_date' => '2026-09-01',
         ]);
-        $this->createReport($administrator, [
+        $nearbyReport = $this->createReport($administrator, [
+            'reference' => 'RPT-NEAR-001',
+            'type' => 'health',
+            'title' => 'Rapport de la veille',
+            'report_date' => '2026-09-19',
+        ]);
+        $recentReport = $this->createReport($administrator, [
             'reference' => 'RPT-NEW-001',
             'type' => 'health',
             'title' => 'Rapport récent',
@@ -79,16 +85,22 @@ class ReportTest extends TestCase
         $this->actingAs($administrator)
             ->get(route('reports.index'))
             ->assertOk()
-            ->assertSeeInOrder(['RPT-NEW-001', 'RPT-OLD-001']);
+            ->assertSeeInOrder(['RPT-NEW-001', 'RPT-NEAR-001', 'RPT-OLD-001'])
+            ->assertSee('name="date"', false)
+            ->assertDontSee('name="date_from"', false)
+            ->assertDontSee('name="date_to"', false)
+            // Le raccourci PDF a disparu de la liste : le téléchargement reste sur la fiche.
+            ->assertDontSee(route('reports.pdf', $recentReport))
+            ->assertDontSee(route('reports.pdf', $nearbyReport));
 
         $this->actingAs($administrator)
             ->get(route('reports.index', [
-                'date_from' => '2026-09-10',
-                'date_to' => '2026-09-21',
+                'date' => '2026-09-20',
                 'type' => 'health',
             ]))
             ->assertOk()
             ->assertSee('RPT-NEW-001')
+            ->assertDontSee('RPT-NEAR-001')
             ->assertDontSee('RPT-OLD-001');
     }
 
@@ -108,6 +120,8 @@ class ReportTest extends TestCase
             ->assertSeeText('RPT-FORMAL-001')
             ->assertSeeText('Situation archivée de contrôle')
             ->assertSeeText('Alain Tchoumi')
+            ->assertSeeText('Télécharger le PDF')
+            ->assertSee(route('reports.pdf', $report))
             ->assertDontSee('<canvas', false);
     }
 

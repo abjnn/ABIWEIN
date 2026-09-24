@@ -9,6 +9,9 @@ namespace App\Enums;
 enum ProductCategory: string
 {
     case Feed = 'feed';
+    case Vaccine = 'vaccine';
+    case Antibiotic = 'antibiotic';
+    case Vitamin = 'vitamin';
     case Health = 'health';
     case Equipment = 'equipment';
     case Packaging = 'packaging';
@@ -19,6 +22,9 @@ enum ProductCategory: string
     {
         return match ($this) {
             self::Feed => 'Aliments',
+            self::Vaccine => 'Vaccins',
+            self::Antibiotic => 'Antibiotiques vétérinaires',
+            self::Vitamin => 'Vitamines et électrolytes',
             self::Health => 'Produits sanitaires',
             self::Equipment => 'Équipements',
             self::Packaging => 'Emballages',

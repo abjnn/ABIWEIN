@@ -47,7 +47,7 @@ Les comptes sont créés ou bloqués par un administrateur. Les droits détaill�
 
 - Une vue Blade dédiée par écran, avec des partiels pour l’en-tête et le pied de page.
 - Des commentaires de maintenance au-dessus de chaque bloc logique et valeur importante à personnaliser.
-- Une palette sobre : vert olive pour les actions, beiges pour les surfaces, blanc pour la respiration et bleu très foncé pour le texte.
+- Une palette sobre à blanc dominant : bleu foncé pour les actions et le texte, blanc pour les pages et bleu clair pour les surfaces secondaires.
 - Aucune image générée et aucun emoji dans l’interface.
 - Des photographies professionnelles dont la source et la licence sont conservées dans `docs/IMAGE_CREDITS.md`.
 - Une expérience utilisable au clavier et sur téléphone, tablette et ordinateur.

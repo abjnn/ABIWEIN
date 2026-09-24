@@ -31,8 +31,6 @@ class ProductController extends Controller
         $filters = $request->validated();
         // Sans filtre explicite, la page montre seulement les intrants réellement utilisés.
         $selectedStatus = $filters['status'] ?? 'active';
-        $today = today()->toDateString();
-        $expirationLimit = today()->addDays(30)->toDateString();
 
         $products = Product::query()
             ->when($filters['q'] ?? null, function (Builder $query, string $search): void {
@@ -45,8 +43,6 @@ class ProductController extends Controller
             ->when($selectedStatus === 'active', fn (Builder $query): Builder => $query->where('is_active', true))
             ->when($selectedStatus === 'inactive', fn (Builder $query): Builder => $query->where('is_active', false))
             ->when($selectedStatus === 'low', fn (Builder $query): Builder => $query->where('is_active', true)->whereColumn('current_stock', '<=', 'alert_threshold'))
-            ->when($selectedStatus === 'expired', fn (Builder $query): Builder => $query->where('is_active', true)->whereDate('expires_at', '<', $today))
-            ->when($selectedStatus === 'expiring', fn (Builder $query): Builder => $query->where('is_active', true)->whereBetween('expires_at', [$today, $expirationLimit]))
             ->orderByDesc('is_active')
             ->orderBy('name')
             ->paginate(20)
@@ -56,8 +52,6 @@ class ProductController extends Controller
         $statistics = [
             'active' => Product::query()->where('is_active', true)->count(),
             'low' => Product::query()->where('is_active', true)->whereColumn('current_stock', '<=', 'alert_threshold')->count(),
-            'expired' => Product::query()->where('is_active', true)->whereDate('expires_at', '<', $today)->count(),
-            'expiring' => Product::query()->where('is_active', true)->whereBetween('expires_at', [$today, $expirationLimit])->count(),
         ];
 
         return view('stocks.products.index', [

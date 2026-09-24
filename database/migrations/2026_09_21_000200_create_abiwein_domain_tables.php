@@ -96,7 +96,7 @@ return new class extends Migration
             $table->unique(['flock_id', 'record_date']);
         });
 
-        // PRODUITS : aliments, produits sanitaires, équipements et poulets préparés.
+        // PRODUITS : intrants de la ferme (aliments, produits sanitaires et équipements), jamais les ventes de poulets.
         Schema::create('products', function (Blueprint $table): void {
             $table->id()->comment('Identifiant interne du produit');
             $table->string('code', 40)->unique()->comment('Référence unique du produit');

@@ -19,12 +19,9 @@
     {{-- Les filtres portent sur la date officielle et le type du document archivé. --}}
     <form class="private-filter" method="GET" action="{{ route('reports.index') }}">
         <div>
-            <label class="form-label" for="report-date-from">Du</label>
-            <input class="form-control" id="report-date-from" name="date_from" type="date" value="{{ $filters['date_from'] ?? '' }}">
-        </div>
-        <div>
-            <label class="form-label" for="report-date-to">Au</label>
-            <input class="form-control" id="report-date-to" name="date_to" type="date" value="{{ $filters['date_to'] ?? '' }}">
+            <label class="form-label" for="report-date">Date</label>
+            <input class="form-control @error('date') is-invalid @enderror" id="report-date" name="date" type="date" value="{{ $filters['date'] ?? '' }}">
+            @error('date')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
         <div>
             <label class="form-label" for="report-type">Type</label>
@@ -74,7 +71,6 @@
                             <td>{{ $report->generator?->name ?? 'Compte supprimé' }}</td>
                             <td class="text-end text-nowrap">
                                 <a class="btn btn-sm btn-private-secondary" href="{{ route('reports.show', $report) }}">Consulter</a>
-                                <a class="btn btn-sm btn-private-primary" href="{{ route('reports.pdf', $report) }}">PDF</a>
                             </td>
                         </tr>
                     @empty

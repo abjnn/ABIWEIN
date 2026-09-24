@@ -12,6 +12,8 @@ use App\Models\Alert;
 use App\Models\Product;
 use App\Models\StockMovement;
 use App\Models\User;
+use Database\Seeders\DemoFarmSeeder;
+use Database\Seeders\DemoUserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
@@ -213,9 +215,10 @@ class StockManagementTest extends TestCase
         ]);
     }
 
-    /** La liste rend visibles les références expirées et celles sous leur seuil. */
-    public function test_stock_overview_displays_expiration_and_threshold_states(): void
+    /** La liste donne le délai exact sans proposer d'anciens filtres d'expiration. */
+    public function test_stock_overview_displays_expiration_delays_without_expiration_filters(): void
     {
+        $this->travelTo('2026-09-24 12:00:00');
         $manager = User::factory()->create(['role' => UserRole::FarmManager]);
         $this->createProduct([
             'name' => 'Vaccin expiré',
@@ -224,15 +227,70 @@ class StockManagementTest extends TestCase
             'unit' => StockUnit::Bottle->value,
             'current_stock' => 1,
             'alert_threshold' => 3,
-            'expires_at' => now()->subDay()->toDateString(),
+            'expires_at' => today()->subDays(3)->toDateString(),
+        ]);
+        $this->createProduct([
+            'name' => 'Vitamines à contrôler',
+            'code' => 'SANT-VIT-FUTUR',
+            'category' => ProductCategory::Vitamin->value,
+            'unit' => StockUnit::Bottle->value,
+            'current_stock' => 8,
+            'alert_threshold' => 2,
+            'expires_at' => today()->addDays(45)->toDateString(),
         ]);
 
         $this->actingAs($manager)
             ->get(route('stocks.index'))
             ->assertOk()
             ->assertSeeText('Vaccin expiré')
-            ->assertSeeText('Expiré')
-            ->assertSeeText('Seuil atteint');
+            ->assertSeeText('Expiré depuis 3 jours')
+            ->assertSeeText('Expire dans 45 jours')
+            ->assertSeeText('Seuil atteint')
+            ->assertDontSeeText('Expiration sous 30 jours')
+            ->assertDontSee('value="expired"', false)
+            ->assertDontSee('value="expiring"', false)
+            ->assertDontSeeText('21/09/2026')
+            ->assertDontSeeText('08/11/2026');
+    }
+
+    /** Les anciennes valeurs d'URL ne contournent pas la liste des états autorisés. */
+    public function test_expiration_status_filters_are_rejected(): void
+    {
+        $manager = User::factory()->create(['role' => UserRole::FarmManager]);
+
+        $this->actingAs($manager)
+            ->get(route('stocks.index', ['status' => 'expired']))
+            ->assertRedirect()
+            ->assertSessionHasErrors('status');
+    }
+
+    /** Le scénario de démonstration contient les grandes familles d'intrants avicoles. */
+    public function test_demo_stock_contains_feed_phases_and_safe_health_product_categories(): void
+    {
+        $this->seed([DemoUserSeeder::class, DemoFarmSeeder::class]);
+
+        foreach (['ALIM-PREDEM', 'ALIM-DEM', 'ALIM-CROISS', 'ALIM-FIN'] as $code) {
+            $this->assertDatabaseHas('products', [
+                'code' => $code,
+                'category' => ProductCategory::Feed->value,
+                'is_active' => true,
+            ]);
+        }
+
+        $this->assertDatabaseHas('products', ['code' => 'SANT-VACC-ND', 'category' => ProductCategory::Vaccine->value]);
+        $this->assertDatabaseHas('products', ['code' => 'SANT-VACC-GUM', 'category' => ProductCategory::Vaccine->value]);
+        $this->assertDatabaseHas('products', ['code' => 'SANT-ANTIBIO', 'category' => ProductCategory::Antibiotic->value]);
+        $this->assertDatabaseHas('products', ['code' => 'SANT-VIT', 'category' => ProductCategory::Vitamin->value]);
+        $this->assertDatabaseHas('products', ['code' => 'SANT-ANTICOCC', 'category' => ProductCategory::Health->value]);
+        $this->assertDatabaseHas('products', ['code' => 'SANT-ANTIPARA', 'category' => ProductCategory::Health->value]);
+
+        foreach (['EQUIP-AMPOULE', 'EQUIP-ABREUV', 'EQUIP-PLATEAU', 'LITI-COPEAUX', 'EQUIP-BAC-DES'] as $code) {
+            $this->assertDatabaseHas('products', [
+                'code' => $code,
+                'category' => ProductCategory::Equipment->value,
+                'is_active' => true,
+            ]);
+        }
     }
 
     /** Toutes les vues séparées du module peuvent être rendues sans erreur. */

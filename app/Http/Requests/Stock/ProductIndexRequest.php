@@ -23,7 +23,7 @@ class ProductIndexRequest extends FormRequest
         return [
             'q' => ['nullable', 'string', 'max:120'],
             'category' => ['nullable', Rule::enum(ProductCategory::class)],
-            'status' => ['nullable', Rule::in(['all', 'active', 'low', 'expired', 'expiring', 'inactive'])],
+            'status' => ['nullable', Rule::in(['all', 'active', 'low', 'inactive'])],
         ];
     }
 }

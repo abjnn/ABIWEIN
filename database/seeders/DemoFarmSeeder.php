@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\ProductCategory;
+use App\Enums\StockUnit;
 use App\Enums\UserRole;
 use App\Models\Alert;
 use App\Models\Building;
@@ -63,12 +65,28 @@ class DemoFarmSeeder extends Seeder
                 );
             }
 
-            // Les quatre phases alimentaires sont des intrants distincts et faciles à contrôler.
-            Product::query()->updateOrCreate(['code' => 'ALIM-PREDEM'], ['name' => 'Aliment prédémarrage', 'category' => 'feed', 'unit' => 'kg', 'current_stock' => 180, 'alert_threshold' => 100, 'is_active' => true]);
-            Product::query()->updateOrCreate(['code' => 'ALIM-DEM'], ['name' => 'Aliment démarrage', 'category' => 'feed', 'unit' => 'kg', 'current_stock' => 340, 'alert_threshold' => 180, 'is_active' => true]);
-            $feed = Product::query()->updateOrCreate(['code' => 'ALIM-CROISS'], ['name' => 'Aliment croissance', 'category' => 'feed', 'unit' => 'kg', 'current_stock' => 620, 'alert_threshold' => 500, 'is_active' => true]);
-            Product::query()->updateOrCreate(['code' => 'ALIM-FIN'], ['name' => 'Aliment finition', 'category' => 'feed', 'unit' => 'kg', 'current_stock' => 290, 'alert_threshold' => 160, 'is_active' => true]);
-            $vitamins = Product::query()->updateOrCreate(['code' => 'SANT-VIT'], ['name' => 'Complexe vitaminé', 'category' => 'health', 'unit' => 'flacon', 'current_stock' => 8, 'alert_threshold' => 10, 'expires_at' => now()->addMonths(5)->toDateString(), 'is_active' => true]);
+            // Les quatre phases alimentaires sont séparées pour refléter le magasin décrit dans la capture.
+            Product::query()->updateOrCreate(['code' => 'ALIM-PREDEM'], ['name' => 'Aliment prédémarrage', 'category' => ProductCategory::Feed->value, 'unit' => StockUnit::Kilogram->value, 'current_stock' => 180, 'alert_threshold' => 100, 'expires_at' => now()->addMonths(4)->toDateString(), 'is_active' => true]);
+            Product::query()->updateOrCreate(['code' => 'ALIM-DEM'], ['name' => 'Aliment démarrage', 'category' => ProductCategory::Feed->value, 'unit' => StockUnit::Kilogram->value, 'current_stock' => 340, 'alert_threshold' => 180, 'expires_at' => now()->addMonths(5)->toDateString(), 'is_active' => true]);
+            $feed = Product::query()->updateOrCreate(['code' => 'ALIM-CROISS'], ['name' => 'Aliment croissance', 'category' => ProductCategory::Feed->value, 'unit' => StockUnit::Kilogram->value, 'current_stock' => 620, 'alert_threshold' => 500, 'expires_at' => now()->addMonths(6)->toDateString(), 'is_active' => true]);
+            Product::query()->updateOrCreate(['code' => 'ALIM-FIN'], ['name' => 'Aliment finition', 'category' => ProductCategory::Feed->value, 'unit' => StockUnit::Kilogram->value, 'current_stock' => 290, 'alert_threshold' => 160, 'expires_at' => now()->addMonths(7)->toDateString(), 'is_active' => true]);
+
+            // Ces références sanitaires enrichissent seulement l'inventaire : aucun dosage ni protocole clinique n'est suggéré.
+            Product::query()->updateOrCreate(['code' => 'SANT-VACC-ND'], ['name' => 'Vaccin contre la maladie de Newcastle', 'category' => ProductCategory::Vaccine->value, 'unit' => StockUnit::Bottle->value, 'current_stock' => 12, 'alert_threshold' => 4, 'expires_at' => now()->addMonths(8)->toDateString(), 'is_active' => true]);
+            Product::query()->updateOrCreate(['code' => 'SANT-VACC-GUM'], ['name' => 'Vaccin contre la maladie de Gumboro', 'category' => ProductCategory::Vaccine->value, 'unit' => StockUnit::Bottle->value, 'current_stock' => 10, 'alert_threshold' => 4, 'expires_at' => now()->addMonths(9)->toDateString(), 'is_active' => true]);
+            Product::query()->updateOrCreate(['code' => 'SANT-ANTIBIO'], ['name' => 'Antibiotique vétérinaire — usage encadré', 'category' => ProductCategory::Antibiotic->value, 'unit' => StockUnit::Bottle->value, 'current_stock' => 6, 'alert_threshold' => 3, 'expires_at' => now()->addMonths(10)->toDateString(), 'is_active' => true]);
+            $vitamins = Product::query()->updateOrCreate(['code' => 'SANT-VIT'], ['name' => 'Complexe vitaminé et électrolytes', 'category' => ProductCategory::Vitamin->value, 'unit' => StockUnit::Bottle->value, 'current_stock' => 8, 'alert_threshold' => 10, 'expires_at' => now()->addMonths(5)->toDateString(), 'is_active' => true]);
+
+            // Les autres familles lisibles sur la fiche papier sont enregistrées sans marque, dosage ni prescription.
+            Product::query()->updateOrCreate(['code' => 'SANT-ANTICOCC'], ['name' => 'Anticoccidien vétérinaire — usage encadré', 'category' => ProductCategory::Health->value, 'unit' => StockUnit::Bottle->value, 'current_stock' => 5, 'alert_threshold' => 2, 'expires_at' => now()->addMonths(7)->toDateString(), 'is_active' => true]);
+            Product::query()->updateOrCreate(['code' => 'SANT-ANTIPARA'], ['name' => 'Antiparasitaire vétérinaire — usage encadré', 'category' => ProductCategory::Health->value, 'unit' => StockUnit::Bottle->value, 'current_stock' => 5, 'alert_threshold' => 2, 'expires_at' => now()->addMonths(7)->toDateString(), 'is_active' => true]);
+
+            // Ces équipements et consommables correspondent à la liste manuscrite du magasin avicole.
+            Product::query()->updateOrCreate(['code' => 'EQUIP-AMPOULE'], ['name' => 'Ampoule chauffante', 'category' => ProductCategory::Equipment->value, 'unit' => StockUnit::Piece->value, 'current_stock' => 16, 'alert_threshold' => 4, 'expires_at' => null, 'is_active' => true]);
+            Product::query()->updateOrCreate(['code' => 'EQUIP-ABREUV'], ['name' => 'Abreuvoir de démarrage', 'category' => ProductCategory::Equipment->value, 'unit' => StockUnit::Piece->value, 'current_stock' => 24, 'alert_threshold' => 6, 'expires_at' => null, 'is_active' => true]);
+            Product::query()->updateOrCreate(['code' => 'EQUIP-PLATEAU'], ['name' => 'Plateau de démarrage', 'category' => ProductCategory::Equipment->value, 'unit' => StockUnit::Piece->value, 'current_stock' => 30, 'alert_threshold' => 8, 'expires_at' => null, 'is_active' => true]);
+            Product::query()->updateOrCreate(['code' => 'LITI-COPEAUX'], ['name' => 'Copeaux de bois pour litière', 'category' => ProductCategory::Equipment->value, 'unit' => StockUnit::Bag->value, 'current_stock' => 22, 'alert_threshold' => 8, 'expires_at' => null, 'is_active' => true]);
+            Product::query()->updateOrCreate(['code' => 'EQUIP-BAC-DES'], ['name' => 'Bac de désinfection', 'category' => ProductCategory::Equipment->value, 'unit' => StockUnit::Piece->value, 'current_stock' => 4, 'alert_threshold' => 1, 'expires_at' => null, 'is_active' => true]);
             // Cette ancienne référence de vente est désactivée : le magasin contient uniquement des intrants.
             Product::query()->where('code', 'VENT-POUL')->update(['is_active' => false, 'current_stock' => 0]);
 

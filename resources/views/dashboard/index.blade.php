@@ -21,19 +21,19 @@
         </div>
     </section>
 
-    {{-- INDICATEURS : chaque valeur est calculée par DashboardController. --}}
-    <section class="private-stats private-stats--six" aria-label="Indicateurs principaux">
-        <x-private.stat-card label="Bandes actives" :value="$activeFlocks->count()" detail="Cycles actuellement suivis" />
-        <x-private.stat-card label="Effectif actuel" :value="number_format($totalBirds, 0, ',', ' ')" detail="Sujets dans les bandes actives" />
+    {{-- INDICATEURS : une ligne par valeur remplace les grandes cartes pour les trois rôles. --}}
+    <dl class="private-metrics-list" aria-label="Indicateurs principaux">
+        <x-private.metric-row label="Bandes actives" :value="$activeFlocks->count()" detail="Cycles actuellement suivis" />
+        <x-private.metric-row label="Effectif actuel" :value="number_format($totalBirds, 0, ',', ' ')" detail="Sujets dans les bandes actives" />
         @if ($canViewFinancials)
-            <x-private.stat-card label="Stocks sous le seuil" :value="$lowStockCount" detail="Produits à contrôler" :tone="$lowStockCount > 0 ? 'alert' : 'default'" />
-            <x-private.stat-card label="Créances" :value="number_format($receivables, 0, ',', ' ').' FCFA'" detail="Soldes des ventes non réglées" />
-            <x-private.stat-card label="Trésorerie du mois" :value="number_format($netCashThisMonth, 0, ',', ' ').' FCFA'" detail="Encaissements moins dépenses" :tone="$netCashThisMonth < 0 ? 'alert' : 'default'" />
+            <x-private.metric-row label="Stocks sous le seuil" :value="$lowStockCount" detail="Produits à contrôler" :tone="$lowStockCount > 0 ? 'alert' : 'default'" />
+            <x-private.metric-row label="Créances" :value="number_format($receivables, 0, ',', ' ').' FCFA'" detail="Soldes des ventes non réglées" />
+            <x-private.metric-row label="Trésorerie du mois" :value="number_format($netCashThisMonth, 0, ',', ' ').' FCFA'" detail="Encaissements moins dépenses" :tone="$netCashThisMonth < 0 ? 'alert' : 'default'" />
         @else
-            <x-private.stat-card label="Alertes ouvertes" :value="$openAlertsCount" detail="Situations à examiner" :tone="$openAlertsCount > 0 ? 'alert' : 'default'" />
+            <x-private.metric-row label="Alertes ouvertes" :value="$openAlertsCount" detail="Situations à examiner" :tone="$openAlertsCount > 0 ? 'alert' : 'default'" />
         @endif
-        <x-private.stat-card label="Visites à venir" :value="$upcomingVisitsCount" detail="Suivis sanitaires programmés" />
-    </section>
+        <x-private.metric-row label="Visites à venir" :value="$upcomingVisitsCount" detail="Suivis sanitaires programmés" />
+    </dl>
 
     {{-- ACCÈS RAPIDES : chaque carte mène à une fonction réellement disponible. --}}
     <nav class="private-quick-actions" aria-label="Actions rapides">
@@ -140,8 +140,8 @@
                 'data' => [
                     'labels' => $financialTrend['labels'],
                     'datasets' => [
-                        ['label' => 'Ventes', 'data' => $financialTrend['sales'], 'backgroundColor' => '#31380F', 'borderRadius' => 5],
-                        ['label' => 'Dépenses', 'data' => $financialTrend['expenses'], 'backgroundColor' => '#C7AF97', 'borderRadius' => 5],
+                        ['label' => 'Ventes', 'data' => $financialTrend['sales'], 'backgroundColor' => '#1F4E79', 'borderRadius' => 5],
+                        ['label' => 'Dépenses', 'data' => $financialTrend['expenses'], 'backgroundColor' => '#BDD7EE', 'borderColor' => '#1F4E79', 'borderWidth' => 1, 'borderRadius' => 5],
                     ],
                 ],
             ]) !!}

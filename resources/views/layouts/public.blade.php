@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="@yield('meta_description', 'ABIWEIN centralise le suivi d’une exploitation avicole et facilite la prise de décision.')">
-        <meta name="theme-color" content="#31380F">
+        <meta name="theme-color" content="#1F4E79">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>@yield('title', 'ABIWEIN')</title>
 

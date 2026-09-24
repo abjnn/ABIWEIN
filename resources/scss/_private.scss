@@ -11,7 +11,7 @@ body.private-site {
     min-width: 0; // Permet aux très petits écrans de rester sans défilement horizontal global.
     overflow-x: hidden; // Les grands tableaux défilent dans leur propre conteneur responsive.
     color: $abiwein-ink;
-    background: #f4f5f1; // Fond neutre, légèrement teinté par la palette agricole.
+    background: $abiwein-canvas; // Fond neutre défini par la nouvelle palette officielle.
 }
 
 .private-shell {
@@ -55,7 +55,7 @@ body.private-site {
 }
 
 .private-sidebar__mobile-header {
-    // Le titre du menu mobile utilise le vert olive foncé sur le fond blanc.
+    // Le titre du menu mobile utilise le bleu foncé sur le fond blanc.
     color: $abiwein-olive;
     border-bottom: 1px solid rgba($abiwein-olive, 0.14);
 }
@@ -87,7 +87,7 @@ body.private-site {
 .private-nav__label {
     padding-inline: 0.75rem;
     margin: 0 0 0.45rem;
-    // Les titres « Espace de travail » et « Modules préparés » restent lisibles en vert.
+    // Les titres « Espace de travail » et « Modules préparés » restent lisibles en bleu foncé.
     color: $abiwein-olive;
     font-size: 0.68rem;
     font-weight: 800;
@@ -297,16 +297,16 @@ body.private-site {
     --bs-btn-bg: #{$abiwein-olive};
     --bs-btn-border-color: #{$abiwein-olive};
     --bs-btn-hover-color: #{$abiwein-white};
-    --bs-btn-hover-bg: #202607;
-    --bs-btn-hover-border-color: #202607;
+    --bs-btn-hover-bg: #{$abiwein-olive};
+    --bs-btn-hover-border-color: #{$abiwein-beige-taupe};
 }
 
 .btn-private-secondary {
     --bs-btn-color: #{$abiwein-ink};
     --bs-btn-bg: #{$abiwein-white};
-    --bs-btn-border-color: rgba(20, 32, 43, 0.2);
+    --bs-btn-border-color: #{rgba($abiwein-ink, 0.2)};
     --bs-btn-hover-color: #{$abiwein-olive};
-    --bs-btn-hover-bg: rgba(226, 212, 185, 0.28);
+    --bs-btn-hover-bg: #{rgba($abiwein-beige-light, 0.48)};
     --bs-btn-hover-border-color: #{$abiwein-sage};
 }
 
@@ -367,24 +367,57 @@ body.private-site {
     text-transform: uppercase;
 }
 
-.private-stats {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-// MODIFICATION : cette variante affiche six indicateurs en trois colonnes équilibrées.
-.private-stats--six {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.private-stat {
-    min-height: 7.5rem;
-    padding: 1rem 1.15rem;
+// La vue d'ensemble des trois rôles utilise une seule liste compacte : chaque
+// indicateur occupe une ligne et aucun espace n'est perdu dans de grandes cartes.
+.private-metrics-list {
+    padding: 0;
+    margin: 0 0 1.25rem;
     background: $abiwein-white;
-    border: 1px solid rgba($abiwein-ink, 0.09);
-    border-radius: $border-radius-lg;
+    border-block: 1px solid rgba($abiwein-ink, 0.14);
+}
+
+.private-metric {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.5rem;
+    align-items: center;
+    min-height: 4rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid rgba($abiwein-ink, 0.1);
+}
+
+.private-metric:last-child {
+    border-bottom: 0;
+}
+
+.private-metric--alert {
+    box-shadow: inset 0.25rem 0 $abiwein-beige-taupe;
+}
+
+.private-metric dt,
+.private-metric dd {
+    margin: 0;
+}
+
+.private-metric dt {
+    color: $abiwein-ink;
+    font-size: 0.86rem;
+    font-weight: 750;
+}
+
+.private-metric dt small {
+    display: block;
+    margin-top: 0.18rem;
+    color: rgba($abiwein-muted, 0.76);
+    font-size: 0.72rem;
+    font-weight: 500;
+}
+
+.private-metric dd {
+    color: $abiwein-ink;
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 800;
+    text-align: right;
 }
 
 // Une seule ligne synthétique remplace les grandes cartes répétitives des modules métier.
@@ -443,33 +476,6 @@ body.private-site {
     align-items: center;
     padding-top: 1rem;
     border-top: 1px solid rgba($abiwein-ink, 0.1);
-}
-
-.private-stat--alert {
-    border-top: 3px solid $abiwein-olive;
-}
-
-.private-stat p {
-    margin-bottom: 1.25rem;
-    color: $abiwein-muted;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.private-stat strong,
-.private-stat small {
-    display: block;
-}
-
-.private-stat strong {
-    margin-bottom: 0.35rem;
-    font-size: clamp(1.45rem, 3vw, 2rem);
-    letter-spacing: -0.03em;
-}
-
-.private-stat small {
-    color: $abiwein-muted;
-    font-size: 0.72rem;
 }
 
 .private-grid {
@@ -700,10 +706,6 @@ body.private-site {
 // 7. Adaptation aux tablettes et téléphones
 // -----------------------------------------------------------------------------
 @media (max-width: 1199.98px) {
-    .private-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
     .private-grid--main {
         grid-template-columns: 1fr;
     }
@@ -753,10 +755,6 @@ body.private-site {
 
     .private-intro__aside {
         justify-items: start;
-    }
-
-    .private-stats {
-        grid-template-columns: 1fr;
     }
 
     .private-summary-strip {
@@ -811,6 +809,16 @@ body.private-site {
         grid-template-columns: 1fr;
     }
 
+    .private-metric {
+        grid-template-columns: 1fr;
+        gap: 0.2rem;
+        align-items: start;
+    }
+
+    .private-metric dd {
+        text-align: left;
+    }
+
     .private-summary-strip > div,
     .private-summary-strip > div:nth-child(2) {
         padding-block: 0.55rem;
@@ -850,7 +858,7 @@ body.private-site {
     }
 
     .private-panel,
-    .private-stat,
+    .private-metric,
     .private-intro {
         break-inside: avoid;
         box-shadow: none;

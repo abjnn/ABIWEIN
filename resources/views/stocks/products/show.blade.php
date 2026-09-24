@@ -40,7 +40,7 @@
     <dl class="private-summary-strip" aria-label="Indicateurs de l'intrant">
         <div><dt>Disponible</dt><dd>{{ number_format((float) $product->current_stock, 2, ',', ' ') }} {{ $product->unit }}</dd></div>
         <div><dt>Seuil</dt><dd>{{ number_format((float) $product->alert_threshold, 2, ',', ' ') }} {{ $product->unit }}</dd></div>
-        <div><dt>Expiration</dt><dd>{{ $product->expires_at?->format('d/m/Y') ?? 'Non applicable' }}</dd></div>
+        <div><dt>Expiration</dt><dd>{{ $product->expirationTimeLabel() }}</dd></div>
         <div><dt>État</dt><dd>{{ $product->is_active ? 'Actif' : 'Inactif' }}</dd></div>
     </dl>
 

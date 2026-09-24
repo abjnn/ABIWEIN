@@ -24,8 +24,6 @@
     <dl class="private-summary-strip" aria-label="Indicateurs des stocks">
         <div><dt>Intrants actifs</dt><dd>{{ $statistics['active'] }}</dd></div>
         <div><dt>Seuil atteint</dt><dd>{{ $statistics['low'] }}</dd></div>
-        <div><dt>Expirés</dt><dd>{{ $statistics['expired'] }}</dd></div>
-        <div><dt>Expiration sous 30 jours</dt><dd>{{ $statistics['expiring'] }}</dd></div>
     </dl>
 
     {{-- FILTRES : cette requête GET peut être partagée ou actualisée sans modifier les données. --}}
@@ -60,8 +58,6 @@
                         <option value="all" @selected(($filters['status'] ?? 'active') === 'all')>Tous</option>
                         <option value="active" @selected(($filters['status'] ?? 'active') === 'active')>Actifs</option>
                         <option value="low" @selected(($filters['status'] ?? '') === 'low')>Seuil atteint</option>
-                        <option value="expired" @selected(($filters['status'] ?? '') === 'expired')>Expirés</option>
-                        <option value="expiring" @selected(($filters['status'] ?? '') === 'expiring')>Expiration proche</option>
                         <option value="inactive" @selected(($filters['status'] ?? '') === 'inactive')>Inactifs</option>
                     </select>
                 </div>
@@ -92,7 +88,6 @@
                         @php
                             // Ces valeurs servent uniquement à choisir le libellé d’état de la ligne.
                             $isExpired = $product->expires_at?->isBefore(today()) ?? false;
-                            $isExpiring = $product->expires_at?->between(today(), today()->addDays(30)) ?? false;
                             $isLow = (float) $product->current_stock <= (float) $product->alert_threshold;
                             $categoryLabel = \App\Enums\ProductCategory::tryFrom($product->category)?->label() ?? $product->category;
                         @endphp
@@ -101,10 +96,7 @@
                             <td>{{ $categoryLabel }}</td>
                             <td><strong>{{ number_format((float) $product->current_stock, 2, ',', ' ') }}</strong><small>{{ $product->unit }}</small></td>
                             <td>{{ number_format((float) $product->alert_threshold, 2, ',', ' ') }} {{ $product->unit }}</td>
-                            <td>
-                                {{ $product->expires_at?->format('d/m/Y') ?? 'Non applicable' }}
-                                @if ($isExpiring && ! $isExpired)<small>Dans {{ today()->diffInDays($product->expires_at) }} jour(s)</small>@endif
-                            </td>
+                            <td>{{ $product->expirationTimeLabel() }}</td>
                             <td>
                                 @if (! $product->is_active)
                                     <span class="private-status private-status--blocked">Inactif</span>

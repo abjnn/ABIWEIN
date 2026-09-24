@@ -148,7 +148,7 @@ php artisan test
 php artisan migrate:status
 ```
 
-Ces contrôles ont réussi sur le poste de développement le 21 septembre 2026, avec 43 tests fonctionnels et unitaires. Les preuves synthétiques et les éventuels contrôles restant à faire sont consignés dans [`docs/VALIDATION.md`](docs/VALIDATION.md).
+Ces contrôles ont réussi sur le poste de développement le 24 septembre 2026, avec 75 tests fonctionnels et unitaires (377 assertions). Les preuves synthétiques et les éventuels contrôles restant à faire sont consignés dans [`docs/VALIDATION.md`](docs/VALIDATION.md).
 
 ## Organisation du projet
 
