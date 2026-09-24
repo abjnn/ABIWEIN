@@ -8,9 +8,11 @@
 // 1. Base, accessibilité et composants communs
 // -----------------------------------------------------------------------------
 :root {
-    --abiwein-blue-dark: #{$abiwein-blue-dark};
+    --abiwein-forest: #{$abiwein-forest};
+    --abiwein-sage: #{$abiwein-sage};
     --abiwein-white: #{$abiwein-white};
-    --abiwein-blue-light: #{$abiwein-blue-light};
+    --abiwein-ivory: #{$abiwein-ivory};
+    --abiwein-gold: #{$abiwein-gold};
     --abiwein-ink: #{$abiwein-ink};
     --abiwein-muted: #{$abiwein-muted};
 }
@@ -37,7 +39,7 @@ input,
 select,
 textarea {
     &:focus-visible {
-        outline: 3px solid rgba($abiwein-sage, 0.52);
+        outline: 3px solid $abiwein-sage;
         outline-offset: 3px;
     }
 }
@@ -82,7 +84,7 @@ textarea {
 .section-eyebrow,
 .hero-eyebrow {
     margin-bottom: 0.8rem;
-    // Le bleu foncé atteint un contraste AA pour ce petit texte sur le fond blanc.
+    // Le vert forêt atteint un contraste AA pour ce petit texte sur le fond blanc.
     color: $abiwein-olive;
     font-size: 0.78rem;
     font-weight: 800;
@@ -801,13 +803,13 @@ textarea.form-control {
     display: flex;
     align-items: center;
     padding: clamp(2rem, 6vw, 5rem) 0;
-    background: rgba($abiwein-beige-light, 0.28);
+    background: $abiwein-white;
 }
 
 .login-shell {
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(22rem, 0.85fr);
-    min-height: 40rem;
+    grid-template-columns: minmax(0, 1.05fr) minmax(24rem, 0.95fr);
+    min-height: 42rem;
     overflow: hidden;
     background: $abiwein-white;
     border: 1px solid rgba($abiwein-ink, 0.1);
@@ -855,7 +857,11 @@ textarea.form-control {
 }
 
 .login-form-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: clamp(2rem, 5vw, 4rem);
+    background: $abiwein-white;
 }
 
 .login-logo img {

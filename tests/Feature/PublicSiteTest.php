@@ -14,7 +14,12 @@ class PublicSiteTest extends TestCase
         $this->get(route('home'))->assertOk();
         $this->get(route('about'))->assertOk()->assertSeeText('Notre mission');
         $this->get(route('contact'))->assertOk()->assertSeeText('Parlons de votre demande');
-        $this->get(route('login'))->assertOk()->assertSeeText('Se connecter');
+        // La connexion conserve son panneau illustré, mais utilise la nouvelle photo dédiée aux poulets de chair.
+        $this->get(route('login'))
+            ->assertOk()
+            ->assertSeeText('Se connecter')
+            ->assertSee('login-broiler-farm.jpg', false)
+            ->assertDontSee('private-access-poultry.jpg', false);
     }
 
     /** Aucun parcours d'inscription publique ne doit exister. */

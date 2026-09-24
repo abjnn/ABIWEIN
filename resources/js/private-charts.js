@@ -19,10 +19,12 @@ Chart.register(BarController, BarElement, CategoryScale, DoughnutController, Arc
 
 // Les couleurs reprennent strictement la palette officielle ABIWEIN.
 const chartColors = {
-    primary: '#1F4E79',
-    secondary: '#BDD7EE',
+    primary: '#234B35',
+    secondary: '#6F835D',
+    accent: '#C99A2E',
     surface: '#FFFFFF',
-    ink: '#1F4E79',
+    soft: '#F2EBDD',
+    ink: '#234B35',
 };
 
 /** Retourne les réglages visuels communs afin de garder tous les graphiques cohérents. */
@@ -38,7 +40,7 @@ const commonOptions = (currency = false) => ({
     },
     scales: {
         x: { grid: { display: false }, ticks: { color: chartColors.ink } },
-        y: { beginAtZero: true, grid: { color: 'rgba(31, 78, 121, 0.12)' }, ticks: { color: chartColors.ink } },
+        y: { beginAtZero: true, grid: { color: 'rgba(35, 75, 53, 0.12)' }, ticks: { color: chartColors.ink } },
     },
 });
 

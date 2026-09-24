@@ -55,7 +55,7 @@ body.private-site {
 }
 
 .private-sidebar__mobile-header {
-    // Le titre du menu mobile utilise le bleu foncé sur le fond blanc.
+    // Le titre du menu mobile utilise le vert forêt sur le fond blanc.
     color: $abiwein-olive;
     border-bottom: 1px solid rgba($abiwein-olive, 0.14);
 }
@@ -87,7 +87,7 @@ body.private-site {
 .private-nav__label {
     padding-inline: 0.75rem;
     margin: 0 0 0.45rem;
-    // Les titres « Espace de travail » et « Modules préparés » restent lisibles en bleu foncé.
+    // Les titres « Espace de travail » et « Modules préparés » restent lisibles en vert forêt.
     color: $abiwein-olive;
     font-size: 0.68rem;
     font-weight: 800;
@@ -197,7 +197,7 @@ body.private-site {
 }
 
 .private-nav__link small {
-    color: $abiwein-sage;
+    color: $abiwein-forest;
     font-size: 0.64rem;
     font-weight: 600;
 }
@@ -556,7 +556,7 @@ body.private-site {
 }
 
 .private-quick-actions span {
-    color: $abiwein-sage;
+    color: $abiwein-forest;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.1em;

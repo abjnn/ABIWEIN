@@ -2,24 +2,29 @@
 
 ## 1. Intention
 
-L'identité d'ABIWEIN associe l'élevage avicole, la fiabilité et l'analyse numérique. Elle doit rester sobre, professionnelle, rassurante et très lisible. Le blanc domine toutes les interfaces pour conserver de l'espace et de la clarté ; le bleu foncé structure la navigation et les actions, tandis que le bleu clair distingue les surfaces secondaires.
+L'identité d'ABIWEIN associe l'élevage avicole, la fiabilité et l'analyse numérique. Elle doit rester sobre, professionnelle, rassurante et très lisible. Le blanc domine toutes les interfaces pour conserver de l'espace et de la clarté ; le vert forêt structure la navigation et les actions, le vert sauge accompagne les éléments secondaires, l'ivoire adoucit les surfaces et l'or ponctue les données importantes.
 
 ## 2. Palette officielle
 
 | Jeton recommandé | Couleur | Code | Usage principal |
 |---|---|---:|---|
-| `brand-blue-dark` | Bleu foncé | `#1F4E79` | navigation, titres, texte fort et boutons principaux |
-| `brand-white` | Blanc | `#FFFFFF` | fond dominant, cartes et zones de respiration |
-| `brand-blue-light` | Bleu clair | `#BDD7EE` | surfaces secondaires, séparateurs, focus et deuxième série des graphiques |
+| `brand-forest` | Vert forêt | `#234B35` | navigation, titres, texte fort et boutons principaux |
+| `brand-sage` | Vert sauge | `#6F835D` | éléments secondaires, repères, bordures et focus |
+| `brand-white` | Blanc | `#FFFFFF` | fond dominant, cartes, formulaires et zones de respiration |
+| `brand-ivory` | Ivoire | `#F2EBDD` | fonds secondaires et séparations douces |
+| `brand-gold` | Or discret | `#C99A2E` | accents, filets et séries complémentaires des graphiques |
 
 Les codes hexadécimaux sont normatifs. Ne pas les remplacer par une couleur visuellement proche.
 
 ### Règles d'emploi
 
 - Garder le blanc comme couleur dominante des pages, cartes, formulaires et menus.
-- Utiliser le bleu foncé pour le texte sur fond clair, les liens, la navigation et les actions principales.
-- Réserver le bleu clair aux fonds secondaires, bordures, focus et accents ; ne jamais l'utiliser seul pour un petit texte sur fond blanc.
-- Employer les opacités du bleu foncé ou du bleu clair pour les nuances, sans introduire une quatrième couleur décorative.
+- Utiliser le vert forêt pour le texte sur fond clair, les liens, la navigation et les actions principales.
+- Réserver le vert sauge aux éléments secondaires, repères, bordures et focus ; ne pas l'utiliser avec du blanc pour un petit texte.
+- Employer l'ivoire pour les surfaces secondaires en conservant le vert forêt pour le contenu textuel.
+- Réserver l'or aux accents et à la différenciation visuelle des données ; ne pas l'utiliser seul pour du texte sur fond blanc.
+- Employer uniquement des opacités de ces cinq couleurs pour les nuances, sans introduire une couleur décorative supplémentaire.
+- Les couples vert forêt/blanc et vert forêt/ivoire offrent respectivement des contrastes d'environ `9,86:1` et `8,31:1`. Le vert sauge et l'or restent décoratifs ou associés à un libellé lorsque leur contraste est insuffisant.
 - Les autres couleurs du logo restent propres au fichier officiel et ne deviennent pas des jetons d'interface sans validation ultérieure.
 - Un état ne doit jamais être communiqué par la couleur seule : ajouter un libellé, une icône ou un motif.
 
@@ -70,7 +75,7 @@ font-family: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
 ## 5. Interface
 
 - Les composants doivent conserver un rayon, des espacements et des états cohérents dans toute l'application.
-- Le bouton principal utilise le bleu foncé avec un texte blanc dont le contraste est vérifié.
+- Le bouton principal utilise le vert forêt avec un texte blanc dont le contraste est vérifié.
 - Les messages de succès, d'avertissement et d'erreur peuvent employer des couleurs fonctionnelles supplémentaires, clairement identifiées comme telles et conformes aux exigences de contraste.
 - Le focus clavier doit être visible.
 - Le corps de texte vise une taille minimale de 16 px sur téléphone.
@@ -79,7 +84,7 @@ font-family: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
 ## 6. Contrôle avant livraison
 
 - Logo officiel, net, proportionné et entouré d'espace libre.
-- Trois couleurs exactes présentes dans les variables de thème, avec le blanc dominant.
+- Cinq couleurs exactes présentes dans les variables de thème, avec le blanc dominant.
 - Police Roboto avec une pile de repli.
 - Contraste des textes et contrôles vérifié.
 - Mise en page testée sur téléphone, tablette et ordinateur.

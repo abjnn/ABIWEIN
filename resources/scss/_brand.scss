@@ -4,32 +4,33 @@
 // MODIFICATION : ce fichier est le point unique pour changer la palette, la
 // typographie, les rayons ou les ombres dans toute l'application.
 
-// Palette officielle bleu et blanc fournie pour ABIWEIN.
+// Palette officielle inspirée de l'élevage avicole et de son environnement agricole.
 // MODIFICATION : changer une valeur ici met à jour toutes les interfaces publiques et privées.
-$abiwein-blue-dark: #1f4e79; // Bleu foncé : actions principales, navigation et textes importants.
+$abiwein-forest: #234b35; // Vert forêt : actions principales, navigation et textes importants.
+$abiwein-sage: #6f835d; // Vert sauge : éléments secondaires, repères et accents sobres.
 $abiwein-white: #ffffff; // Blanc dominant : pages, cartes, navigation et zones de respiration.
-$abiwein-blue-light: #bdd7ee; // Bleu clair : fonds secondaires, séparateurs et accents discrets.
+$abiwein-ivory: #f2ebdd; // Ivoire : fonds secondaires et séparations douces.
+$abiwein-gold: #c99a2e; // Or discret : accents et différenciation des séries graphiques.
 
-// Les textes utilisent le bleu foncé pour conserver un contraste fort sur le blanc dominant.
-$abiwein-ink: $abiwein-blue-dark; // Texte principal.
-$abiwein-muted: $abiwein-blue-dark; // Texte secondaire, souvent atténué par une opacité CSS.
+// Les textes utilisent le vert forêt pour conserver un contraste AA fort sur le blanc dominant.
+$abiwein-ink: $abiwein-forest; // Texte principal.
+$abiwein-muted: $abiwein-forest; // Texte secondaire, souvent atténué par une opacité CSS.
 $abiwein-canvas: $abiwein-white; // Fond général volontairement blanc.
 
 // COMPATIBILITÉ : les composants existants gardent ces alias internes pendant leur renommage progressif.
-// Toutes ces références pointent exclusivement vers les trois couleurs officielles ci-dessus.
-$abiwein-olive: $abiwein-blue-dark;
-$abiwein-sage: $abiwein-blue-dark;
-$abiwein-beige-light: $abiwein-blue-light;
-$abiwein-beige-taupe: $abiwein-blue-light;
-$abiwein-beige-rose: $abiwein-blue-light;
+// Toutes ces références pointent exclusivement vers les cinq couleurs officielles ci-dessus.
+$abiwein-olive: $abiwein-forest;
+$abiwein-beige-light: $abiwein-ivory;
+$abiwein-beige-taupe: $abiwein-gold;
+$abiwein-beige-rose: $abiwein-ivory;
 
 // Variables Bootstrap : les composants natifs héritent automatiquement de la marque.
 $primary: $abiwein-olive;
-$secondary: $abiwein-blue-dark;
+$secondary: $abiwein-forest;
 $body-color: $abiwein-ink;
 $body-bg: $abiwein-canvas;
 $link-color: $abiwein-olive;
-$link-hover-color: $abiwein-sage;
+$link-hover-color: $abiwein-forest;
 $border-color: rgba($abiwein-ink, 0.16);
 $font-family-sans-serif: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
 $headings-font-weight: 700;
@@ -37,4 +38,4 @@ $border-radius: 0.5rem;
 $border-radius-lg: 0.85rem;
 $border-radius-xl: 1.25rem;
 $box-shadow: 0 1.5rem 4rem rgba($abiwein-ink, 0.12);
-$focus-ring-color: rgba($abiwein-blue-light, 0.8);
+$focus-ring-color: $abiwein-sage;

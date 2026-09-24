@@ -140,8 +140,8 @@
                 'data' => [
                     'labels' => $financialTrend['labels'],
                     'datasets' => [
-                        ['label' => 'Ventes', 'data' => $financialTrend['sales'], 'backgroundColor' => '#1F4E79', 'borderRadius' => 5],
-                        ['label' => 'Dépenses', 'data' => $financialTrend['expenses'], 'backgroundColor' => '#BDD7EE', 'borderColor' => '#1F4E79', 'borderWidth' => 1, 'borderRadius' => 5],
+                        ['label' => 'Ventes', 'data' => $financialTrend['sales'], 'backgroundColor' => '#234B35', 'borderRadius' => 5],
+                        ['label' => 'Dépenses', 'data' => $financialTrend['expenses'], 'backgroundColor' => '#C99A2E', 'borderColor' => '#234B35', 'borderWidth' => 1, 'borderRadius' => 5],
                     ],
                 ],
             ]) !!}

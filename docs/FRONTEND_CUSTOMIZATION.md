@@ -29,7 +29,7 @@ Les photos sont dans `public/images/public`. Conserver le même nom permet de le
 - `hero-poultry.jpg` pour le grand visuel d’accueil et À propos ;
 - `farmer-poultry.jpg` pour les jeunes poulets autour d’une mangeoire ;
 - `prepared-chicken.jpg` pour les poulets entiers conditionnés ;
-- `private-access-poultry.jpg` pour la connexion, conservé indépendamment des autres pages.
+- `login-broiler-farm.jpg` pour la connexion, conservé indépendamment des autres pages ;
 - `activity-growth.jpg` pour la carte Élevage et croissance ;
 - `activity-health.jpg` pour la carte Santé et prévention.
 

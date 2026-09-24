@@ -50,7 +50,7 @@ Ce document sépare les faits déjà observés sur le poste de développement de
 | Démonstration | Trois comptes fictifs et un scénario cohérent de ferme créés localement |
 | HTTP | Accueil HTTP 200 ; photographies croissance et santé chargées ; routes privées enregistrées |
 | Responsive | Contrôle visuel effectué en format ordinateur et téléphone |
-| Marque | Logo officiel et trois couleurs exactes intégrés, avec le blanc dominant |
+| Marque | Logo officiel et cinq couleurs exactes intégrés, avec le blanc dominant |
 | Secrets Git | `.env` ignoré ; aucun secret ajouté à l'index |
 
 La publication sur le dépôt GitHub privé est validée séparément après le premier `git push`. Les avertissements Sass observés pendant le build proviennent des imports historiques de Bootstrap 5.3 ; ils sont non bloquants et le build se termine avec succès.

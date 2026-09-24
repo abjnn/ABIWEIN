@@ -12,8 +12,8 @@
     <section class="login-section">
         <div class="container">
             <div class="login-shell">
-                {{-- Cette image reste indépendante de la bannière publique comme demandé. --}}
-                <div class="login-visual" style="--login-image: url('{{ asset('images/public/private-access-poultry.jpg') }}')">
+                {{-- Cette photo de poulets de chair reste indépendante des autres visuels du site. --}}
+                <div class="login-visual" style="--login-image: url('{{ asset('images/public/login-broiler-farm.jpg') }}')">
                     <div class="login-visual__content">
                         <p class="hero-eyebrow">Espace professionnel</p>
                         <h1>Le pilotage de la ferme commence ici.</h1>

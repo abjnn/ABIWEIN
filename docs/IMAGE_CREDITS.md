@@ -6,6 +6,7 @@ Les photographies sont téléchargées localement pour stabiliser l’interface.
 |---|---|---|---|
 | `public/images/public/hero-poultry.jpg` | Poulets adultes dans un grand bâtiment avicole | Mark Stebnicki / NC Farm Bureau | [Page Pexels](https://www.pexels.com/photo/white-chickens-crowded-in-large-poultry-farm-35877058/) |
 | `public/images/public/private-access-poultry.jpg` | Visuel historique de l’accès privé | Mark Stebnicki / NC Farm Bureau | [Page Pexels](https://www.pexels.com/photo/white-chickens-crowded-in-large-poultry-farm-35877058/) |
+| `public/images/public/login-broiler-farm.jpg` | Poulets de chair blancs autour d’un abreuvoir en bâtiment d’élevage | Sourav P V | [Page Pexels](https://www.pexels.com/photo/chicks-around-bottle-16667124/) |
 | `public/images/public/farmer-poultry.jpg` | Jeunes poulets autour d’une mangeoire | raja j | [Page Pexels](https://www.pexels.com/photo/food-bird-dinner-animal-17064389/) |
 | `public/images/public/prepared-chicken.jpg` | Poulets entiers déplumés sous emballage | Laudia Tysara | [Page Pexels](https://www.pexels.com/photo/raw-chicken-in-the-supermarket-10886018/) |
 | `public/images/public/activity-growth.jpg` | Grand élevage de poulets de chair avec mangeoires | DΛVΞ GΛRCIΛ | [Page Pexels](https://www.pexels.com/photo/large-chicken-farm-in-ecuador-feeding-area-32840078/) |

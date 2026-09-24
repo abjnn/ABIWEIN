@@ -7,7 +7,7 @@
     "scope": "/",
     "display": "standalone",
     "background_color": "#FFFFFF",
-    "theme_color": "#1F4E79",
+    "theme_color": "#234B35",
     "icons": [
         {
             "src": "/brand/abiwein-logo.png",
