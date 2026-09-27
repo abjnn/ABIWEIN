@@ -2,7 +2,7 @@
 
 ## 1. Finalité
 
-ABIWEIN est une application web responsive de gestion d’une exploitation de poulets de chair. Elle centralise le suivi technique, sanitaire, commercial et financier, puis fournit des indicateurs et une assistance à l’analyse. L’intelligence artificielle reste un outil d’aide : une personne autorisée valide toujours les décisions importantes.
+ABIWEIN est une application web responsive de gestion d’une exploitation de poulets de chair. Elle centralise le suivi technique, sanitaire, commercial et financier, puis fournit des indicateurs utiles au pilotage de la ferme.
 
 ## 2. Périmètre public
 
@@ -15,15 +15,15 @@ Le visiteur non connecté peut :
 
 Il ne peut ni créer un compte, ni consulter les bandes, stocks, ventes, dossiers sanitaires, dépenses, tableaux de bord ou alertes. Aucune inscription publique n’est prévue.
 
-## 3. Périmètre privé prévu
+## 3. Périmètre privé actuel
 
-Trois rôles accéderont à l’application après l’étape d’authentification :
+L'application possède exactement quatre acteurs : le visiteur et trois rôles authentifiés. Les rôles privés sont :
 
 - **Responsable d’exploitation** : pilotage courant des bandes, stocks, opérations commerciales et financières ;
-- **Vétérinaire** : accès aux dossiers et interventions sanitaires selon les autorisations définies ;
+- **Vétérinaire** : consultation technique des bandes et accès aux dossiers et interventions sanitaires selon les autorisations définies ;
 - **Administrateur** : gestion des comptes, paramètres, droits et contrôles techniques.
 
-Les comptes sont créés ou bloqués par un administrateur. Les droits détaillés seront formalisés avant le développement de chaque module.
+Les comptes sont créés ou bloqués par un administrateur. Les droits détaillés sont appliqués dans les routes, validations et contrôleurs ; l’administrateur supervise les opérations en lecture seule, le responsable les exécute et le vétérinaire consulte les informations techniques des bandes nécessaires au suivi sanitaire sans pouvoir les modifier.
 
 ## 4. Règles métier validées
 
@@ -32,16 +32,15 @@ Les comptes sont créés ou bloqués par un administrateur. Les droits détaill�
 - Une vente à crédit peut recevoir plusieurs versements en espèces jusqu’au règlement complet.
 - Les alertes sont intégrées à ABIWEIN ; aucun SMS, e-mail ou service externe n’est requis au départ.
 - Les informations internes ne sont jamais exposées dans l’espace visiteur.
-- Les analyses produites par l’IA doivent rester explicables et soumises à une validation humaine.
 
-## 5. Activités couvertes à terme
+## 5. Activités couvertes
 
 - fournisseurs, bâtiments, bandes, affectations, transferts et mouvements d’effectif ;
 - suivi quotidien : mortalité, alimentation, eau, poids, état sanitaire et observations ;
 - produits, entrées, sorties, inventaires, seuils et expirations ;
 - dossiers sanitaires, visites vétérinaires, diagnostics, programmes et interventions ;
 - clients, ventes, garanties, versements, créances, dépenses et bilans ;
-- tableaux de bord, rapports, alertes et analyses assistées.
+- tableaux de bord, rapports et alertes internes.
 
 ## 6. Principes de réalisation
 
@@ -52,6 +51,6 @@ Les comptes sont créés ou bloqués par un administrateur. Les droits détaill�
 - Des photographies professionnelles dont la source et la licence sont conservées dans `docs/IMAGE_CREDITS.md`.
 - Une expérience utilisable au clavier et sur téléphone, tablette et ordinateur.
 
-## 7. Limite du présent lot
+## 7. État actuel et limites
 
-Ce lot réalise le cadrage, l’identité visuelle et l’espace public. La base métier définitive, l’authentification opérationnelle, les rôles et les modules de gestion seront réalisés ensuite. La page de connexion actuelle est donc un écran d’entrée désactivé, sans faux identifiant ni fausse session.
+L’identité, l’espace public, l’authentification, les trois rôles privés, les bandes, les relevés quotidiens, les stocks, les visites vétérinaires, le commerce, les finances, les rapports PDF et l’audit sont présents dans le code. Le module Bandes permet au responsable de créer, modifier, transférer, clôturer et archiver une bande, puis de consigner les mesures et actions horodatées de la journée. L’administrateur et le vétérinaire consultent ce registre sans l’écrire. Les écrans autonomes de gestion des fournisseurs et bâtiments restent à compléter. Les preuves techniques du lot du 27 septembre sont consignées dans `docs/VALIDATION.md`.

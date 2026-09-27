@@ -20,4 +20,10 @@ class Building extends Model
     {
         return $this->hasMany(Flock::class, 'current_building_id');
     }
+
+    /** Périodes d'occupation conservées même après le départ d'une bande. */
+    public function flockAssignments(): HasMany
+    {
+        return $this->hasMany(FlockBuildingAssignment::class);
+    }
 }

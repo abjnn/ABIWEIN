@@ -64,6 +64,26 @@ class DashboardController extends Controller
                 ->sum('amount'))->all(),
         ];
 
+        // Le vétérinaire reçoit une tendance technique réelle à la place des données financières.
+        $days = collect(range(6, 0))->map(
+            fn (int $daysAgo): CarbonImmutable => CarbonImmutable::now()->startOfDay()->subDays($daysAgo)
+        );
+
+        // Une seule requête suffit pour agréger la mortalité de toutes les bandes sur sept jours.
+        $technicalRecords = ! $canViewFinancials
+            ? DailyRecord::query()
+                ->where('record_date', '>=', $days->first()->toDateString())
+                ->get()
+            : collect();
+
+        // Les libellés courts conservent le graphique lisible sur téléphone.
+        $technicalTrend = [
+            'labels' => $days->map(fn (CarbonImmutable $day): string => ucfirst($day->translatedFormat('D d')))->all(),
+            'mortality' => $days->map(fn (CarbonImmutable $day): int => (int) $technicalRecords
+                ->filter(fn (DailyRecord $record): bool => $record->record_date->isSameDay($day))
+                ->sum('mortality'))->all(),
+        ];
+
         // Le mois courant alimente les indicateurs financiers placés en tête de page.
         $monthStart = now()->startOfMonth();
         $cashThisMonth = $canViewFinancials
@@ -95,6 +115,7 @@ class DashboardController extends Controller
             'expensesThisMonth' => $expensesThisMonth,
             'netCashThisMonth' => $cashThisMonth - $expensesThisMonth,
             'financialTrend' => $financialTrend,
+            'technicalTrend' => $technicalTrend,
             'upcomingVisitsCount' => VeterinaryVisit::query()->whereDate('next_visit_date', '>=', today())->count(),
             'recentRecords' => DailyRecord::query()->with('flock')->latest('record_date')->limit(6)->get(),
             'openAlerts' => $openAlertsQuery->latest()->limit(4)->get(),

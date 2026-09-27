@@ -6,8 +6,8 @@
         @case('dashboard')
             <svg viewBox="0 0 24 24"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>
             @break
-        @case('assistant')
-            <svg viewBox="0 0 24 24"><path d="M12 3v3M5.6 5.6l2.1 2.1M3 12h3m12 0h3m-2.6-6.4-2.1 2.1M9 17h6m-5 3h4m3-8a5 5 0 1 1-10 0 5 5 0 0 1 10 0Z"/></svg>
+        @case('flock')
+            <svg viewBox="0 0 24 24"><path d="M5 14c0-4 3-7 7-7 3 0 5.5 1.6 6.6 4M7 17h9c2.2 0 4-1.8 4-4v-1h-3M8 17v3m7-3v3M11 7V4l3 2m-8 7H3m2-3H3"/></svg>
             @break
         @case('report')
             <svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6V3Zm3 7h6m-6 4h6m-6 4h4M15 3v4h4"/></svg>

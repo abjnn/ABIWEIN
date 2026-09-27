@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'ABIWEIN — Gestion intelligente d’exploitation avicole')
+@section('title', 'ABIWEIN — Gestion structurée d’exploitation avicole')
 @section('meta_description', 'Découvrez ABIWEIN, une plateforme centralisée pour le suivi technique, sanitaire, commercial et financier d’une exploitation avicole.')
 
 @section('content')
@@ -29,7 +29,7 @@
                     <li>Suivi technique</li>
                     <li>Gestion sanitaire</li>
                     <li>Stocks et ventes</li>
-                    <li>Analyse assistée</li>
+                    <li>Rapports structurés</li>
                 </ul>
             </aside>
         </div>
@@ -67,7 +67,7 @@
                     <div class="text-points">
                         <article><span>01</span><div><h3>Une information centralisée</h3><p>Les équipes retrouvent les données utiles au même endroit, selon leurs responsabilités.</p></div></article>
                         <article><span>02</span><div><h3>Un suivi continu</h3><p>Les observations techniques, sanitaires et commerciales restent reliées à chaque bande.</p></div></article>
-                        <article><span>03</span><div><h3>Une assistance maîtrisée</h3><p>L’intelligence artificielle aide à analyser ; la validation finale reste humaine.</p></div></article>
+                        <article><span>03</span><div><h3>Des décisions documentées</h3><p>Les indicateurs, relevés et rapports permettent de contrôler l’exploitation à partir de données vérifiables.</p></div></article>
                     </div>
 
                     <a class="text-link" href="{{ route('about') }}">En savoir plus sur le projet <span aria-hidden="true">→</span></a>

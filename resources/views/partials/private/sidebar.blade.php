@@ -18,14 +18,6 @@
                 <span>Vue d’ensemble</span>
             </a>
 
-            {{-- L'assistant est accessible à l'administrateur et au responsable, jamais au vétérinaire. --}}
-            @if (auth()->user()->canUseIntelligence())
-                <a class="private-nav__link {{ request()->routeIs('intelligence.*') ? 'active' : '' }}" href="{{ route('intelligence.demo') }}">
-                    <x-private.nav-icon name="assistant" />
-                    <span>Assistant ABIWEIN</span>
-                </a>
-            @endif
-
             @if (auth()->user()->canViewOperations())
                 <a class="private-nav__link {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="{{ route('reports.index') }}">
                     <x-private.nav-icon name="report" />
@@ -33,6 +25,11 @@
                 </a>
 
                 <p class="private-nav__label private-nav__label--spaced">Exploitation</p>
+                {{-- BANDES : l'administrateur consulte ; le responsable assure la saisie quotidienne. --}}
+                <a class="private-nav__link {{ request()->routeIs('flocks.*') ? 'active' : '' }}" href="{{ route('flocks.index') }}">
+                    <x-private.nav-icon name="flock" />
+                    <span>Bandes et suivi</span>
+                </a>
                 <a class="private-nav__link {{ request()->routeIs('stocks.*') ? 'active' : '' }}" href="{{ route('stocks.index') }}">
                     <x-private.nav-icon name="stock" />
                     <span>Stocks d’intrants</span>
@@ -54,6 +51,15 @@
                         <a class="private-nav__sublink {{ request()->routeIs('expenses.*') ? 'active' : '' }}" href="{{ route('expenses.index') }}">Dépenses</a>
                     </div>
                 </details>
+            @endif
+
+            {{-- CONSULTATION TECHNIQUE : le vétérinaire lit les bandes sans pouvoir les modifier. --}}
+            @if (auth()->user()->isVeterinarian())
+                <p class="private-nav__label private-nav__label--spaced">Exploitation</p>
+                <a class="private-nav__link {{ request()->routeIs('flocks.*') ? 'active' : '' }}" href="{{ route('flocks.index') }}">
+                    <x-private.nav-icon name="flock" />
+                    <span>Données des bandes</span>
+                </a>
             @endif
 
             {{-- SANTÉ : lecture pour tous, création réservée au vétérinaire. --}}

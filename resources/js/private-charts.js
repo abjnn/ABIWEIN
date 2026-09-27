@@ -23,8 +23,9 @@ const chartColors = {
     secondary: '#6F835D',
     accent: '#C99A2E',
     surface: '#FFFFFF',
-    soft: '#F2EBDD',
-    ink: '#234B35',
+    soft: '#E5E7E6',
+    ink: '#161A17',
+    muted: '#66706A',
 };
 
 /** Retourne les réglages visuels communs afin de garder tous les graphiques cohérents. */
@@ -33,14 +34,27 @@ const commonOptions = (currency = false) => ({
     maintainAspectRatio: false,
     interaction: { intersect: false, mode: 'index' },
     plugins: {
-        legend: { position: 'bottom', labels: { color: chartColors.ink, usePointStyle: true, boxWidth: 8 } },
+        legend: {
+            position: 'top',
+            align: 'end',
+            labels: { color: chartColors.muted, usePointStyle: true, boxWidth: 7, boxHeight: 7, padding: 16 },
+        },
         tooltip: {
             callbacks: currency ? { label: (context) => `${context.dataset.label}: ${Number(context.raw).toLocaleString('fr-FR')} FCFA` } : {},
         },
     },
     scales: {
-        x: { grid: { display: false }, ticks: { color: chartColors.ink } },
-        y: { beginAtZero: true, grid: { color: 'rgba(35, 75, 53, 0.12)' }, ticks: { color: chartColors.ink } },
+        x: {
+            border: { display: false },
+            grid: { display: false },
+            ticks: { color: chartColors.muted, font: { size: 11 } },
+        },
+        y: {
+            beginAtZero: true,
+            border: { display: false },
+            grid: { color: 'rgba(22, 26, 23, 0.08)' },
+            ticks: { color: chartColors.muted, font: { size: 11 } },
+        },
     },
 });
 

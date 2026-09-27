@@ -4,19 +4,28 @@
 // La palette provient exclusivement de _brand.scss. Chaque section porte le
 // nom du composant Blade correspondant pour faciliter les modifications.
 
+// Le tableau de bord emploie un noir doux et des gris neutres, tandis que le
+// vert ABIWEIN reste l'accent fonctionnel. Ces jetons sont privés afin de ne
+// jamais altérer l'identité visuelle du site public.
+$private-ink: #161a17;
+$private-muted: #66706a;
+$private-canvas: #f7f8f6;
+$private-border: #e5e7e6;
+$private-accent-soft: #eaf0eb;
+
 // -----------------------------------------------------------------------------
 // 1. Grille générale et zone de travail
 // -----------------------------------------------------------------------------
 body.private-site {
     min-width: 0; // Permet aux très petits écrans de rester sans défilement horizontal global.
     overflow-x: hidden; // Les grands tableaux défilent dans leur propre conteneur responsive.
-    color: $abiwein-ink;
-    background: $abiwein-canvas; // Fond neutre défini par la nouvelle palette officielle.
+    color: $private-ink;
+    background: $private-canvas; // Gris presque blanc : le contenu reste distinct de la navigation.
 }
 
 .private-shell {
     display: grid;
-    grid-template-columns: 17.5rem minmax(0, 1fr); // MODIFICATION : 17.5rem règle la largeur du menu.
+    grid-template-columns: 15.25rem minmax(0, 1fr); // MODIFICATION : cette valeur règle la largeur du menu.
     min-height: 100vh;
 }
 
@@ -25,8 +34,8 @@ body.private-site {
 }
 
 .private-content {
-    width: min(100%, 96rem);
-    padding: clamp(1.25rem, 3vw, 2.5rem);
+    width: min(100%, 94rem);
+    padding: clamp(1.1rem, 2vw, 1.75rem);
     margin-inline: auto;
 }
 
@@ -36,12 +45,12 @@ body.private-site {
 .private-sidebar {
     // MODIFICATION : cette variable impose le fond blanc au composant Offcanvas de Bootstrap.
     --bs-offcanvas-bg: #{$abiwein-white};
-    width: 17.5rem !important;
+    width: 15.25rem !important;
     // Cette ligne contrôle la couleur générale des textes de la navigation.
-    color: $abiwein-olive;
+    color: $private-ink;
     // Cette ligne maintient tout le fond de la navigation en blanc.
     background: $abiwein-white;
-    border-right: 1px solid rgba($abiwein-olive, 0.14);
+    border-right: 1px solid $private-border;
 }
 
 .private-sidebar__body {
@@ -50,7 +59,7 @@ body.private-site {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    padding: 1.25rem;
+    padding: 1rem;
     overflow-y: auto;
 }
 
@@ -67,15 +76,15 @@ body.private-site {
 .private-brand {
     display: inline-flex;
     align-self: flex-start;
-    padding: 0.55rem;
-    margin-bottom: 2rem;
-    background: rgba($abiwein-beige-light, 0.24);
-    border-radius: 0.55rem;
+    padding: 0.35rem;
+    margin-bottom: 1.35rem;
+    background: transparent;
+    border-radius: 0.5rem;
 }
 
 .private-brand img {
-    width: 6.25rem; // MODIFICATION : taille du logo dans le menu privé.
-    height: 3.9rem;
+    width: 5.65rem; // MODIFICATION : taille du logo dans le menu privé.
+    height: 3.5rem;
     object-fit: contain;
 }
 
@@ -88,7 +97,7 @@ body.private-site {
     padding-inline: 0.75rem;
     margin: 0 0 0.45rem;
     // Les titres « Espace de travail » et « Modules préparés » restent lisibles en vert forêt.
-    color: $abiwein-olive;
+    color: $private-muted;
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.12em;
@@ -107,8 +116,8 @@ body.private-site {
     min-height: 2.65rem;
     padding: 0.65rem 0.75rem;
     // Cette couleur s’applique à Vue d’ensemble, Utilisateurs et aux modules.
-    color: $abiwein-olive;
-    font-size: 0.9rem;
+    color: $private-ink;
+    font-size: 0.84rem;
     font-weight: 600;
     text-decoration: none;
     border-radius: 0.45rem;
@@ -118,7 +127,7 @@ body.private-site {
     &:focus,
     &.active {
         color: $abiwein-olive;
-        background: rgba($abiwein-beige-light, 0.44);
+        background: $private-accent-soft;
     }
 
     &.active .private-nav__marker {
@@ -175,7 +184,7 @@ body.private-site {
 
 .private-nav__sublink {
     padding: 0.48rem 0.65rem;
-    color: $abiwein-muted;
+    color: $private-muted;
     font-size: 0.8rem;
     font-weight: 600;
     text-decoration: none;
@@ -210,11 +219,11 @@ body.private-site {
 .private-sidebar__public-link {
     padding: 0.8rem 0.75rem;
     margin-top: auto;
-    color: $abiwein-olive;
+    color: $private-ink;
     font-size: 0.86rem;
     font-weight: 600;
     text-decoration: none;
-    border-top: 1px solid rgba($abiwein-olive, 0.14);
+    border-top: 1px solid $private-border;
 
     &:hover,
     &:focus {
@@ -234,10 +243,10 @@ body.private-site {
     gap: 2rem;
     align-items: center;
     justify-content: space-between;
-    min-height: 5.4rem;
-    padding: 0.85rem clamp(1.25rem, 3vw, 2.5rem);
-    background: rgba($abiwein-white, 0.96);
-    border-bottom: 1px solid rgba($abiwein-ink, 0.09);
+    min-height: 4.5rem;
+    padding: 0.7rem clamp(1.1rem, 2vw, 1.75rem);
+    background: rgba($abiwein-white, 0.97);
+    border-bottom: 1px solid $private-border;
     backdrop-filter: blur(12px);
 }
 
@@ -271,7 +280,7 @@ body.private-site {
 }
 
 .private-header__identity span {
-    color: $abiwein-muted;
+    color: $private-muted;
     font-size: 0.74rem;
 }
 
@@ -370,28 +379,35 @@ body.private-site {
 // La vue d'ensemble des trois rôles utilise une seule liste compacte : chaque
 // indicateur occupe une ligne et aucun espace n'est perdu dans de grandes cartes.
 .private-metrics-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
     padding: 0;
-    margin: 0 0 1.25rem;
-    background: $abiwein-white;
-    border-block: 1px solid rgba($abiwein-ink, 0.14);
+    margin: 0 0 1rem;
+    background: transparent;
+    border: 0;
 }
 
 .private-metric {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 1.5rem;
-    align-items: center;
-    min-height: 4rem;
-    padding: 0.7rem 1rem;
-    border-bottom: 1px solid rgba($abiwein-ink, 0.1);
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+    align-content: space-between;
+    min-height: 6rem;
+    padding: 0.95rem 1rem;
+    background: $abiwein-white;
+    border: 1px solid $private-border;
+    border-radius: 0.65rem;
+    box-shadow: 0 0.35rem 1rem rgba($private-ink, 0.025);
 }
 
 .private-metric:last-child {
-    border-bottom: 0;
+    border-bottom: 1px solid $private-border;
 }
 
 .private-metric--alert {
-    box-shadow: inset 0.25rem 0 $abiwein-beige-taupe;
+    border-color: rgba($abiwein-gold, 0.55);
+    box-shadow: inset 0 0.2rem $abiwein-gold;
 }
 
 .private-metric dt,
@@ -400,24 +416,25 @@ body.private-site {
 }
 
 .private-metric dt {
-    color: $abiwein-ink;
-    font-size: 0.86rem;
+    color: $private-muted;
+    font-size: 0.78rem;
     font-weight: 750;
 }
 
 .private-metric dt small {
     display: block;
     margin-top: 0.18rem;
-    color: rgba($abiwein-muted, 0.76);
-    font-size: 0.72rem;
+    color: $private-muted;
+    font-size: 0.67rem;
     font-weight: 500;
 }
 
 .private-metric dd {
-    color: $abiwein-ink;
-    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: $private-ink;
+    font-size: clamp(1.15rem, 2vw, 1.55rem);
     font-weight: 800;
-    text-align: right;
+    letter-spacing: -0.025em;
+    text-align: left;
 }
 
 // Une seule ligne synthétique remplace les grandes cartes répétitives des modules métier.
@@ -602,6 +619,183 @@ body.private-site {
 }
 
 // -----------------------------------------------------------------------------
+// 5.1 Tableau de bord professionnel
+// -----------------------------------------------------------------------------
+// L'en-tête utilise une ligne légère : le titre reste prioritaire sans créer
+// une grande carte décorative au-dessus des informations importantes.
+.dashboard-heading {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0.25rem 0 1rem;
+}
+
+.dashboard-heading h2 {
+    margin-bottom: 0.25rem;
+    color: $private-ink;
+    font-size: clamp(1.45rem, 2.4vw, 2rem);
+    letter-spacing: -0.035em;
+}
+
+.dashboard-heading p:not(.private-kicker) {
+    margin-bottom: 0;
+    color: $private-muted;
+    font-size: 0.78rem;
+    text-transform: capitalize;
+}
+
+.dashboard-heading__actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0.55rem;
+}
+
+// Le graphique et la surveillance reprennent la structure 2/3–1/3 de la
+// référence fournie, avec une largeur minimale sûre pour chaque colonne.
+.dashboard-overview-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(17rem, 0.78fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.dashboard-page .private-panel {
+    border-color: $private-border;
+    border-radius: 0.7rem;
+    box-shadow: 0 0.45rem 1.4rem rgba($private-ink, 0.025);
+}
+
+.dashboard-page .private-panel__header {
+    padding: 1rem 1.15rem;
+    border-bottom-color: $private-border;
+}
+
+.dashboard-page .private-panel__header h2 {
+    color: $private-ink;
+    font-size: 1rem;
+}
+
+.dashboard-page .private-panel__header > span {
+    color: $private-muted;
+    font-size: 0.7rem;
+}
+
+.dashboard-page .private-chart {
+    height: 18rem;
+    padding: 1rem 1.15rem 0.65rem;
+}
+
+// Trois valeurs financières suffisent sous le graphique ; les séparateurs
+// remplacent des sous-cartes afin de ne pas gaspiller l'espace.
+.dashboard-chart-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 0.8rem 1.15rem;
+    margin: 0;
+    border-top: 1px solid $private-border;
+}
+
+.dashboard-chart-summary > div {
+    min-width: 0;
+    padding-inline: 0.85rem;
+    border-right: 1px solid $private-border;
+}
+
+.dashboard-chart-summary > div:first-child {
+    padding-left: 0;
+}
+
+.dashboard-chart-summary > div:last-child {
+    padding-right: 0;
+    border-right: 0;
+}
+
+.dashboard-chart-summary dt {
+    margin-bottom: 0.15rem;
+    color: $private-muted;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.dashboard-chart-summary dd {
+    overflow: hidden;
+    margin: 0;
+    color: $private-ink;
+    font-size: 0.82rem;
+    font-weight: 750;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-monitoring .private-alert-list {
+    max-height: 22rem;
+    overflow-y: auto;
+}
+
+.dashboard-page .private-alert-list article {
+    padding: 0.9rem 1.15rem;
+}
+
+.dashboard-page .private-alert-list h3 {
+    color: $private-ink;
+    font-size: 0.85rem;
+}
+
+.dashboard-page .private-alert-list p {
+    display: -webkit-box;
+    overflow: hidden;
+    color: $private-muted;
+    font-size: 0.74rem;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.dashboard-table-panel {
+    margin-bottom: 1rem;
+}
+
+.dashboard-panel-link,
+.dashboard-table-link,
+.dashboard-table-action {
+    color: $abiwein-forest;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.dashboard-panel-link:hover,
+.dashboard-panel-link:focus,
+.dashboard-table-link:hover,
+.dashboard-table-link:focus,
+.dashboard-table-action:hover,
+.dashboard-table-action:focus {
+    color: $private-ink;
+    text-decoration: underline;
+    text-underline-offset: 0.18rem;
+}
+
+.dashboard-table-link {
+    display: block;
+    font-size: 0.84rem;
+}
+
+.dashboard-page .private-table > :not(caption) > * > * {
+    padding: 0.75rem 1.15rem;
+    border-bottom-color: $private-border;
+}
+
+.dashboard-page .private-table thead th {
+    color: $private-muted;
+    background: #fafbfa;
+}
+
+.dashboard-page .private-table tbody td {
+    color: $private-ink;
+}
+
+// -----------------------------------------------------------------------------
 // 6. Tableaux, états et alertes
 // -----------------------------------------------------------------------------
 .private-table {
@@ -706,6 +900,10 @@ body.private-site {
 // 7. Adaptation aux tablettes et téléphones
 // -----------------------------------------------------------------------------
 @media (max-width: 1199.98px) {
+    .private-metrics-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .private-grid--main {
         grid-template-columns: 1fr;
     }
@@ -732,6 +930,14 @@ body.private-site {
     .private-grid--charts {
         grid-template-columns: 1fr;
     }
+
+    .dashboard-overview-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-monitoring .private-alert-list {
+        max-height: none;
+    }
 }
 
 @media (max-width: 767.98px) {
@@ -755,6 +961,15 @@ body.private-site {
 
     .private-intro__aside {
         justify-items: start;
+    }
+
+    .dashboard-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .dashboard-heading__actions {
+        flex-wrap: wrap;
     }
 
     .private-summary-strip {
@@ -809,10 +1024,16 @@ body.private-site {
         grid-template-columns: 1fr;
     }
 
+    .private-metrics-list,
+    .dashboard-chart-summary {
+        grid-template-columns: 1fr;
+    }
+
     .private-metric {
         grid-template-columns: 1fr;
         gap: 0.2rem;
         align-items: start;
+        min-height: 5.25rem;
     }
 
     .private-metric dd {
@@ -835,6 +1056,18 @@ body.private-site {
     .private-chart--wide {
         height: 17rem;
         padding: 0.85rem;
+    }
+
+    .dashboard-chart-summary > div,
+    .dashboard-chart-summary > div:first-child,
+    .dashboard-chart-summary > div:last-child {
+        padding: 0.55rem 0;
+        border-right: 0;
+        border-bottom: 1px solid $private-border;
+    }
+
+    .dashboard-chart-summary > div:last-child {
+        border-bottom: 0;
     }
 }
 

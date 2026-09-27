@@ -77,15 +77,21 @@ class User extends Authenticatable
         return $this->isAdministrator() || $this->isFarmManager();
     }
 
-    /** L'assistant décisionnel est volontairement exclu de l'espace vétérinaire. */
-    public function canUseIntelligence(): bool
+    /** Les trois rôles privés consultent les données techniques utiles des bandes. */
+    public function canViewFlocks(): bool
     {
-        return $this->isAdministrator() || $this->isFarmManager();
+        return $this->isAdministrator() || $this->isFarmManager() || $this->isVeterinarian();
     }
 
     /** Retourne les relevés quotidiens créés par cet utilisateur. */
     public function dailyRecords(): HasMany
     {
         return $this->hasMany(DailyRecord::class, 'recorded_by');
+    }
+
+    /** Actions quotidiennes consignées par le responsable connecté. */
+    public function flockActivities(): HasMany
+    {
+        return $this->hasMany(FlockActivity::class, 'recorded_by');
     }
 }

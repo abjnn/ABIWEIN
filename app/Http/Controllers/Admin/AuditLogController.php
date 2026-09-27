@@ -5,7 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\Client;
+use App\Models\DailyRecord;
 use App\Models\Expense;
+use App\Models\Flock;
+use App\Models\FlockActivity;
+use App\Models\FlockBuildingAssignment;
+use App\Models\FlockMovement;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Sale;
@@ -29,6 +34,11 @@ class AuditLogController extends Controller
         'sale' => ['model' => Sale::class, 'label' => 'Vente'],
         'payment' => ['model' => Payment::class, 'label' => 'Paiement'],
         'expense' => ['model' => Expense::class, 'label' => 'Dépense'],
+        'flock' => ['model' => Flock::class, 'label' => 'Bande'],
+        'daily_record' => ['model' => DailyRecord::class, 'label' => 'Relevé quotidien'],
+        'flock_activity' => ['model' => FlockActivity::class, 'label' => 'Action de bande'],
+        'flock_movement' => ['model' => FlockMovement::class, 'label' => 'Mouvement de bande'],
+        'flock_assignment' => ['model' => FlockBuildingAssignment::class, 'label' => 'Affectation de bâtiment'],
     ];
 
     /** Affiche le journal récent et applique uniquement des filtres autorisés. */

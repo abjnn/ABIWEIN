@@ -20,7 +20,7 @@
                 <div class="col-lg-6 order-2 order-lg-1">
                     <x-public.section-heading eyebrow="Notre mission" title="Donner une vue fiable de l’exploitation." intro="ABIWEIN centralise les données techniques, sanitaires, commerciales et financières afin de soutenir le suivi quotidien et la prise de décision." />
                     <p class="body-copy">L’application suit le cycle réel de la ferme. Elle relie les bâtiments, les bandes, la santé animale, les stocks, les ventes et les dépenses, tout en séparant clairement l’espace public des données internes.</p>
-                    <p class="body-copy">Les analyses automatiques servent d’appui. Les décisions importantes restent examinées et validées par les responsables de l’exploitation.</p>
+                    <p class="body-copy">Les indicateurs et rapports servent d’appui. Les décisions importantes restent examinées et validées par les responsables de l’exploitation.</p>
                 </div>
                 <div class="col-lg-6 order-1 order-lg-2">
                     <figure class="editorial-image editorial-image--portrait">

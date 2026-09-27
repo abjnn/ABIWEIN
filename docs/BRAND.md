@@ -2,7 +2,7 @@
 
 ## 1. Intention
 
-L'identité d'ABIWEIN associe l'élevage avicole, la fiabilité et l'analyse numérique. Elle doit rester sobre, professionnelle, rassurante et très lisible. Le blanc domine toutes les interfaces pour conserver de l'espace et de la clarté ; le vert forêt structure la navigation et les actions, le vert sauge accompagne les éléments secondaires, l'ivoire adoucit les surfaces et l'or ponctue les données importantes.
+L'identité d'ABIWEIN associe l'élevage avicole, la fiabilité et le suivi des données. Elle doit rester sobre, professionnelle, rassurante et très lisible. Le blanc domine toutes les interfaces pour conserver de l'espace et de la clarté ; un noir doux structure le tableau de bord, le vert forêt signale les actions, le vert sauge accompagne les éléments secondaires, l'ivoire adoucit les surfaces et l'or ponctue les données importantes.
 
 ## 2. Palette officielle
 
@@ -19,6 +19,7 @@ Les codes hexadécimaux sont normatifs. Ne pas les remplacer par une couleur vis
 ### Règles d'emploi
 
 - Garder le blanc comme couleur dominante des pages, cartes, formulaires et menus.
+- Employer un noir doux ou un gris très foncé pour les textes et la hiérarchie du tableau de bord, jamais un noir massif sur de grandes surfaces.
 - Utiliser le vert forêt pour le texte sur fond clair, les liens, la navigation et les actions principales.
 - Réserver le vert sauge aux éléments secondaires, repères, bordures et focus ; ne pas l'utiliser avec du blanc pour un petit texte.
 - Employer l'ivoire pour les surfaces secondaires en conservant le vert forêt pour le contenu textuel.
@@ -33,7 +34,7 @@ Les codes hexadécimaux sont normatifs. Ne pas les remplacer par une couleur vis
 Le logo combine :
 
 - un poulet, représentant l'activité avicole ;
-- des points reliés, représentant l'analyse par l'intelligence artificielle et les données ;
+- des points reliés, représentant les données et leur suivi continu ;
 - un cercle, représentant la centralisation et le suivi continu ;
 - des feuilles et des épis, représentant l'environnement agricole ;
 - le nom **ABIWEIN** en capitales.
@@ -75,6 +76,7 @@ font-family: Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
 ## 5. Interface
 
 - Les composants doivent conserver un rayon, des espacements et des états cohérents dans toute l'application.
+- Le tableau de bord privilégie le blanc, le texte presque noir, des bordures grises légères et quelques accents verts ou or ; il évite les grands aplats et les rectangles décoratifs inutiles.
 - Le bouton principal utilise le vert forêt avec un texte blanc dont le contraste est vérifié.
 - Les messages de succès, d'avertissement et d'erreur peuvent employer des couleurs fonctionnelles supplémentaires, clairement identifiées comme telles et conformes aux exigences de contraste.
 - Le focus clavier doit être visible.

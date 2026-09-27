@@ -11,6 +11,7 @@ Ce guide indique précisément où intervenir. Les commentaires `MODIFICATION` d
 | Contenu et champs du contact | `resources/views/pages/contact.blade.php` |
 | Aperçu de la connexion | `resources/views/auth/login.blade.php` |
 | Tableau de bord privé | `resources/views/dashboard/index.blade.php` |
+| Gestion des bandes | `resources/views/flocks/` |
 | Gestion des utilisateurs | `resources/views/admin/users/` |
 | Liens du menu | `resources/views/partials/public/header.blade.php` |
 | Menu privé | `resources/views/partials/private/sidebar.blade.php` |
@@ -19,7 +20,8 @@ Ce guide indique précisément où intervenir. Les commentaires `MODIFICATION` d
 | Couleurs et typographie | `resources/scss/_brand.scss` |
 | Dimensions, espacements et mise en page | `resources/scss/_public.scss` |
 | Mise en page de l’espace privé | `resources/scss/_private.scss` |
-| Adresses des pages | `routes/web.php` |
+| Adresses générales des pages | `routes/web.php` |
+| Adresses de la gestion des bandes | `routes/flocks.php` |
 | Coordonnées publiques | `.env`, à partir des clés de `.env.example` |
 
 ## Remplacer une photo

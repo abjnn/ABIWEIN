@@ -2,7 +2,7 @@
 
 ABIWEIN est une application web de gestion d'exploitation avicole. Elle centralise les opérations de la ferme, leur suivi et les indicateurs utiles à la décision dans une interface française, responsive et adaptée à un usage quotidien.
 
-Le socle technique est installé. L'espace visiteur est structuré en pages Blade distinctes et l'espace privé dispose d'une connexion sécurisée, de trois rôles, d'un tableau de bord professionnel, de rapports, ainsi que des modules stocks, sanitaire, commercial et financier. La base métier et son jeu de démonstration couvrent l'exploitation, le suivi quotidien, les stocks, la santé et les ventes.
+Le socle technique est installé. L'application distingue exactement **quatre acteurs** : le visiteur, l'administrateur, le responsable d'exploitation et le vétérinaire. L'espace visiteur est structuré en pages Blade distinctes et l'espace privé dispose d'une connexion sécurisée, d'un tableau de bord professionnel, de rapports, ainsi que des modules bandes, stocks, sanitaire, commercial et financier. Le responsable d'exploitation gère le cycle des bandes, leurs relevés quotidiens et la chronologie des actions ; l'administrateur supervise en lecture seule et le vétérinaire consulte les données techniques utiles à ses interventions sanitaires.
 
 ## Décisions fonctionnelles établies
 
@@ -118,7 +118,7 @@ php artisan migrate
 php artisan db:seed
 ```
 
-Les trois comptes locaux et leur mot de passe commun sont documentés dans [`docs/DATABASE_AND_ACCESS.md`](docs/DATABASE_AND_ACCESS.md). Ils ne sont jamais créés en production.
+Les trois comptes locaux et leurs mots de passe distincts sont documentés dans [`docs/DATABASE_AND_ACCESS.md`](docs/DATABASE_AND_ACCESS.md). Ils sont fictifs et doivent être remplacés ou désactivés avant toute utilisation réelle.
 
 ### 4. Démarrage
 
@@ -148,7 +148,7 @@ php artisan test
 php artisan migrate:status
 ```
 
-Ces contrôles ont réussi sur le poste de développement le 24 septembre 2026, avec 75 tests fonctionnels et unitaires (377 assertions). Les preuves synthétiques et les éventuels contrôles restant à faire sont consignés dans [`docs/VALIDATION.md`](docs/VALIDATION.md).
+La suite complète exécutée sur le poste de développement le 27 septembre 2026 a réussi : **75 tests et 400 assertions**. Les migrations locales sont appliquées, les vues Blade sont compilées et le build Vite est valide ; les preuves détaillées sont consignées dans [`docs/VALIDATION.md`](docs/VALIDATION.md).
 
 ## Organisation du projet
 
@@ -167,6 +167,7 @@ docs/                architecture, marque et journal de validation
 
 ## Documentation
 
+- [`docs/PASSATION_CHATGPT.md`](docs/PASSATION_CHATGPT.md) : état complet à transmettre à ChatGPT pour poursuivre le projet.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) : architecture et frontières du socle.
 - [`docs/BRAND.md`](docs/BRAND.md) : palette, typographie et règles du logo.
 - [`docs/CADRAGE.md`](docs/CADRAGE.md) : périmètre, acteurs et règles fonctionnelles validées.

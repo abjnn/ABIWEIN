@@ -8,21 +8,21 @@ Ce document décrit le socle actuellement exécutable. Les données créées par
 |---|---|---|
 | Accès | `users` | Comptes, rôles, état actif ou bloqué, dernière connexion |
 | Exploitation | `suppliers`, `buildings`, `flocks`, `flock_building_assignments`, `flock_movements` | Fournisseurs, bâtiments, bandes, affectations et mouvements d’effectifs |
-| Suivi quotidien | `daily_records` | Mortalité, aliment, eau, poids moyen, état sanitaire et observations |
+| Suivi quotidien | `daily_records`, `flock_activities` | Résumé quotidien et chronologie horodatée des inspections, distributions, pesées, mortalités, contrôles, nettoyages et soins appliqués |
 | Stocks | `products`, `stock_movements` | Intrants de la ferme, quantités, seuils d’alerte, entrées et sorties |
 | Commerce | `clients`, `sales`, `sale_items`, `payments`, `expenses` | Ventes comptant ou crédit, paiements en espèces et dépenses |
 | Santé | `veterinary_visits` | Visites, diagnostics, prescriptions et suivi vétérinaire |
 | Alertes | `alerts` | Alertes internes à l’application et état de lecture |
 | Rapports | `farm_reports` | Documents administratifs archivés et snapshots figés pour le PDF |
-| Assistant | `ai_messages` | Historique privé des conversations du responsable et de l’administrateur |
 
-## Rôles
+## Acteurs et rôles
 
-| Rôle | Portée actuelle |
+| Acteur | Portée actuelle |
 |---|---|
-| Administrateur | Supervision en lecture seule des opérations, rapports/PDF, assistant ABIWEIN, comptes et journal d’audit |
-| Responsable d’exploitation | Saisie des stocks, clients, ventes, paiements et dépenses, rapports, assistant ABIWEIN et application des recommandations |
-| Vétérinaire | Tableau de bord technique et création/consultation des visites sanitaires |
+| Visiteur | Consultation des pages publiques, envoi du formulaire de contact et accès à la connexion |
+| Administrateur | Supervision en lecture seule des bandes et opérations, rapports/PDF, comptes et journal d’audit |
+| Responsable d’exploitation | Gestion des bandes, relevés, chronologie quotidienne, stocks, clients, ventes, paiements, dépenses, rapports et application des recommandations |
+| Vétérinaire | Tableau de bord technique, consultation en lecture seule des bandes et création/consultation des visites sanitaires |
 
 ## Comptes locaux de démonstration
 

@@ -1,6 +1,6 @@
 # Technologies et architecture d’ABIWEIN
 
-> État de référence : 24 septembre 2026. Ce document décrit le code réellement présent dans le dépôt. Il ne contient aucun mot de passe, aucune clé API et aucune donnée personnelle.
+> État de référence : 27 septembre 2026. Ce document décrit le code réellement présent dans le dépôt. Il ne contient aucun mot de passe, aucun jeton et aucune donnée personnelle.
 
 ## 1. Choix d’ensemble
 
@@ -20,7 +20,6 @@ flowchart LR
     C --> B[Vues Blade]
     B --> U
     E --> A[Journal d’audit]
-    S -. question autorisée .-> IA[Assistant local ou Gemini facultatif]
 ```
 
 ## 2. Logiciels utilisés et justification
@@ -33,7 +32,7 @@ flowchart LR
 | Visual Studio Code | version du poste | Édition du code, navigation entre les fichiers, terminal et Git | Léger, gratuit et très bien pris en charge par PHP/Laravel |
 | Git | version du poste | Historique, comparaison et restauration du code | Standard distribué, indispensable pour travailler sans perdre les versions |
 | GitHub | dépôt privé `abjnn/ABIWEIN` | Sauvegarde distante et source du déploiement | Dépôt privé, intégration à l’hébergement et historique consultable |
-| Codex | outil de développement seulement | Assistance à l’analyse, aux modifications et aux tests | Accélère le développement ; il ne fait pas partie de l’application livrée et n’est pas requis pour l’utiliser |
+| Codex | outil de développement seulement | Modifications et vérifications du projet | Il ne fait pas partie de l’application livrée et n’est pas requis pour l’utiliser |
 
 ### 2.2 Serveur et code PHP
 
@@ -88,14 +87,11 @@ Une base relationnelle a été préférée à MongoDB : les ventes, paiements, b
 
 Les tests automatisés ont été préférés à une vérification uniquement manuelle : ils protègent les rôles, les calculs financiers, les stocks, les PDF et les validations lors de chaque modification. Une vérification visuelle reste nécessaire pour le responsive et la qualité graphique.
 
-### 2.6 Assistant d’analyse
+### 2.6 Gestion des bandes
 
-L’assistant possède deux modes :
+La gestion des bandes reste dans le monolithe et s'appuie sur les transactions de la base relationnelle. Le service `FlockOperationService` centralise la création, les affectations, transferts, variations d'effectif, clôtures et archivages afin qu'une action métier ne laisse jamais une bande, un bâtiment et leurs journaux dans des états contradictoires.
 
-1. un mode local déterministe, toujours disponible et sans coût réseau ;
-2. Gemini `gemini-2.5-flash-lite` lorsque `GEMINI_API_KEY` est configurée.
-
-Seuls des indicateurs agrégés sont envoyés au fournisseur externe. Les salutations restent locales afin de répondre naturellement sans consommer l’API. L’assistant ne crée ni vente, ni traitement, ni mouvement et ne remplace jamais le vétérinaire. Le vétérinaire n’a pas accès à ce module. Une API payante n’a pas été imposée parce que le projet demande d’abord un fonctionnement gratuit ; un grand modèle hébergé sur le même serveur consommerait trop de mémoire.
+Deux niveaux de suivi sont conservés : un relevé synthétique unique par jour et une chronologie d'actions horodatées. Les quantités d'aliment, d'eau, de poids et de mortalité sont synchronisées avec le relevé journalier lorsque l'action le demande. Ce choix fournit à la fois une synthèse exploitable dans les tableaux de bord et la trace du déroulement réel de la journée.
 
 ## 3. Architecture logique
 
@@ -118,7 +114,7 @@ Seuls des indicateurs agrégés sont envoyés au fournisseur externe. Les saluta
 | Contrôleurs | `app/Http/Controllers` | Coordination d’une demande utilisateur |
 | Validation | `app/Http/Requests`, `app/Rules` | Formats, contraintes et messages d’erreur |
 | Autorisation | middlewares, méthodes du modèle `User` | Séparation Administrateur/Responsable/Vétérinaire |
-| Métier | `app/Services` | ventes, paiements, alertes, rapports, audit et assistant |
+| Métier | `app/Services` | bandes, ventes, paiements, alertes, rapports et audit |
 | Domaine | `app/Models`, `app/Enums` | entités, relations, conversions et valeurs permises |
 | Persistance | `database/migrations`, `database/seeders` | schéma et scénario fictif |
 | Présentation | `resources/views` | pages Blade organisées par module |
@@ -131,15 +127,14 @@ Seuls des indicateurs agrégés sont envoyés au fournisseur externe. Les saluta
 - **Espace public** : accueil, présentation, activités, contact et connexion.
 - **Authentification** : connexion, déconnexion, limitation des tentatives et compte actif/bloqué.
 - **Administration** : comptes utilisateurs et journal d’audit.
-- **Exploitation** : bâtiments, fournisseurs, bandes, affectations, mouvements et relevés quotidiens dans le modèle métier.
+- **Exploitation** : registre des bandes, création, modification descriptive, affectations, transferts, mouvements d'effectif, clôture, archivage, relevés quotidiens et chronologie des actions.
 - **Stocks** : intrants, quantités, seuils, dates d’expiration et mouvements.
 - **Sanitaire** : visites, diagnostics, recommandations et validation d’application par le responsable.
 - **Commercial** : clients, ventes de poulets, paiements en espèces et créances.
 - **Financier** : dépenses, encaissements, soldes et tendances.
 - **Rapports** : instantané administratif archivé et téléchargement PDF.
-- **Assistant** : conversation privée pour l’administrateur et le responsable.
 
-### 3.4 Rôles
+### 3.4 Droits des trois rôles privés
 
 | Action | Administrateur | Responsable d’exploitation | Vétérinaire |
 |---|---:|---:|---:|
@@ -150,7 +145,8 @@ Seuls des indicateurs agrégés sont envoyés au fournisseur externe. Les saluta
 | Consulter les visites | Oui | Oui | Oui |
 | Rédiger une visite vétérinaire | Non | Non | Oui |
 | Confirmer l’application d’une recommandation | Non | Oui | Non |
-| Utiliser l’assistant | Oui | Oui | Non |
+| Consulter les bandes et leur historique | Oui | Oui | Oui, lecture technique |
+| Gérer les bandes et le suivi quotidien | Non | Oui | Non |
 
 Le principe est celui du **moindre privilège** : l’administrateur contrôle et observe, le responsable exécute l’exploitation, le vétérinaire intervient dans son domaine sanitaire.
 
@@ -166,6 +162,10 @@ erDiagram
     SUPPLIER ||--o{ FLOCK : fournit
     BUILDING ||--o{ FLOCK : heberge
     FLOCK ||--o{ DAILY_RECORD : possede
+    FLOCK ||--o{ FLOCK_ACTIVITY : journalise
+    DAILY_RECORD ||--o{ FLOCK_ACTIVITY : regroupe
+    FLOCK ||--o{ FLOCK_MOVEMENT : trace
+    FLOCK ||--o{ FLOCK_BUILDING_ASSIGNMENT : occupe
     FLOCK ||--o{ VETERINARY_VISIT : recoit
     PRODUCT ||--o{ STOCK_MOVEMENT : possede
     CLIENT ||--o{ SALE : effectue
@@ -202,7 +202,6 @@ flowchart TB
     U[Navigateur public] -->|HTTPS / TLS| R
     R -->|PHP 8.4 + Apache| L[Application Laravel]
     L -->|TLS PostgreSQL| N[(Neon PostgreSQL)]
-    L -. si clé configurée .-> AI[API Gemini]
     L -->|stderr| LOG[Journal Render]
 ```
 
@@ -221,7 +220,6 @@ Au démarrage, `docker/start.sh` met en cache la configuration, exécute les mig
 - Il n’y a pas de haute disponibilité ni d’engagement de service gratuit.
 - Les documents PDF sont générés à la demande et transmis directement, pas archivés sur le disque éphémère.
 - L’envoi réel du formulaire de contact nécessite un SMTP configuré ; avec `MAIL_MAILER=log`, le message reste dans les journaux.
-- L’assistant externe nécessite une clé Gemini ; sans clé, le mode local continue de fonctionner.
 
 Pour une ferme plus grande, la prochaine évolution serait un stockage objet pour les pièces jointes, des sauvegardes vérifiées, un worker de file d’attente et un hébergement sans mise en veille.
 

@@ -20,7 +20,7 @@
         </form>
     </section>
 
-    {{-- TABLEAU : le bouton Encaisser ouvre la vente et son formulaire de versement en espèces. --}}
+    {{-- TABLEAU : le responsable peut encaisser ; l'administrateur ouvre la même fiche en lecture seule. --}}
     <section class="private-panel" aria-labelledby="receivables-list-title">
         <div class="private-panel__header"><div><p class="private-kicker">Soldes ouverts</p><h2 id="receivables-list-title">Ventes non soldées</h2></div><span>{{ $receivables->total() }} dossier(s)</span></div>
         <div class="table-responsive">
@@ -34,7 +34,7 @@
                             <td>{{ number_format((float) $sale->total_amount, 0, ',', ' ') }} FCFA</td>
                             <td>{{ number_format((float) $sale->paid_amount, 0, ',', ' ') }} FCFA</td>
                             <td><strong>{{ number_format((float) $sale->balance_due, 0, ',', ' ') }} FCFA</strong></td>
-                            <td class="text-end"><a class="btn btn-sm btn-private-primary" href="{{ route('sales.show', $sale) }}">Encaisser</a></td>
+                            <td class="text-end"><a class="btn btn-sm {{ auth()->user()->isFarmManager() ? 'btn-private-primary' : 'btn-private-secondary' }}" href="{{ route('sales.show', $sale) }}">{{ auth()->user()->isFarmManager() ? 'Encaisser' : 'Consulter' }}</a></td>
                         </tr>
                     @empty
                         <tr><td class="private-empty" colspan="6">Aucune créance ne correspond à cette recherche.</td></tr>

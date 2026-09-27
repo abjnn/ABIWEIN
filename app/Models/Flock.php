@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use Database\Factories\FlockFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Flock extends Model
 {
     /** @use HasFactory<FlockFactory> */
-    use HasFactory;
+    use Auditable, HasFactory;
 
     /** Les dates sont transformées en objets Carbon pour les calculs et affichages. */
     protected function casts(): array
@@ -42,6 +43,24 @@ class Flock extends Model
     public function dailyRecords(): HasMany
     {
         return $this->hasMany(DailyRecord::class);
+    }
+
+    /** Chronologie détaillée des actions réalisées pendant les journées d'élevage. */
+    public function activities(): HasMany
+    {
+        return $this->hasMany(FlockActivity::class);
+    }
+
+    /** Historique technique de l'effectif et des transferts. */
+    public function movements(): HasMany
+    {
+        return $this->hasMany(FlockMovement::class);
+    }
+
+    /** Historique des bâtiments occupés par la bande. */
+    public function buildingAssignments(): HasMany
+    {
+        return $this->hasMany(FlockBuildingAssignment::class);
     }
 
     /** Visites vétérinaires rattachées à la bande. */
